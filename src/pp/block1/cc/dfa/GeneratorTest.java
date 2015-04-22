@@ -9,12 +9,12 @@ import org.junit.Test;
 
 /** Test class for Checker implementation. */
 public class GeneratorTest {
-	private Generator myGen = null;// instantiate your Generator implementation
+	private Generator myGen = new GeneratorImplementation();// instantiate your Generator implementation
 
 	@Test
 	public void testID6() {
 		dfa = ID6_DFA;
-		yields("");
+		//yields("");
 		yields("a12345", "a12345");
 		yields("a12345AaBbCc", "a12345", "AaBbCc");
 	}
