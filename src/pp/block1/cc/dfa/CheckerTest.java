@@ -7,7 +7,7 @@ import org.junit.Test;
 
 /** Test class for Checker implementation. */
 public class CheckerTest {
-	private Checker myChecker = null;// instantiate your Checker implementation
+	private Checker myChecker = new CheckerImplementation();// instantiate your Checker implementation
 
 	@Test
 	public void testID6() {
