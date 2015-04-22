@@ -20,7 +20,7 @@ public class GeneratorTest {
 	}
 	
 	@Test
-	public void testDFALALA() {
+	public void testDFA_LALA() {
 		dfa = DFA_LALA;
 		yields("");
 		yields("LaaaaLaLaa Laaaa   LaLiLaa", "LaaaaLa", "Laa Laaaa   LaLi", "Laa");
