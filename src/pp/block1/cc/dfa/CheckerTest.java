@@ -20,6 +20,16 @@ public class CheckerTest {
 		rejects("123456");
 	}
 
+	@Test
+	public void DFA_LALA() {
+		dfa = DFA_LALA;
+		accepts("LaaaaLaLaa Laaaa   LaLiLaa");
+		rejects("");
+		rejects("La La La La Li");
+		rejects("La La Li");
+		rejects("LA");
+		accepts("La La La Li");
+	}
 
 	private void accepts(String word) {
 		if (!myChecker.accepts(dfa, word)) {
