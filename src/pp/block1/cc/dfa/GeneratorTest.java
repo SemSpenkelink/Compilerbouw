@@ -1,6 +1,7 @@
 package pp.block1.cc.dfa;
 
 import static pp.block1.cc.dfa.State.ID6_DFA;
+import static pp.block1.cc.dfa.State.DFA_LALA;
 
 import java.util.List;
 
