@@ -14,9 +14,17 @@ public class GeneratorTest {
 	@Test
 	public void testID6() {
 		dfa = ID6_DFA;
-		//yields("");
+		yields("");
 		yields("a12345", "a12345");
 		yields("a12345AaBbCc", "a12345", "AaBbCc");
+	}
+	
+	@Test
+	public void testDFALALA() {
+		dfa = DFA_LALA;
+		yields("");
+		yields("LaaaaLaLaa Laaaa   LaLiLaa", "LaaaaLa", "Laa Laaaa   LaLi", "Laa");
+		yields("Laaaa LaLaa", "Laaaa La", "Laa");
 	}
 
 	private void yields(String word, String... tokens) {
