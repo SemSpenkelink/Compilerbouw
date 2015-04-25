@@ -1,0 +1,8 @@
+WHILE=1
+DO=2
+WS=3
+TOKENA=4
+TOKENB=5
+TOKENC=6
+'while'=1
+'do'=2
