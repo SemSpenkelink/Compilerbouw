@@ -52,7 +52,7 @@ public class LLCalcTest {
 
 	/** Creates an LL1-calculator for a given grammar. */
 	private LLCalc createCalc(Grammar g) {
-		return ... // your implementation of LLCalc
+		return new MyLLCalc(g); // your implementation of LLCalc
 	}
 
 	@SuppressWarnings("unchecked")

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 LETTER=1
 ALPHANUMERIC=2
 VALUE=3
 WS=4
-=======
-TOKEN=1
->>>>>>> origin/master
