@@ -130,24 +130,46 @@ public class MyLLCalc implements LLCalc{
 		Map<NonTerm, Set<Term>> follow = getFollow();
 		Map<Rule, Set<Term>>	firstp = new LinkedHashMap<Rule, Set<Term>>();
 		List<Rule> 				rules = grammar.getRules();
-
+		
 		for(Rule rule : rules){
-			NonTerm left = rule.getLHS();
-			if(first.get(left).contains(Symbol.EMPTY)){
-				Set<Term> tmp = first.get(left);
-				tmp.addAll(follow.get(left));
-				firstp.put(rule, tmp);
-			}else
-				firstp.put(rule, first.get(left));
-				
+			firstp.put(rule,  new HashSet<Term>());
+			List<Symbol> rhs = rule.getRHS();
+			for(Symbol s : rhs) {
+	   			if(first.get(s).contains(Symbol.EMPTY)) {
+	   				firstp.get(s).addAll(first.get(s));
+	   				firstp.get(s).addAll(follow.get(rule.getLHS()));
+	   			}
+	   			else{
+	   				firstp.get(rule).addAll(first.get(s));
+	   				break;
+	   			}
+	   		 }
+
 		}
 		return firstp;
 	}
 
 	@Override
 	public boolean isLL1() {
-		// TODO Auto-generated method stub
-		return true;
+	   	Map<Rule, Set<Term>> firstp = getFirstp();
+	   	Set<Entry<Rule, Set<Term>>> entrySet = firstp.entrySet();   	 
+	   	 
+	   	for(Entry<Rule, Set<Term>> entry : entrySet){
+	   		NonTerm tmp = entry.getKey().getLHS();
+	   		List<Set<Term>> terms = new ArrayList<Set<Term>>();
+	   		for(Entry<Rule, Set<Term>> entry_b : entrySet){
+	   			if(entry_b.getKey().getLHS().equals(tmp)){
+	   				terms.add(entry_b.getValue());
+	   			}
+	   		}
+	   		
+	   		for(int index = 0; index < terms.size(); index++){
+	   			for(int index_b = index + 1; index_b < terms.size(); index_b++){
+	   				if(terms.get(index).equals(terms.get(index_b)))
+	   					return false;
+	   			}
+	   		}
+	   	}
+	   	return true;
 	}
-
 }
