@@ -36,4 +36,27 @@ public class Grammars {
 		g.addRule(mod, adj);
 		return g;
 	}
+	
+	public static Grammar ifGrammar(){
+		//Define Non Terminals
+		NonTerm stat = new NonTerm("Stat");
+		NonTerm elsepart = new NonTerm("ElsePart");
+		
+		//Define terminals
+		SymbolFactory fact = new SymbolFactory(If.class);
+		Term assign = fact.getTerminal(If.ASSIGN);
+		Term iff = fact.getTerminal(If.IF);
+		Term ws = fact.getTerminal(If.WS);
+		Term then = fact.getTerminal(If.THEN);
+		Term els = fact.getTerminal(If.ELSE);
+		Term empty = fact.getTerminal(If.TYPO);
+		
+		Grammar g = new Grammar(stat);
+		g.addRule(stat, assign);
+		g.addRule(stat, iff, ws, then, stat, elsepart);
+		g.addRule(elsepart, els, stat);
+		g.addRule(elsepart, empty);
+		
+		return g; 
+	}
 }
