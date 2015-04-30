@@ -49,6 +49,15 @@ public class LLCalcTest {
 		// is-LL1-test
 		assertFalse(calc.isLL1());
 	}
+	
+	@Test
+	public void testGrammar(){
+		Grammar g = Grammars.ifGrammar();
+		// Without the last (recursive) rule, the grammar is not LL-1
+		assertFalse(createCalc(g).isLL1());
+		
+	}
+	
 
 	/** Creates an LL1-calculator for a given grammar. */
 	private LLCalc createCalc(Grammar g) {
