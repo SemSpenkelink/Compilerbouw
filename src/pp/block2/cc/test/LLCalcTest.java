@@ -18,6 +18,7 @@ import pp.block2.cc.ll.Grammars;
 import pp.block2.cc.ll.LLCalc;
 import pp.block2.cc.ll.MyLLCalc;
 import pp.block2.cc.ll.Sentence;
+import pp.block2.cc.ll.If;
 
 public class LLCalcTest {
 	/** Tests the LL-calculator for the Sentence grammar. */
@@ -53,8 +54,23 @@ public class LLCalcTest {
 	@Test
 	public void testGrammar(){
 		Grammar g = Grammars.ifGrammar();
+		LLCalc calc = createCalc(g);
 		// Without the last (recursive) rule, the grammar is not LL-1
 		assertFalse(createCalc(g).isLL1());
+		
+		//First Sets
+		NonTerm stat = g.getNonterminal("Stat");
+		NonTerm elsepart = g.getNonterminal("ElsePart");
+		
+		Term iff = g.getTerminal(If.IF);
+		Term then = g.getTerminal(If.THEN);
+		Term cond = g.getTerminal(If.COND);
+		Term els = g.getTerminal(If.ELSE);
+		Term assign = g.getTerminal(If.ASSIGN);
+		Term empty = g.getTerminal(If.TYPO);
+		
+		assertEquals(set(iff, assign), calc.getFirst().get(stat));
+		assertEquals(set(els, empty), calc.getFirst().get(elsepart));
 		
 	}
 	
