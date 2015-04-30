@@ -49,13 +49,12 @@ public class Grammars {
 		Term ws = fact.getTerminal(If.WS);
 		Term then = fact.getTerminal(If.THEN);
 		Term els = fact.getTerminal(If.ELSE);
-		Term empty = fact.getTerminal(If.TYPO);
 		
 		Grammar g = new Grammar(stat);
 		g.addRule(stat, assign);
 		g.addRule(stat, iff, ws, then, stat, elsepart);
 		g.addRule(elsepart, els, stat);
-		g.addRule(elsepart, empty);
+		g.addRule(elsepart);
 		
 		return g; 
 	}
