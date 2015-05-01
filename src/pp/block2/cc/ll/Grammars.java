@@ -60,4 +60,31 @@ public class Grammars {
 		
 		return g; 
 	}
+	
+	public static Grammar iffGrammar(){
+		//Define Non Terminals
+				NonTerm L = new NonTerm("L");
+				NonTerm R = new NonTerm("R");
+				NonTerm S = new NonTerm("S");
+				NonTerm Q = new NonTerm("Q");
+				NonTerm U = new NonTerm("U");
+				
+				//Define terminals
+				SymbolFactory fact = new SymbolFactory(If.class);
+				Term assign = fact.getTerminal(If.ASSIGN);
+				Term iff = fact.getTerminal(If.IF);
+				Term then = fact.getTerminal(If.THEN);
+				Term els = fact.getTerminal(If.ELSE);
+				Term cond = fact.getTerminal(If.COND);
+				Term ws = fact.getTerminal(If.WS);
+				Term typo = fact.getTerminal(If.TYPO);
+				
+				Grammar g = new Grammar(stat);
+				g.addRule(stat, assign);
+				g.addRule(stat, iff, cond, then, stat, elsepart);
+				g.addRule(elsepart, els, stat);
+				g.addRule(elsepart);
+				
+				return g; 
+	}
 }
