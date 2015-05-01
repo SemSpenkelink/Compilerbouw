@@ -38,11 +38,11 @@ public class LParser implements Parser {
 		Token next = peek();
 		
 		switch(next.getType()){
-		case R: 
+		case A | C: 
 			result.addChild(parseR());
 			result.addChild(parseToken(A));
 			break;
-		case Q:
+		case B:
 			result.addChild(parseQ());
 			result.addChild(parseToken(B));
 			result.addChild(parseToken(A));
@@ -61,12 +61,14 @@ public class LParser implements Parser {
 			result.addChild(parseToken(B));
 			result.addChild(parseToken(A));
 			result.addChild(parseS());
+			break;
 		case C:
 			result.addChild(parseToken(C));
 			result.addChild(parseToken(A));
 			result.addChild(parseToken(B));
 			result.addChild(parseToken(A));
 			result.addChild(parseS());
+			break;
 		}
 		return result;
 	}
@@ -79,8 +81,10 @@ public class LParser implements Parser {
 			result.addChild(parseToken(B));
 			result.addChild(parseToken(C));
 			result.addChild(parseS());
+			break;
 		case Symbol.EMPTY: 		//TODO parse empty symbol
 			result.addChild();
+			break;
 		}
 		return result;
 	}
@@ -100,8 +104,10 @@ public class LParser implements Parser {
 		case B:
 			result.addChild(parseToken(B));
 			result.addChild(parseToken(C));
+			break;
 		case C:
 			result.addChild(parseToken(C));
+			break;
 		}
 		return result;
 	}
