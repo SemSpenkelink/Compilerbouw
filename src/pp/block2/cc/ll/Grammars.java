@@ -46,13 +46,15 @@ public class Grammars {
 		SymbolFactory fact = new SymbolFactory(If.class);
 		Term assign = fact.getTerminal(If.ASSIGN);
 		Term iff = fact.getTerminal(If.IF);
-		Term ws = fact.getTerminal(If.WS);
 		Term then = fact.getTerminal(If.THEN);
 		Term els = fact.getTerminal(If.ELSE);
+		Term cond = fact.getTerminal(If.COND);
+		Term ws = fact.getTerminal(If.WS);
+		Term typo = fact.getTerminal(If.TYPO);
 		
 		Grammar g = new Grammar(stat);
 		g.addRule(stat, assign);
-		g.addRule(stat, iff, ws, then, stat, elsepart);
+		g.addRule(stat, iff, cond, then, stat, elsepart);
 		g.addRule(elsepart, els, stat);
 		g.addRule(elsepart);
 		

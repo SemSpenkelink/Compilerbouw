@@ -1,5 +1,11 @@
 package pp.block2.cc.ll;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.antlr.v4.runtime.Lexer;
 
 import pp.block2.cc.AST;
 import pp.block2.cc.NonTerm;
@@ -30,8 +36,15 @@ public class GenericLLParser implements Parser {
 	/** Constructs the {@link #ll1Table}. */
 	private Map<NonTerm, List<Rule>> calcLL1Table() {
 		// fill in
+		return null;
 	}
 
 	/** Map from non-terminals to lists of rules indexed by token type. */
 	private Map<NonTerm, List<Rule>> ll1Table;
+
+	@Override
+	public AST parse(Lexer lexer) throws ParseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

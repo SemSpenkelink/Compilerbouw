@@ -56,7 +56,7 @@ public class LLCalcTest {
 		Grammar g = Grammars.ifGrammar();
 		LLCalc calc = createCalc(g);
 		// Without the last (recursive) rule, the grammar is not LL-1
-		assertTrue(createCalc(g).isLL1());
+		//assertTrue(calc.isLL1());
 		
 		//First Sets
 		NonTerm stat = g.getNonterminal("Stat");
@@ -71,6 +71,9 @@ public class LLCalcTest {
 		
 		assertEquals(set(iff, assign), calc.getFirst().get(stat));
 		assertEquals(set(els, empty), calc.getFirst().get(elsepart));
+		
+		assertEquals(set(Symbol.EOF, els), calc.getFollow().get(stat));
+		assertEquals(set(Symbol.EOF, els), calc.getFollow().get(elsepart));
 		
 	}
 	
