@@ -19,7 +19,7 @@ import pp.block2.cc.Parser;
 
 public class LParser implements Parser {
 	public LParser() {
-		this.fact = new SymbolFactory(If.class);
+		this.fact = new SymbolFactory(L.class);
 	}
 
 	private final SymbolFactory fact;
