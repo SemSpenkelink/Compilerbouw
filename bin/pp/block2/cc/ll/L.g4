@@ -2,11 +2,9 @@ lexer grammar L;
 
 @header{package pp.block2.cc.ll;}
 
-L : R'a' | Q'ba';
-R : 'aba'S | 'caba'S ;
-S : 'bc'S | '' ;
-Q : 'b'U ;
-U : 'bc' | 'c' ;
+A: 'a';
+B: 'b';
+C: 'c';
 
 // ignore whitespace
 WS : [ \t\n\r] -> skip;

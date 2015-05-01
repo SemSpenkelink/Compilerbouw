@@ -61,8 +61,6 @@ public class LLCalcTest {
 		NonTerm elsepart = g.getNonterminal("ElsePart");
 		
 		Term iff = g.getTerminal(If.IF);
-		Term then = g.getTerminal(If.THEN);
-		Term cond = g.getTerminal(If.COND);
 		Term els = g.getTerminal(If.ELSE);
 		Term assign = g.getTerminal(If.ASSIGN);
 		
