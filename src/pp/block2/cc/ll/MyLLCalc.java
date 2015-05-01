@@ -111,7 +111,7 @@ public class MyLLCalc implements LLCalc{
 						follow.get(beta.get(i)).addAll(trailer);
 						if(firstBeta.contains(Symbol.EMPTY)){
 							firstBeta.remove(Symbol.EMPTY);
-							trailer.addAll(firstBeta);
+							trailer.addAll(follow.get(beta.get(i)));
 						}else{
 							trailer = firstBeta;
 						}

@@ -15,6 +15,7 @@ import pp.block2.cc.Symbol;
 import pp.block2.cc.Term;
 import pp.block2.cc.ll.Grammar;
 import pp.block2.cc.ll.Grammars;
+import pp.block2.cc.ll.L;
 import pp.block2.cc.ll.LLCalc;
 import pp.block2.cc.ll.MyLLCalc;
 import pp.block2.cc.ll.Sentence;
@@ -71,6 +72,37 @@ public class LLCalcTest {
 		assertEquals(set(Symbol.EOF, els), calc.getFollow().get(elsepart));	
 		
 		assertFalse(calc.isLL1());
+	}
+	
+	@Test
+	public void testLGrammar(){
+		Grammar g = Grammars.LGrammar();
+		LLCalc calc = createCalc(g);
+		
+		//First Sets
+		NonTerm start = g.getNonterminal("L");
+		NonTerm R = g.getNonterminal("R");
+		NonTerm S = g.getNonterminal("S");
+		NonTerm Q = g.getNonterminal("Q");
+		NonTerm U = g.getNonterminal("U");
+
+		Term A = g.getTerminal(L.A);
+		Term B = g.getTerminal(L.B);
+		Term C = g.getTerminal(L.C);
+
+		assertEquals(set(A, C, B), calc.getFirst().get(start));
+		assertEquals(set(A, C), calc.getFirst().get(R));
+		assertEquals(set(B, Symbol.EMPTY), calc.getFirst().get(S));
+		assertEquals(set(B), calc.getFirst().get(Q));
+		assertEquals(set(B, C), calc.getFirst().get(U));
+
+		assertEquals(set(Symbol.EOF), calc.getFollow().get(start));
+		assertEquals(set(A), calc.getFollow().get(R));
+		assertEquals(set(A), calc.getFollow().get(S));
+		assertEquals(set(B), calc.getFollow().get(Q));
+		assertEquals(set(B), calc.getFollow().get(U));
+		
+		assertTrue(calc.isLL1());
 	}
 	
 
