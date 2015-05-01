@@ -64,7 +64,7 @@ public class Grammars {
 	
 	public static Grammar LGrammar(){
 		//Define Non Terminals
-		NonTerm L = new NonTerm("L");
+		NonTerm start = new NonTerm("L");
 		NonTerm R = new NonTerm("R");
 		NonTerm S = new NonTerm("S");
 		NonTerm Q = new NonTerm("Q");
@@ -72,9 +72,20 @@ public class Grammars {
 				
 		//Define terminals
 		SymbolFactory fact = new SymbolFactory(L.class);
-		Term a = fact.getTerminal(L.)
+		Term a = fact.getTerminal(L.A);
+		Term b = fact.getTerminal(L.B);
+		Term c = fact.getTerminal(L.C);
 				
-		Grammar g = new Grammar(L);
+		Grammar g = new Grammar(start);
+		g.addRule(start, R, a);
+		g.addRule(start, Q, b, a);
+		g.addRule(R, a, b, a, S);
+		g.addRule(R, c, a, b, a, S);
+		g.addRule(S, b, c, S);
+		g.addRule(S, Symbol.EMPTY);
+		g.addRule(Q, b, U);
+		g.addRule(U, b, c);
+		g.addRule(U, c);
 				
 		return g; 
 	}
