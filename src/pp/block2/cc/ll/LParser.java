@@ -1,10 +1,8 @@
 package pp.block2.cc.ll;
 
-import static pp.block2.cc.ll.L.L;
-import static pp.block2.cc.ll.L.R;
-import static pp.block2.cc.ll.L.S;
-import static pp.block2.cc.ll.L.Q;
-import static pp.block2.cc.ll.L.U;
+import static pp.block2.cc.ll.L.A;
+import static pp.block2.cc.ll.L.B;
+import static pp.block2.cc.ll.L.C;
 
 import java.util.List;
 
@@ -42,12 +40,12 @@ public class LParser implements Parser {
 		switch(next.getType()){
 		case R: 
 			result.addChild(parseR());
-			result.addChild(parseToken(a));
+			result.addChild(parseToken(A));
 			break;
 		case Q:
 			result.addChild(parseQ());
-			result.addChild(parseToken(b));
-			result.addChild(parseToken(a));
+			result.addChild(parseToken(B));
+			result.addChild(parseToken(A));
 			break;
 		}
 		
@@ -58,7 +56,17 @@ public class LParser implements Parser {
 		AST result = new AST(R);
 		Token next = peek();
 		switch (next.getType()) {
-		case a:
+		case A:
+			result.addChild(parseToken(A));
+			result.addChild(parseToken(B));
+			result.addChild(parseToken(A));
+			result.addChild(parseS());
+		case C:
+			result.addChild(parseToken(C));
+			result.addChild(parseToken(A));
+			result.addChild(parseToken(B));
+			result.addChild(parseToken(A));
+			result.addChild(parseS());
 		}
 		return result;
 	}
@@ -66,6 +74,35 @@ public class LParser implements Parser {
 	private AST parseS() throws ParseException{
 		AST result = new AST(S);
 		Token next = peek();
+		switch (next.getType()){
+		case B:
+			result.addChild(parseToken(B));
+			result.addChild(parseToken(C));
+			result.addChild(parseS());
+		case Symbol.EMPTY: 		//TODO parse empty symbol
+			result.addChild();
+		}
+	}
+	
+	private AST parseQ() throws ParseException{
+		AST result = new AST(Q);
+		result.addChild(parseToken(B));
+		result.addChild(parseU());
+		
+		return result;
+	}
+	
+	private AST parseU() throws ParseException{
+		AST result = new AST(U);
+		Token next = peek();
+		switch (next.getType()){
+		case B:
+			result.addChild(parseToken(B));
+			result.addChild(parseToken(C));
+		case C:
+			result.addChild(parseToken(C));
+		}
+		return result;
 	}
 
 	private ParseException unparsable(NonTerm nt) {
