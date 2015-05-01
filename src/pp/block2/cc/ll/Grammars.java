@@ -3,6 +3,7 @@
  */
 package pp.block2.cc.ll;
 
+import pp.block2.cc.Symbol;
 import pp.block2.cc.SymbolFactory;
 import pp.block2.cc.NonTerm;
 import pp.block2.cc.Term;
@@ -56,12 +57,12 @@ public class Grammars {
 		g.addRule(stat, assign);
 		g.addRule(stat, iff, cond, then, stat, elsepart);
 		g.addRule(elsepart, els, stat);
-		g.addRule(elsepart);
+		g.addRule(elsepart, Symbol.EMPTY);
 		
 		return g; 
 	}
 	
-	public static Grammar iffGrammar(){
+	public static Grammar LGrammar(){
 		//Define Non Terminals
 				NonTerm L = new NonTerm("L");
 				NonTerm R = new NonTerm("R");

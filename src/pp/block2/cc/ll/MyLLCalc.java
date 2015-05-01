@@ -61,7 +61,7 @@ public class MyLLCalc implements LLCalc{
 				rhs.remove(Symbol.EMPTY);
 				
 				int i;
-				for(i = 1; i < beta.size()-1 && first.get(beta.get(i)).contains(Symbol.EMPTY); i++){
+				for(i = 0; i < beta.size()-1 && first.get(beta.get(i)).contains(Symbol.EMPTY); i++){
 					rhs.addAll(first.get(beta.get(i)));
 					rhs.remove(Symbol.EMPTY);
 				}
@@ -136,8 +136,8 @@ public class MyLLCalc implements LLCalc{
 			List<Symbol> rhs = rule.getRHS();
 			for(Symbol s : rhs) {
 	   			if(first.get(s).contains(Symbol.EMPTY)) {
-	   				firstp.get(s).addAll(first.get(s));
-	   				firstp.get(s).addAll(follow.get(rule.getLHS()));
+	   				firstp.get(rule).addAll(first.get(s));
+	   				firstp.get(rule).addAll(follow.get(rule.getLHS()));
 	   			}
 	   			else{
 	   				firstp.get(rule).addAll(first.get(s));
@@ -165,8 +165,10 @@ public class MyLLCalc implements LLCalc{
 	   		
 	   		for(int index = 0; index < terms.size(); index++){
 	   			for(int index_b = index + 1; index_b < terms.size(); index_b++){
-	   				if(terms.get(index).equals(terms.get(index_b)))
-	   					return false;
+	   				for(Term term : terms.get(index)){
+	   					if(terms.get(index_b).contains(term))
+	   						return false;
+	   				}
 	   			}
 	   		}
 	   	}

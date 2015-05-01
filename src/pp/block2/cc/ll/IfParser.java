@@ -33,7 +33,7 @@ public class IfParser implements Parser {
 	public AST parse(Lexer lexer) throws ParseException {
 		this.tokens = lexer.getAllTokens();
 		this.index = 0;
-		return parseSentence();
+		return parseStat();
 	}
 
 	private List<? extends Token> tokens;
@@ -59,7 +59,7 @@ public class IfParser implements Parser {
 	}
 
 	private AST parseElsePart() throws ParseException {
-		AST result = new AST(OBJ);
+		AST result = new AST(ELSEPART);
 		Token next = peek();
 		// choose between rules based on the lookahead
 		switch (next.getType()) {
@@ -68,7 +68,7 @@ public class IfParser implements Parser {
 			result.addChild(parseStat());
 			break;
 		default:
-			throw unparsable(OBJ);
+			throw unparsable(ELSEPART);
 		}
 		return result;
 	}
