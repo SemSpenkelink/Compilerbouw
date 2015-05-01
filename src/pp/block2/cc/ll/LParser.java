@@ -1,13 +1,10 @@
 package pp.block2.cc.ll;
 
-import static pp.block2.cc.ll.If.IF;
-import static pp.block2.cc.ll.If.THEN;
-import static pp.block2.cc.ll.If.COND;
-import static pp.block2.cc.ll.If.ELSE;
-import static pp.block2.cc.ll.If.ASSIGN;
-import static pp.block2.cc.ll.If.WS;
-import static pp.block2.cc.ll.If.TYPO;
-import static pp.block2.cc.ll.Sentence.NOUN;
+import static pp.block2.cc.ll.L.L;
+import static pp.block2.cc.ll.L.R;
+import static pp.block2.cc.ll.L.S;
+import static pp.block2.cc.ll.L.Q;
+import static pp.block2.cc.ll.L.U;
 
 import java.util.List;
 
@@ -22,8 +19,8 @@ import pp.block2.cc.NonTerm;
 import pp.block2.cc.ParseException;
 import pp.block2.cc.Parser;
 
-public class IfParser implements Parser {
-	public IfParser() {
+public class LParser implements Parser {
+	public LParser() {
 		this.fact = new SymbolFactory(If.class);
 	}
 
@@ -33,44 +30,42 @@ public class IfParser implements Parser {
 	public AST parse(Lexer lexer) throws ParseException {
 		this.tokens = lexer.getAllTokens();
 		this.index = 0;
-		return parseStat();
+		return parseL();
 	}
 
 	private List<? extends Token> tokens;
 
-	private AST parseStat() throws ParseException {
-		AST result = new AST(STAT);
+	private AST parseL() throws ParseException {
+		AST result = new AST(L);
 		Token next = peek();
 		
 		switch(next.getType()){
-		case ASSIGN: 
-			result.addChild(parseToken(ASSIGN));
+		case R: 
+			result.addChild(parseR());
+			result.addChild(parseToken(a));
 			break;
-		case IF:
-			result.addChild(parseToken(IF));
-			result.addChild(parseToken(COND));
-			result.addChild(parseStat());
-			result.addChild(parseElsePart());
+		case Q:
+			result.addChild(parseQ());
+			result.addChild(parseToken(b));
+			result.addChild(parseToken(a));
 			break;
 		}
-		
 		
 		return result;
 	}
 
-	private AST parseElsePart() throws ParseException {
-		AST result = new AST(ELSEPART);
+	private AST parseR() throws ParseException {
+		AST result = new AST(R);
 		Token next = peek();
-		// choose between rules based on the lookahead
 		switch (next.getType()) {
-		case ELSE:
-			result.addChild(parseToken(ELSE));
-			result.addChild(parseStat());
-			break;
-		default:
-			throw unparsable(ELSEPART);
+		case a:
 		}
 		return result;
+	}
+	
+	private AST parseS() throws ParseException{
+		AST result = new AST(S);
+		Token next = peek();
 	}
 
 	private ParseException unparsable(NonTerm nt) {
@@ -114,8 +109,11 @@ public class IfParser implements Parser {
 
 	private int index;
 
-	private static final NonTerm STAT = new NonTerm("Stat");
-	private static final NonTerm ELSEPART = new NonTerm("ElsePart");
+	private static final NonTerm L = new NonTerm("L");
+	private static final NonTerm R = new NonTerm("R");
+	private static final NonTerm S = new NonTerm("S");
+	private static final NonTerm Q = new NonTerm("Q");
+	private static final NonTerm U = new NonTerm("U");
 
 	public static void main(String[] args) {
 		if (args.length == 0) {
