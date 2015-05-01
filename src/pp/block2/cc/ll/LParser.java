@@ -47,6 +47,8 @@ public class LParser implements Parser {
 			result.addChild(parseToken(B));
 			result.addChild(parseToken(A));
 			break;
+		default:
+			throw unparsable(L);
 		}
 		
 		return result;
@@ -69,6 +71,8 @@ public class LParser implements Parser {
 			result.addChild(parseToken(A));
 			result.addChild(parseS());
 			break;
+		default:
+			throw unparsable(R);
 		}
 		return result;
 	}
@@ -82,17 +86,25 @@ public class LParser implements Parser {
 			result.addChild(parseToken(C));
 			result.addChild(parseS());
 			break;
-		case Symbol.EMPTY: 		//TODO parse empty symbol
-			result.addChild();
+		case A:
 			break;
+		default:
+			throw unparsable(S);
 		}
 		return result;
 	}
 	
 	private AST parseQ() throws ParseException{
 		AST result = new AST(Q);
-		result.addChild(parseToken(B));
-		result.addChild(parseU());
+		Token next = peek();
+		switch (next.getType()){
+		case B:
+			result.addChild(parseToken(B));
+			result.addChild(parseU());
+			break;
+		default:
+			throw unparsable(Q);
+		}
 		
 		return result;
 	}
@@ -108,6 +120,8 @@ public class LParser implements Parser {
 		case C:
 			result.addChild(parseToken(C));
 			break;
+		default:
+			throw unparsable(U);
 		}
 		return result;
 	}
@@ -165,10 +179,10 @@ public class LParser implements Parser {
 		} else {
 			for (String text : args) {
 				CharStream stream = new ANTLRInputStream(text);
-				Lexer lexer = new Sentence(stream);
+				Lexer lexer = new L(stream);
 				try {
 					System.out.printf("Parse tree: %n%s%n",
-							new SentenceParser().parse(lexer));
+							new LParser().parse(lexer));
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}

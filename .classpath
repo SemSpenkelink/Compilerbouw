@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_40"/>
-	<classpathentry kind="lib" path="C:/Users/Thijs/Documents/Universiteit Twente/Compiler Construction/antlr-4.5-complete.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Anirudh/Documents/GitHub/Compilerbouw/Antlr/antlr-4.5-complete.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
