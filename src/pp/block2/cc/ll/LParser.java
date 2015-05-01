@@ -82,6 +82,7 @@ public class LParser implements Parser {
 		case Symbol.EMPTY: 		//TODO parse empty symbol
 			result.addChild();
 		}
+		return result;
 	}
 	
 	private AST parseQ() throws ParseException{
