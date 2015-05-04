@@ -19,6 +19,9 @@ import pp.block2.cc.ll.Grammars;
 import pp.block2.cc.ll.Sentence;
 import pp.block2.cc.ll.SentenceParser;
 
+import pp.block2.cc.ll.L;
+import pp.block2.cc.ll.LParser;
+
 public class GenericLLParserTest {
 	@Test
 	public void testSentence() {
@@ -30,6 +33,18 @@ public class GenericLLParserTest {
 		fails("all undergraduate students love all compilers");
 		fails("all undergraduate students love love.");
 		fails("all undergraduate students all compilers.");
+	}
+	
+	@Test
+	public void testL(){
+		parser1 = new LParser();
+		parser2 = new GenericLLParser(Grammars.LGrammar());
+		
+		compare();
+		compare();
+		fails();
+		fails();
+		
 	}
 
 	private void fails(String text) {
