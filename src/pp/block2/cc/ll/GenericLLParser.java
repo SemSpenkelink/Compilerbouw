@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.antlr.v4.runtime.Lexer;
 
@@ -35,8 +36,21 @@ public class GenericLLParser implements Parser {
 
 	/** Constructs the {@link #ll1Table}. */
 	private Map<NonTerm, List<Rule>> calcLL1Table() {
-		// fill in
-		return null;
+		Map<NonTerm, List<Rule>> table = new HashMap<NonTerm, List<Rule>>();
+		Map<Rule, Set<Term>> firstp = calc.getFirstp();
+			for(NonTerm A : g.getNonterminals()){
+				List<Rule> tmp = new ArrayList<Rule>(g.getTerminals().size());
+				table.put(A, tmp);
+				for(Rule p : g.getRules()){
+					for(Term w : firstp.get(p)){
+						table.get(A).set(w.getTokenType(), p);
+					}
+					if(firstp.get(p).contains(Symbol.EOF)){
+						
+					}
+				}
+			}
+		return table;
 	}
 
 	/** Map from non-terminals to lists of rules indexed by token type. */
@@ -46,5 +60,11 @@ public class GenericLLParser implements Parser {
 	public AST parse(Lexer lexer) throws ParseException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static void main(String[] args){
+		GenericLLParser tmp = new GenericLLParser(Grammars.makeSentence());
+		Map<NonTerm, List<Rule>> table = tmp.getLL1Table();
+		System.out.println(table);
 	}
 }

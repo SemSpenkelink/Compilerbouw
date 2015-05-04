@@ -38,17 +38,21 @@ public class LParser implements Parser {
 		Token next = peek();
 		
 		switch(next.getType()){
-		case A | C: 
-			result.addChild(parseR());
-			result.addChild(parseToken(A));
-			break;
-		case B:
-			result.addChild(parseQ());
-			result.addChild(parseToken(B));
-			result.addChild(parseToken(A));
-			break;
-		default:
-			throw unparsable(L);
+			case A: 
+				result.addChild(parseR());
+				result.addChild(parseToken(A));
+				break;
+			case B:
+				result.addChild(parseQ());
+				result.addChild(parseToken(B));
+				result.addChild(parseToken(A));
+				break;
+			case C:
+				result.addChild(parseR());
+				result.addChild(parseToken(A));	
+				break;
+			default:
+				throw unparsable(L);
 		}
 		
 		return result;
