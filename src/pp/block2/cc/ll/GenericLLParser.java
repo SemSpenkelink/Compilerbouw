@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.Token;
 
 import pp.block2.cc.AST;
 import pp.block2.cc.NonTerm;
@@ -39,14 +41,19 @@ public class GenericLLParser implements Parser {
 		Map<NonTerm, List<Rule>> table = new HashMap<NonTerm, List<Rule>>();
 		Map<Rule, Set<Term>> firstp = calc.getFirstp();
 			for(NonTerm A : g.getNonterminals()){
-				List<Rule> tmp = new ArrayList<Rule>(g.getTerminals().size());
+				List<Rule> tmp = new ArrayList<Rule>();
+				for(Term w : g.getTerminals())
+					//Add error column
+					tmp.add(null);
+				//Add EOF column
+				tmp.add(null);
 				table.put(A, tmp);
 				for(Rule p : g.getRules()){
 					for(Term w : firstp.get(p)){
 						table.get(A).set(w.getTokenType(), p);
 					}
 					if(firstp.get(p).contains(Symbol.EOF)){
-						
+						table.get(A).set(table.get(A).size()-1, p);
 					}
 				}
 			}
@@ -58,8 +65,42 @@ public class GenericLLParser implements Parser {
 
 	@Override
 	public AST parse(Lexer lexer) throws ParseException {
-		// TODO Auto-generated method stub
-		return null;
+		Map<NonTerm, List<Rule>> table = getLL1Table();
+		AST result = new AST(g.getStart());
+		Token word = lexer.nextToken();
+		Stack<Symbol> stack = new Stack<Symbol>();
+		stack.push(Symbol.EOF);
+		stack.push(g.getStart());
+		Symbol focus = stack.peek();
+		while(true){
+			if(focus.equals(Symbol.EOF) && word.equals(Symbol.EOF)){
+				return result;
+			}else if(g.getTerminals().contains(focus) || focus.equals((Symbol.EOF))){
+				if(g.getTerminal(word.getType()).equals(focus)){
+					stack.pop();
+					focus = stack.peek();
+					Term oldWord = g.getTerminal(word.getType());
+					word = lexer.nextToken();
+					result.addChild(new AST(oldWord, word));
+				}else{
+					throw new ParseException("looking for symbol at top of stack.");
+				}
+			}else{
+				System.out.println(word.getType());
+				if(table.get(focus).get(word.getType()) instanceof Rule){
+					Rule rule = table.get(focus).get(word.getType());
+					List<Symbol> rhs = rule.getRHS();
+					stack.pop();
+					focus = stack.peek();
+					for(int i = rhs.size()-1; i >= 0; i--){
+						if(!rhs.get(i).equals(Symbol.EMPTY))
+							stack.push(rhs.get(i));
+					}
+				}else
+					throw new ParseException("expanding focus");
+			}
+			focus = stack.peek();
+		}
 	}
 	
 	public static void main(String[] args){
