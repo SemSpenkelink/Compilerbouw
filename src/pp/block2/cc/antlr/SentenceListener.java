@@ -3,8 +3,6 @@ package pp.block2.cc.antlr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
-//import pp.block2.cc.ll.SentenceParser;
-
 /**
  * This interface defines a complete listener for a parse tree produced by
  * {@link SentenceParser}.

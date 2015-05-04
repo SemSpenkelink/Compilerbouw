@@ -48,7 +48,12 @@ public class GenericLLParser implements Parser {
 				//Add EOF column
 				tmp.add(null);
 				table.put(A, tmp);
+				List<Rule> tmpRules = new ArrayList<Rule>();
 				for(Rule p : g.getRules()){
+					if(p.getLHS().equals(A))
+						tmpRules.add(p);
+				}
+				for(Rule p : tmpRules){
 					for(Term w : firstp.get(p)){
 						table.get(A).set(w.getTokenType(), p);
 					}
@@ -73,21 +78,22 @@ public class GenericLLParser implements Parser {
 		stack.push(g.getStart());
 		Symbol focus = stack.peek();
 		while(true){
-			if(focus.equals(Symbol.EOF) && word.equals(Symbol.EOF)){
+			if(focus.equals(Symbol.EOF) && word.getText().equals("<"+Symbol.EOF.getName()+">")){
 				return result;
 			}else if(g.getTerminals().contains(focus) || focus.equals((Symbol.EOF))){
 				if(g.getTerminal(word.getType()).equals(focus)){
 					stack.pop();
 					focus = stack.peek();
+					Token oldToken = word;
 					Term oldWord = g.getTerminal(word.getType());
 					word = lexer.nextToken();
-					result.addChild(new AST(oldWord, word));
+					result.addChild(new AST(oldWord, oldToken));
 				}else{
 					throw new ParseException("looking for symbol at top of stack.");
 				}
 			}else{
-				System.out.println(word.getType());
 				if(table.get(focus).get(word.getType()) instanceof Rule){
+					AST tmp = new AST(g.getNonterminal(focus.getName()));
 					Rule rule = table.get(focus).get(word.getType());
 					List<Symbol> rhs = rule.getRHS();
 					stack.pop();
