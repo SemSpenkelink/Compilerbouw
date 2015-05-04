@@ -70,16 +70,31 @@ public class GenericLLParser implements Parser {
 
 	@Override
 	public AST parse(Lexer lexer) throws ParseException {
-		Map<NonTerm, List<Rule>> table = getLL1Table();
-		AST result = new AST(g.getStart());
-		Token word = lexer.nextToken();
+		//Stacks
 		Stack<Symbol> stack = new Stack<Symbol>();
+		Stack<AST> ASTStack = new Stack<AST>();
+		
+		//Table
+		Map<NonTerm, List<Rule>> table = getLL1Table();
+		
+		//Add to AST stack
+		AST result = new AST(g.getStart());
+		ASTStack.push(result);
+		
+		AST ASTFocus = ASTStack.peek();
+		
+		//Add to stack
+		Token word = lexer.nextToken();
 		stack.push(Symbol.EOF);
 		stack.push(g.getStart());
+		
 		Symbol focus = stack.peek();
+		
+		Stack<Integer> lastStackSize = new Stack<Integer>();
+		
 		while(true){
 			if(focus.equals(Symbol.EOF) && word.getText().equals("<"+Symbol.EOF.getName()+">")){
-				return result;
+				return result.getChildren().get(0);
 			}else if(g.getTerminals().contains(focus) || focus.equals((Symbol.EOF))){
 				if(g.getTerminal(word.getType()).equals(focus)){
 					stack.pop();
@@ -87,17 +102,30 @@ public class GenericLLParser implements Parser {
 					Token oldToken = word;
 					Term oldWord = g.getTerminal(word.getType());
 					word = lexer.nextToken();
-					result.addChild(new AST(oldWord, oldToken));
+					ASTFocus.addChild(new AST(oldWord, oldToken));
+					if(!lastStackSize.isEmpty() && stack.size() == lastStackSize.peek()){
+						ASTStack.pop();
+						lastStackSize.pop();
+					}
 				}else{
 					throw new ParseException("looking for symbol at top of stack.");
 				}
 			}else{
 				if(table.get(focus).get(word.getType()) instanceof Rule){
-					AST tmp = new AST(g.getNonterminal(focus.getName()));
+					if(!lastStackSize.isEmpty() && stack.size() == lastStackSize.peek()){
+						ASTStack.pop();
+						lastStackSize.pop();
+					}
+					AST tmpAST = new AST(g.getNonterminal(focus.getName()));
+					ASTStack.add(tmpAST);
+					ASTFocus.addChild(tmpAST);
+					ASTFocus = ASTStack.peek();
+					
 					Rule rule = table.get(focus).get(word.getType());
 					List<Symbol> rhs = rule.getRHS();
 					stack.pop();
 					focus = stack.peek();
+					lastStackSize.push(stack.size());
 					for(int i = rhs.size()-1; i >= 0; i--){
 						if(!rhs.get(i).equals(Symbol.EMPTY))
 							stack.push(rhs.get(i));
@@ -106,6 +134,7 @@ public class GenericLLParser implements Parser {
 					throw new ParseException("expanding focus");
 			}
 			focus = stack.peek();
+			ASTFocus = ASTStack.peek();
 		}
 	}
 	

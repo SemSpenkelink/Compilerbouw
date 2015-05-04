@@ -40,10 +40,10 @@ public class GenericLLParserTest {
 		parser1 = new LParser();
 		parser2 = new GenericLLParser(Grammars.LGrammar());
 		
-		compare();
-		compare();
-		fails();
-		fails();
+		//compare();
+		//compare();
+		//fails();
+		//fails();
 		
 	}
 
