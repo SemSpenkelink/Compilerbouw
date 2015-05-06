@@ -12,6 +12,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import pp.block2.cc.AST;
@@ -27,6 +29,7 @@ public class SentenceConverter //
 		extends SentenceBaseListener implements Parser {
 	public SentenceConverter() {
 		this.fact = new SymbolFactory(Sentence.class);
+		
 	}
 
 	/** Factory needed to create terminals of the {@link Sentence}
@@ -36,7 +39,12 @@ public class SentenceConverter //
 
 	@Override
 	public AST parse(Lexer lexer) {
+		SentenceParser parser = new SentenceParser(new CommonTokenStream(lexer));
+		ParseTree tree = parser.sentence();
+		new ParseTreeWalker().walk(this, tree);
+		result = new AST(SENT);
 		// Fill in
+		return result;
 	}
 	
 	@Override
@@ -47,14 +55,17 @@ public class SentenceConverter //
 
 	@Override
 	public void exitSubject(SubjectContext ctx) {
+		AST ast = new AST(SUBJ);
 	}
 
 	@Override
 	public void exitModifier(ModifierContext ctx) {
+		AST ast = new AST(MOD);
 	}
 
 	@Override
 	public void exitObject(ObjectContext ctx) {
+		AST ast = new AST(OBJ);
 	}
 
 	@Override
@@ -66,6 +77,13 @@ public class SentenceConverter //
 	}
 	
 	private static final NonTerm SENT = new NonTerm("sentence");
+	private static final NonTerm SUBJ = new NonTerm("subject");
+	private static final NonTerm MOD = new NonTerm("modifier");
+	private static final NonTerm OBJ = new NonTerm("object");
+	
+	
+	private AST result; 
+	
 	// From here on overwrite the listener methods
 	// Use an appropriate ParseTreeProperty to
 	// store the correspondence from nodes to ASTs
