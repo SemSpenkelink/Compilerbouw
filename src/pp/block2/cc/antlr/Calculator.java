@@ -24,55 +24,57 @@ import pp.block2.cc.ll.Sentence;
 
 public class Calculator extends ArithmeticBaseListener{
 	
-	private ParseTreeProperty<BigInteger> solutions = new ParseTreeProperty<BigInteger>();
+	private ParseTreeProperty<String> solutions;
 	private boolean foundError = false;
 
 	public BigInteger calculate(Lexer lexer){
-		//CharStream stream = new ANTLRInputStream(text);
-		//Lexer lexer = new ArithmeticLexer(stream);
+		solutions = new ParseTreeProperty<String>();
 		ArithmeticParser parser = new ArithmeticParser(new CommonTokenStream(lexer));
 		ParseTree tree = parser.expr();
 		new ParseTreeWalker().walk(this, tree);
-		return null;
+		return new BigInteger(solutions.get(tree));
 	}
-
-
-	@Override public void exitExpr(ArithmeticParser.ExprContext ctx) { }
-
-
-	@Override public void exitMult(ArithmeticParser.MultContext ctx) {
-		solutions.put(ctx, solutions.get(ctx.getChild(0)).multiply(solutions.get(ctx.getChild(2))));
-	}
-
 
 	@Override public void exitDiv(ArithmeticParser.DivContext ctx) {
-		solutions.put(ctx, solutions.get(ctx.getChild(0)).divide(solutions.get(ctx.getChild(2))));
+		BigInteger value = new BigInteger(solutions.get(ctx.getChild(0))).divide(new BigInteger(solutions.get(ctx.getChild(2))));
+		solutions.put(ctx, value.toString());
 	}
 
 
 	@Override public void exitAdd(ArithmeticParser.AddContext ctx) {
-		solutions.put(ctx, solutions.get(ctx.getChild(0)).add(solutions.get(ctx.getChild(2))));		
+		BigInteger value = new BigInteger(solutions.get(ctx.getChild(0))).add(new BigInteger(solutions.get(ctx.getChild(2))));
+		solutions.put(ctx, value.toString());
 	}
 
 
 	@Override public void exitSub(ArithmeticParser.SubContext ctx) {
-		solutions.put(ctx, solutions.get(ctx.getChild(0)).subtract(solutions.get(ctx.getChild(2))));
+		BigInteger value = new BigInteger(solutions.get(ctx.getChild(0))).subtract(new BigInteger(solutions.get(ctx.getChild(2))));
+		solutions.put(ctx, value.toString());
 	}
 
 
-	@Override public void exitRightOp(ArithmeticParser.RightOpContext ctx) {
-		solutions.put(ctx, solutions.get(ctx.getChild(0)).pow(solutions.get(ctx.getChild(2)).intValue()));
+	@Override public void exitMul(ArithmeticParser.MulContext ctx) {
+		BigInteger value = new BigInteger(solutions.get(ctx.getChild(0))).multiply(new BigInteger(solutions.get(ctx.getChild(2))));
+		solutions.put(ctx, value.toString());
 	}
 
+	@Override public void exitName(ArithmeticParser.NameContext ctx) {
+		solutions.put(ctx, solutions.get(ctx.getChild(0)));
+	}
+	
+	@Override public void exitPow(ArithmeticParser.PowContext ctx) {
+		BigInteger value = new BigInteger(solutions.get(ctx.getChild(0))).pow(Integer.parseInt(solutions.get(ctx.getChild(2))));
+		solutions.put(ctx, value.toString());
+		
+	}
 
 	@Override public void visitTerminal(TerminalNode node) {
-		System.out.println("visit");
-		solutions.put(node, (BigInteger)node.getPayload());
+		solutions.put(node, node.getSymbol().getText());
 	}
 
 
 	@Override public void visitErrorNode(ErrorNode node) {
-		solutions.put(node, (BigInteger)null);
+		solutions.put(node, null);
 		foundError = true;
 	}
 }

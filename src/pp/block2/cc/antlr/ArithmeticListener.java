@@ -9,71 +9,75 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface ArithmeticListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link ArithmeticParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterExpr(ArithmeticParser.ExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ArithmeticParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitExpr(ArithmeticParser.ExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code mult}
-	 * labeled alternative in {@link ArithmeticParser#md}.
-	 * @param ctx the parse tree
-	 */
-	void enterMult(ArithmeticParser.MultContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code mult}
-	 * labeled alternative in {@link ArithmeticParser#md}.
-	 * @param ctx the parse tree
-	 */
-	void exitMult(ArithmeticParser.MultContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code div}
-	 * labeled alternative in {@link ArithmeticParser#md}.
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 */
 	void enterDiv(ArithmeticParser.DivContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code div}
-	 * labeled alternative in {@link ArithmeticParser#md}.
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 */
 	void exitDiv(ArithmeticParser.DivContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code add}
-	 * labeled alternative in {@link ArithmeticParser#as}.
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 */
 	void enterAdd(ArithmeticParser.AddContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code add}
-	 * labeled alternative in {@link ArithmeticParser#as}.
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 */
 	void exitAdd(ArithmeticParser.AddContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code sub}
-	 * labeled alternative in {@link ArithmeticParser#as}.
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 */
 	void enterSub(ArithmeticParser.SubContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code sub}
-	 * labeled alternative in {@link ArithmeticParser#as}.
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 */
 	void exitSub(ArithmeticParser.SubContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ArithmeticParser#rightOp}.
+	 * Enter a parse tree produced by the {@code mul}
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterRightOp(ArithmeticParser.RightOpContext ctx);
+	void enterMul(ArithmeticParser.MulContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ArithmeticParser#rightOp}.
+	 * Exit a parse tree produced by the {@code mul}
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitRightOp(ArithmeticParser.RightOpContext ctx);
+	void exitMul(ArithmeticParser.MulContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code name}
+	 * labeled alternative in {@link ArithmeticParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterName(ArithmeticParser.NameContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code name}
+	 * labeled alternative in {@link ArithmeticParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitName(ArithmeticParser.NameContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code pow}
+	 * labeled alternative in {@link ArithmeticParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterPow(ArithmeticParser.PowContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code pow}
+	 * labeled alternative in {@link ArithmeticParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitPow(ArithmeticParser.PowContext ctx);
 }
