@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -23,7 +24,11 @@ public class CalculatorTest {
 	public void testCalculator(){
 		lexerType = ArithmeticLexer.class;
 		calc = new Calculator();
-		calc.calculate(scan("2 + 3"));
+		assertEquals(calc.calculate(scan("2 + 3")), new BigInteger("6"));
+		assertEquals(calc.calculate(scan("2 + 3 * 3")), new BigInteger("2 + 3 * 3"));
+		assertEquals(calc.calculate(scan("2^2^3")), new BigInteger("2^2^3"));
+		assertEquals(calc.calculate(scan("5 + -2")), new BigInteger("3"));
+		assertEquals(calc.calculate(scan("5 + 2 * 3^2 - -5")), new BigInteger("18"));
 	}
 	
 	
