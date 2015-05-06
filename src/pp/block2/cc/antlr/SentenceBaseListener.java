@@ -29,13 +29,25 @@ public class SentenceBaseListener implements SentenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSubject(SentenceParser.SubjectContext ctx) { }
+	@Override public void enterModSubject(SentenceParser.ModSubjectContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSubject(SentenceParser.SubjectContext ctx) { }
+	@Override public void exitModSubject(SentenceParser.ModSubjectContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSimpleSubject(SentenceParser.SimpleSubjectContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSimpleSubject(SentenceParser.SimpleSubjectContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
