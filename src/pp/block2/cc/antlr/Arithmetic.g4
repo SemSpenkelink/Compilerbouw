@@ -2,18 +2,20 @@ grammar Arithmetic;
 
 @header{package pp.block2.cc.antlr;}
 
-expr : <assoc=right> expr rightOp expr
-	| <assoc=left> expr md expr			
-	| <assoc=left> expr as expr			
-	| NAME;
+expr : <assoc=right> expr '^' expr  #pow
+	| <assoc=left> expr '*' expr	#mul
+	| <assoc=left> expr '/' expr	#div	
+	| <assoc=left> expr '+' expr	#add
+	| <assoc=left> expr '-' expr	#sub		
+	| NAME							#name;
 
-md :   '*'	#mult
-	 | '/'	#div;
+//md :   '*'	#mult
+//	 | '/'	#div;
 
-as :   '+'	#add
-	 | '-'	#sub;
+//as :   '+'	#add
+//	 | '-'	#sub;
 	 
-rightOp : '^';
+//rightOp : '^';
 	 
 NAME : '-'* DIGIT;	 
 DIGIT : '0' | ('1'..'9')('0'..'9')*;
