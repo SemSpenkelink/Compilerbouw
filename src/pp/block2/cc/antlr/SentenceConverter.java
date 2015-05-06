@@ -1,7 +1,5 @@
 package pp.block2.cc.antlr;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.antlr.v4.runtime.Lexer;
 

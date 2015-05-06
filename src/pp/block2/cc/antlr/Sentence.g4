@@ -5,13 +5,11 @@ grammar Sentence;
 /** Full sentence: the start symbol of the grammar. */
 sentence: subject VERB object ENDMARK;
 /** Grammatical subject in a sentence. */
-subject: modifier subject #modSubject
-		 | NOUN			  #simpleSubject;
+subject: modifier subject | NOUN;
 /** Grammatical object in a sentence. */
 object: modifier object | NOUN;
 /** Modifier in an object or subject. */
-modifier: <assoc=right> modifier ',' modifier
-			| ADJECTIVE;
+modifier: ADJECTIVE;
 
 NOUN : 'students' | 'compilers' ;
 VERB : 'love' ;
