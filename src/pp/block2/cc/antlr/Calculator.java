@@ -28,8 +28,10 @@ public class Calculator extends ArithmeticBaseListener{
 	private boolean foundError = false;
 
 	public BigInteger calculate(Lexer lexer){
-		SentenceParser parser = new SentenceParser(new CommonTokenStream(lexer));
-		ParseTree tree = parser.sentence();
+		//CharStream stream = new ANTLRInputStream(text);
+		//Lexer lexer = new ArithmeticLexer(stream);
+		ArithmeticParser parser = new ArithmeticParser(new CommonTokenStream(lexer));
+		ParseTree tree = parser.expr();
 		new ParseTreeWalker().walk(this, tree);
 		return null;
 	}
@@ -38,16 +40,24 @@ public class Calculator extends ArithmeticBaseListener{
 	@Override public void exitExpr(ArithmeticParser.ExprContext ctx) { }
 
 
-	@Override public void exitMult(ArithmeticParser.MultContext ctx) { }
+	@Override public void exitMult(ArithmeticParser.MultContext ctx) {
+		solutions.put(ctx, solutions.get(ctx.getChild(0)).multiply(solutions.get(ctx.getChild(2))));
+	}
 
 
-	@Override public void exitDiv(ArithmeticParser.DivContext ctx) { }
+	@Override public void exitDiv(ArithmeticParser.DivContext ctx) {
+		solutions.put(ctx, solutions.get(ctx.getChild(0)).divide(solutions.get(ctx.getChild(2))));
+	}
 
 
-	@Override public void exitAdd(ArithmeticParser.AddContext ctx) { }
+	@Override public void exitAdd(ArithmeticParser.AddContext ctx) {
+		solutions.put(ctx, solutions.get(ctx.getChild(0)).add(solutions.get(ctx.getChild(2))));		
+	}
 
 
-	@Override public void exitSub(ArithmeticParser.SubContext ctx) { }
+	@Override public void exitSub(ArithmeticParser.SubContext ctx) {
+		solutions.put(ctx, solutions.get(ctx.getChild(0)).subtract(solutions.get(ctx.getChild(2))));
+	}
 
 
 	@Override public void exitRightOp(ArithmeticParser.RightOpContext ctx) {
@@ -56,13 +66,13 @@ public class Calculator extends ArithmeticBaseListener{
 
 
 	@Override public void visitTerminal(TerminalNode node) {
-		System.out.println(node.getPayload().toString());
+		System.out.println("visit");
 		solutions.put(node, (BigInteger)node.getPayload());
 	}
 
 
 	@Override public void visitErrorNode(ErrorNode node) {
-		solutions.put(node, (BigInteger)node.getPayload());
+		solutions.put(node, (BigInteger)null);
 		foundError = true;
 	}
 }
