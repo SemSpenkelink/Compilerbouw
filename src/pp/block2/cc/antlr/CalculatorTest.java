@@ -25,8 +25,8 @@ public class CalculatorTest {
 		lexerType = ArithmeticLexer.class;
 		calc = new Calculator();
 		assertEquals(calc.calculate(scan("2 + 3")), new BigInteger("6"));
-		assertEquals(calc.calculate(scan("2 + 3 * 3")), new BigInteger("2 + 3 * 3"));
-		assertEquals(calc.calculate(scan("2^2^3")), new BigInteger("2^2^3"));
+		assertEquals(calc.calculate(scan("2 + 3 * 3")), new BigInteger("11"));
+		assertEquals(calc.calculate(scan("2^2^3")), new BigInteger("256"));
 		assertEquals(calc.calculate(scan("5 + -2")), new BigInteger("3"));
 		assertEquals(calc.calculate(scan("5 + 2 * 3^2 - -5")), new BigInteger("18"));
 	}
