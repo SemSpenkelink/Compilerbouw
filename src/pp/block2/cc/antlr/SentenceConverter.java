@@ -32,7 +32,6 @@ public class SentenceConverter //
 		extends SentenceBaseListener implements Parser {
 	public SentenceConverter() {
 		this.fact = new SymbolFactory(Sentence.class);
-		this.astList = new ArrayList<AST>();
 	}
 
 	/** Factory needed to create terminals of the {@link Sentence}
@@ -41,50 +40,55 @@ public class SentenceConverter //
 	private final SymbolFactory fact;
 
 	@Override
-	public AST parse(Lexer lexer) {
-		astList.clear();
+	public AST parse(Lexer lexer) throws ParseException{
 		SentenceParser parser = new SentenceParser(new CommonTokenStream(lexer));
 		ParseTree tree = parser.sentence();
 		new ParseTreeWalker().walk(this, tree);
+		if(foundError)
+			throw new ParseException();
 		return result;
 	}
 	
 	@Override
 	public void exitSentence(SentenceContext ctx) {
-		result = new AST(SENT);
-		for(AST ast : astList){
-			result.addChild(ast);
-		}
+		AST ast = new AST(SENT);
+		computeChildren(ctx, ast);
+		result = asts.get(ctx);
 	}
 
 	@Override
 	public void exitSubject(SubjectContext ctx) {
 		AST ast = new AST(SUBJ);
-		ast.addChild(astList.get(astList.size()-1));
-		astList.set(astList.size()-1, ast);	
+		computeChildren(ctx, ast);
 	}
 
 	@Override
 	public void exitModifier(ModifierContext ctx) {
 		AST ast = new AST(MOD);
-		ast.addChild(astList.get(astList.size()-1));
-		astList.set(astList.size()-1, ast);
+		computeChildren(ctx, ast);
 	}
 
 	@Override
 	public void exitObject(ObjectContext ctx) {
 		AST ast = new AST(OBJ);
-		ast.addChild(astList.get(astList.size()-1));
-		astList.set(astList.size()-1, ast);
+		computeChildren(ctx, ast);
 	}
 
 	@Override
 	public void visitTerminal(TerminalNode node) {
-		astList.add(new AST(fact.getTerminals().get(node.getSymbol().getType()), node.getSymbol()));
+		asts.put(node, new AST(fact.getTerminals().get(node.getSymbol().getType()), node.getSymbol()));
 	}
 
 	@Override
 	public void visitErrorNode(ErrorNode node) {
+		asts.put(node, new AST(fact.getTerminals().get(node.getSymbol().getType()), node.getSymbol()));
+		foundError = true;
+	}
+	
+	private void computeChildren(ParseTree ctx, AST ast){
+		for(int i = 0; i < ctx.getChildCount(); i++)
+			ast.addChild(asts.get(ctx.getChild(i)));
+		asts.put(ctx, ast);
 	}
 	
 	private static final NonTerm SENT = new NonTerm("Sentence");
@@ -94,7 +98,8 @@ public class SentenceConverter //
 	
 	
 	private AST result; 
-	private List<AST> astList;
+	private ParseTreeProperty<AST> asts = new ParseTreeProperty<AST>();
+	private boolean foundError = false;
 	
 	// From here on overwrite the listener methods
 	// Use an appropriate ParseTreeProperty to
