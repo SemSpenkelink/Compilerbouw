@@ -1,7 +1,11 @@
 package pp.block2.cc.antlr;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -12,15 +16,21 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import pp.block2.cc.AST;
+import pp.block2.cc.NonTerm;
 import pp.block2.cc.ParseException;
 import pp.block2.cc.Parser;
+import pp.block2.cc.antlr.*;
+import pp.block2.cc.ll.Sentence;
 
 public class Calculator extends ArithmeticBaseListener{
 	
-	private ParseTreeProperty<Integer> solutions = new ParseTreeProperty<Integer>();
+	private ParseTreeProperty<BigInteger> solutions = new ParseTreeProperty<BigInteger>();
+	private boolean foundError = false;
 
-	public BigInteger calculate(){
-		
+	public BigInteger calculate(Lexer lexer){
+		SentenceParser parser = new SentenceParser(new CommonTokenStream(lexer));
+		ParseTree tree = parser.sentence();
+		new ParseTreeWalker().walk(this, tree);
 		return null;
 	}
 
@@ -40,15 +50,19 @@ public class Calculator extends ArithmeticBaseListener{
 	@Override public void exitSub(ArithmeticParser.SubContext ctx) { }
 
 
-	@Override public void exitRightOp(ArithmeticParser.RightOpContext ctx) { }
+	@Override public void exitRightOp(ArithmeticParser.RightOpContext ctx) {
+		solutions.put(ctx, solutions.get(ctx.getChild(0)).pow(solutions.get(ctx.getChild(2)).intValue()));
+	}
 
 
-	@Override public void exitEveryRule(ParserRuleContext ctx) { }
+	@Override public void visitTerminal(TerminalNode node) {
+		System.out.println(node.getPayload().toString());
+		solutions.put(node, (BigInteger)node.getPayload());
+	}
 
 
-	@Override public void visitTerminal(TerminalNode node) { }
-
-
-	@Override public void visitErrorNode(ErrorNode node) { }
-	
+	@Override public void visitErrorNode(ErrorNode node) {
+		solutions.put(node, (BigInteger)node.getPayload());
+		foundError = true;
+	}
 }
