@@ -21,18 +21,18 @@ public class CalculatorTest {
 	
 	@Test
 	public void testCalculator(){
-		lexerType = Calculator.class;
+		lexerType = ArithmeticLexer.class;
 		calc = new Calculator();
 		calc.calculate(scan("2+3"));
 	}
 	
 	
 	/** Converts a text into a token stream, using the preset lexer type. */
-	private Calculator scan(String text) {
-		Calculator result = null;
+	private Lexer scan(String text) {
+		Lexer result = null;
 		CharStream stream = new ANTLRInputStream(text);
 		try {
-			Constructor<Calculator> lexerConstr = lexerType
+			Constructor<? extends Lexer> lexerConstr = lexerType
 					.getConstructor(CharStream.class);
 			result = lexerConstr.newInstance(stream);
 		} catch (NoSuchMethodException | SecurityException
@@ -45,5 +45,5 @@ public class CalculatorTest {
 		return result;
 	}
 
-	private Class<Calculator> lexerType;
+	private Class<? extends Lexer> lexerType;
 }

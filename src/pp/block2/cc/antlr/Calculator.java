@@ -56,7 +56,7 @@ public class Calculator extends ArithmeticBaseListener{
 
 
 	@Override public void visitTerminal(TerminalNode node) {
-		System.out.println(node.getPayload().toString());
+		System.out.println("visitTerminal");
 		solutions.put(node, (BigInteger)node.getPayload());
 	}
 
