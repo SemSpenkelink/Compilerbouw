@@ -1,9 +1,11 @@
 grammar grammar3;
 
 r : E;
-E : E ('+' | '-') F | F;
+E : F EP;
+EP: '' | ('+' | '-')F EP;
 F: '(' ID ')' F | G;
-G : G ( '[' E ']' | '.' ID) | A;
+G : A GP;
+GP: '' | ( '[' E ']' | '.' ID) GP;
 A : '(' E ')' | ID | NUM;
 
 NUM: ('0'..'9')+;
