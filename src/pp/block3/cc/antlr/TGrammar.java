@@ -41,6 +41,7 @@ public class TGrammar extends TGrammarListenerBaseListener{
 
 	@Override public void exitStr(TGrammarListenerParser.StrContext ctx) {
 		strVal.put(ctx, strVal.get(ctx.STR()));
+		typeVal.put(ctx, Type.STR);
 	}
 	
 	@Override public void enterBool(TGrammarListenerParser.BoolContext ctx) {
@@ -49,6 +50,7 @@ public class TGrammar extends TGrammarListenerBaseListener{
 	
 	@Override public void exitBool(TGrammarListenerParser.BoolContext ctx) {
 		boolVal.put(ctx, boolVal.get(ctx.BOOL()));
+		typeVal.put(ctx, Type.BOOL);
 	}
 	
 	@Override public void enterNum(TGrammarListenerParser.NumContext ctx) {
@@ -57,6 +59,7 @@ public class TGrammar extends TGrammarListenerBaseListener{
 	
 	@Override public void exitNum(TGrammarListenerParser.NumContext ctx) {
 		intVal.put(ctx, intVal.get(ctx.NUMBER()));
+		typeVal.put(ctx, Type.NUM);
 	}
 	
 	@Override public void enterEquals(TGrammarListenerParser.EqualsContext ctx) { }
@@ -65,36 +68,32 @@ public class TGrammar extends TGrammarListenerBaseListener{
 		if(typeVal.get(ctx.t(1)) == typeVal.get(ctx.t(0))){
 			if(typeVal.get(ctx.t(1)) == Type.STR){
 				boolVal.put(ctx, strVal.get(ctx.t(1)).equals(strVal.get(ctx.t(0))));
-			} else
-				
-			if(typeVal.get(ctx.t(1)) == Type.NUM){
+			} else if(typeVal.get(ctx.t(1)) == Type.NUM){
 				boolVal.put(ctx, intVal.get(ctx.t(1))==(intVal.get(ctx.t(0))));
-			} else
-				
-			if(typeVal.get(ctx.t(1)) == Type.BOOL){
+			} else if(typeVal.get(ctx.t(1)) == Type.BOOL){
 				boolVal.put(ctx, boolVal.get(ctx.t(1))==(boolVal.get(ctx.t(0))));
 			}
+		}else{
+			boolVal.put(ctx, false);
 		}
+		typeVal.put(ctx, Type.BOOL);
 	}
 	
 	@Override public void enterHat(TGrammarListenerParser.HatContext ctx) {	
 	}
 	
 	@Override public void exitHat(TGrammarListenerParser.HatContext ctx) {
-		System.out.println(typeVal.get(ctx.t(1)));
-		System.out.println(Type.NUM);
-		if(typeVal.get(ctx.t(1)) == Type.NUM){
-		
+		if(typeVal.get(ctx.t(1)) == Type.NUM){		
 			if(typeVal.get(ctx.t(0)) == Type.STR){
 				String tmp = "";
 				for(int i = 0; i < intVal.get(ctx.t(1)) ; i++){
 					tmp += strVal.get(ctx.t(0));
 				}
 				strVal.put(ctx, tmp);
-			} else
-			
-			if(typeVal.get(ctx.t(0)) == Type.NUM){
+				typeVal.put(ctx, Type.STR);
+			} else if(typeVal.get(ctx.t(0)) == Type.NUM){
 				intVal.put(ctx, (int)Math.pow(intVal.get(ctx.t(0)), intVal.get(ctx.t(1))));
+				typeVal.put(ctx, Type.NUM);
 			}
 		}
 	}
@@ -106,8 +105,13 @@ public class TGrammar extends TGrammarListenerBaseListener{
 	@Override public void exitPlus(TGrammarListenerParser.PlusContext ctx) {
 		if(typeVal.get(ctx.t(1)) == Type.NUM && typeVal.get(ctx.t(0)) == Type.NUM){
 			intVal.put(ctx, intVal.get(ctx.t(0))+intVal.get(ctx.t(1)));
+			typeVal.put(ctx, Type.NUM);
 		} else if(typeVal.get(ctx.t(1)) == Type.STR && typeVal.get(ctx.t(0)) == Type.STR){
 			strVal.put(ctx, strVal.get(ctx.t(0))+strVal.get(ctx.t(1)));
+			typeVal.put(ctx, Type.STR);
+		} else if(typeVal.get(ctx.t(1)) == Type.BOOL && typeVal.get(ctx.t(0)) == Type.BOOL){
+			boolVal.put(ctx, (boolVal.get(ctx.t(0)) | boolVal.get(ctx.t(1))));
+			typeVal.put(ctx, Type.BOOL);
 		}
 	}
 
