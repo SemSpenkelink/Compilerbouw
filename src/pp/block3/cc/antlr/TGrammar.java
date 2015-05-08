@@ -81,6 +81,8 @@ public class TGrammar extends TGrammarListenerBaseListener{
 	}
 	
 	@Override public void exitHat(TGrammarListenerParser.HatContext ctx) {
+		System.out.println(typeVal.get(ctx.t(1)));
+		System.out.println(Type.NUM);
 		if(typeVal.get(ctx.t(1)) == Type.NUM){
 		
 			if(typeVal.get(ctx.t(0)) == Type.STR){

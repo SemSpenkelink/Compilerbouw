@@ -51,7 +51,7 @@ public class TGrammarTest {
 		ParseTree tree = parseTGram(expr);
 		gram.init();
 		walker.walk(gram, tree);
-		//assertEquals(expected, gram.intVal(tree));
+		assertEquals(expected, gram.intVal(tree));
 	}
 	
 	
@@ -60,7 +60,7 @@ public class TGrammarTest {
 		ParseTree tree = parseTGram(expr);
 		gram.init();
 		walker.walk(gram, tree);
-		//assertEquals(expected, gram.strVal(tree));
+		assertEquals(expected, gram.strVal(tree));
 	}
 	
 	
@@ -69,7 +69,7 @@ public class TGrammarTest {
 		ParseTree tree = parseTGram(expr);
 		gram.init();
 		walker.walk(gram, tree);
-		//assertEquals(expected, gram.boolVal(tree));
+		assertEquals(expected, gram.boolVal(tree));
 	}
 	
 	private ParseTree parseTGram(String text){
