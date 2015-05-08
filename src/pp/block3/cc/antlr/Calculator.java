@@ -33,6 +33,11 @@ public class Calculator extends CalcBaseListener {
 	public void exitPlus(PlusContext ctx) {
 		set(ctx, val(ctx.expr(0)) + val(ctx.expr(1)));
 	}
+	
+	@Override
+	public void exitUnumber(CalcParser.UnumberContext ctx) {
+		set(ctx, -1*val(ctx.expr()));
+	}
 
 	/** Sets the val attribute of a given node. */
 	private void set(ParseTree node, int val) {

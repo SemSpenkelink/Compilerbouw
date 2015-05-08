@@ -156,7 +156,9 @@ public class CalcParser extends Parser {
 	}
 	public static class UnumberContext extends ExprContext {
 		public TerminalNode MINUS() { return getToken(CalcParser.MINUS, 0); }
-		public TerminalNode NUMBER() { return getToken(CalcParser.NUMBER, 0); }
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
 		public UnumberContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -185,17 +187,28 @@ public class CalcParser extends Parser {
 			{
 			setState(10);
 			switch (_input.LA(1)) {
+			case MINUS:
+				{
+				_localctx = new UnumberContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+
+				setState(3);
+				match(MINUS);
+				setState(4);
+				expr(1);
+				}
+				break;
 			case LPAR:
 				{
 				_localctx = new ParContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-
-				setState(3);
-				match(LPAR);
-				setState(4);
-				expr(0);
 				setState(5);
+				match(LPAR);
+				setState(6);
+				expr(0);
+				setState(7);
 				match(RPAR);
 				}
 				break;
@@ -204,17 +217,6 @@ public class CalcParser extends Parser {
 				_localctx = new NumberContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(7);
-				match(NUMBER);
-				}
-				break;
-			case MINUS:
-				{
-				_localctx = new UnumberContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-				setState(8);
-				match(MINUS);
 				setState(9);
 				match(NUMBER);
 				}
@@ -298,11 +300,11 @@ public class CalcParser extends Parser {
 		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\t\32\4\2\t\2\3\2"+
 		"\3\2\3\2\3\2\3\2\3\2\3\2\3\2\5\2\r\n\2\3\2\3\2\3\2\3\2\3\2\3\2\7\2\25"+
 		"\n\2\f\2\16\2\30\13\2\3\2\2\3\2\3\2\2\2\34\2\f\3\2\2\2\4\5\b\2\1\2\5\6"+
-		"\7\6\2\2\6\7\5\2\2\2\7\b\7\7\2\2\b\r\3\2\2\2\t\r\7\b\2\2\n\13\7\5\2\2"+
-		"\13\r\7\b\2\2\f\4\3\2\2\2\f\t\3\2\2\2\f\n\3\2\2\2\r\26\3\2\2\2\16\17\f"+
-		"\7\2\2\17\20\7\3\2\2\20\25\5\2\2\b\21\22\f\6\2\2\22\23\7\4\2\2\23\25\5"+
-		"\2\2\7\24\16\3\2\2\2\24\21\3\2\2\2\25\30\3\2\2\2\26\24\3\2\2\2\26\27\3"+
-		"\2\2\2\27\3\3\2\2\2\30\26\3\2\2\2\5\f\24\26";
+		"\7\5\2\2\6\r\5\2\2\3\7\b\7\6\2\2\b\t\5\2\2\2\t\n\7\7\2\2\n\r\3\2\2\2\13"+
+		"\r\7\b\2\2\f\4\3\2\2\2\f\7\3\2\2\2\f\13\3\2\2\2\r\26\3\2\2\2\16\17\f\7"+
+		"\2\2\17\20\7\3\2\2\20\25\5\2\2\b\21\22\f\6\2\2\22\23\7\4\2\2\23\25\5\2"+
+		"\2\7\24\16\3\2\2\2\24\21\3\2\2\2\25\30\3\2\2\2\26\24\3\2\2\2\26\27\3\2"+
+		"\2\2\27\3\3\2\2\2\30\26\3\2\2\2\5\f\24\26";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
