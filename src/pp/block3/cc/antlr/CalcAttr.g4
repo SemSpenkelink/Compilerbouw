@@ -18,4 +18,6 @@ expr returns [ int val ]
      | { System.out.println("Evaluating NUMBER"); }
        NUMBER
        { $val = getValue($NUMBER.text); }
+     | MINUS e0=expr
+       { $val = -$e0.val }
      ;
