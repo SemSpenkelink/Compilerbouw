@@ -1,11 +1,11 @@
 grammar TGrammarListener;
 import TVocab;
 
-t : t HAT t
-	| t PLUS t
-	| t EQUALS t
-	| LPAR t RPAR
-	| NUMBER 
-	| BOOL
-	| STR
+t : t HAT t			#hat
+	| t PLUS t		#plus
+	| t EQUALS t	#equals
+	| LPAR t RPAR	#par
+	| NUMBER 		#num
+	| BOOL			#bool
+	| STR			#str
 	;
