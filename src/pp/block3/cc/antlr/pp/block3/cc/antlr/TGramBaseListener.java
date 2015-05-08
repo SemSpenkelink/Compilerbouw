@@ -7,6 +7,9 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import pp.block3.cc.antlr.TGramListener;
+import pp.block3.cc.antlr.TGramParser;
+
 /**
  * This class provides an empty implementation of {@link TGramListener},
  * which can be extended to create a listener which only needs to handle a subset

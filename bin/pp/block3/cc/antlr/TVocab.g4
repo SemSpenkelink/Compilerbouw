@@ -10,7 +10,7 @@ RPAR   : ')';
 
 NUMBER : [0-9]+;
 BOOL   : 'true' | 'false';
-STR	   : ([a..z] | [A..Z])+;
+STR	   : ([a-z] | [A-Z])+;
 
 // ignore whitespace
 WS : [ \t\n\r] -> skip;
