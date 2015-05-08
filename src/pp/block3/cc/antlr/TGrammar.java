@@ -28,7 +28,7 @@ public class TGrammar extends TGrammarListenerBaseListener{
 
 	@Override public void enterT(@NotNull TGrammarListenerParser.TContext ctx) {
 		if(true){
-			ctx.
+			
 		}
 	}
 
@@ -51,5 +51,21 @@ public class TGrammar extends TGrammarListenerBaseListener{
 
 	@Override public void visitErrorNode(@NotNull ErrorNode node) {
 		
+	}
+	
+	public int intVal(ParseTree node){
+		return intVal.get(node);
+	}
+	
+	public String strVal(ParseTree node){
+		return strVal.get(node);
+	}
+	
+	public Boolean boolVal(ParseTree node){
+		return boolVal.get(node);
+	}
+	
+	public Type typeVal(ParseTree node){
+		return typeVal.get(node);
 	}
 }
