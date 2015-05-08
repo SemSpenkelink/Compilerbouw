@@ -29,10 +29,35 @@ public class TGrammarTest {
 	private final ParseTreeWalker walker = new ParseTreeWalker();
 	private final TGrammar gram = new TGrammar();
 	
-	
 	@Test
 	public void test(){
-		
+		test(9, "3^2");
+	}
+	
+	public void test(int expected, String expr){
+		assertEquals(expected, TGram(expr).intVal);
+		ParseTree tree = parseTGram(expr);
+		gram.init();
+		walker.walk(gram, tree);
+		assertEquals(expected, gram.intVal(tree));
+	}
+	
+	
+	public void test(String expected, String expr){
+		assertEquals(expected, TGram(expr).strVal);
+		ParseTree tree = parseTGram(expr);
+		gram.init();
+		walker.walk(gram, tree);
+		assertEquals(expected, gram.strVal(tree));
+	}
+	
+	
+	public void test(boolean expected, String expr){
+		assertEquals(expected, TGram(expr).boolVal);
+		ParseTree tree = parseTGram(expr);
+		gram.init();
+		walker.walk(gram, tree);
+		assertEquals(expected, gram.boolVal(tree));
 	}
 	
 	private ParseTree parseTGram(String text){
