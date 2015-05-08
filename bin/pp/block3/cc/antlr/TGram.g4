@@ -1,4 +1,4 @@
-grammar CalcAttr;
+grammar TGram;
 
 import CalcVocab;
 

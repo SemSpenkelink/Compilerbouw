@@ -9,7 +9,10 @@ import CalcVocab;
 }
 
 expr returns [ int val ]
-     : e0=expr TIMES e1=expr
+     : { System.out.println("minus expr"); }
+       MINUS e0=expr
+       { $val = -1*$e0.val }
+     | e0=expr TIMES e1=expr
        { $val = $e0.val * $e1.val; }
      | e0=expr PLUS e1=expr
        { $val = $e0.val + $e1.val; }
@@ -18,6 +21,4 @@ expr returns [ int val ]
      | { System.out.println("Evaluating NUMBER"); }
        NUMBER
        { $val = getValue($NUMBER.text); }
-     | MINUS e0=expr
-       { $val = -$e0.val }
      ;

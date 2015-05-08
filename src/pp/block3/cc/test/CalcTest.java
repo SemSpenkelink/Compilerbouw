@@ -25,6 +25,12 @@ public class CalcTest {
 		test(5, "3+2");
 		test(7, "1+2*3");
 		test(9, "(1+2)*3");
+		test(-9, "(1+2)*-3");
+		test(-3, "(1+-2)*3");
+		test(-9, "-(1+2)*3");
+		test(-9, "-(1+2)*--3");
+		test(2, "-3+5");
+		test(3, "(-1+2)*3");
 	}
 
 	private void test(int expected, String expr) {
