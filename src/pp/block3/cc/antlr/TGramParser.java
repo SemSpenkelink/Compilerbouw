@@ -104,6 +104,9 @@ public class TGramParser extends Parser {
 		public boolean boolVal;
 		public String strVal;
 		public TContext t0;
+		public Token NUMBER;
+		public Token BOOL;
+		public Token STR;
 		public TContext t1;
 		public TerminalNode LPAR() { return getToken(TGramParser.LPAR, 0); }
 		public TerminalNode RPAR() { return getToken(TGramParser.RPAR, 0); }
@@ -158,34 +161,34 @@ public class TGramParser extends Parser {
 				((TContext)_localctx).t0 = t(0);
 				setState(5);
 				match(RPAR);
-				((TContext)_localctx).type =  ((TContext)_localctx).t0.type,  if(((TContext)_localctx).t0.type == Type.NUM)
-																_localctx.intVal = ((TContext)_localctx).t0.intVal
+				((TContext)_localctx).type =  ((TContext)_localctx).t0.type;  if(((TContext)_localctx).t0.type == Type.NUM)
+																((TContext)_localctx).intVal =  ((TContext)_localctx).t0.intVal;
 															else if(((TContext)_localctx).t0.type == Type.BOOL)
-																_localctx.boolVal = ((TContext)_localctx).t0.boolVal
+																((TContext)_localctx).boolVal =  ((TContext)_localctx).t0.boolVal;
 															else
-																_localctx.strVal = '(' + ((TContext)_localctx).t0.strVal + ')';
+																((TContext)_localctx).strVal =  '(' + ((TContext)_localctx).t0.strVal + ')';
 															
 				}
 				break;
 			case NUMBER:
 				{
 				setState(8);
-				match(NUMBER);
-				_localctx.type = Type.NUM,  _localctx.intVal  = getValue(NUMBER.text)
+				((TContext)_localctx).NUMBER = match(NUMBER);
+				((TContext)_localctx).type =  Type.NUM;  ((TContext)_localctx).intVal =  getValue((((TContext)_localctx).NUMBER!=null?((TContext)_localctx).NUMBER.getText():null));
 				}
 				break;
 			case BOOL:
 				{
 				setState(10);
-				match(BOOL);
-				_localctx.type = Type.BOOL, _localctx.boolVal = getBoolValue(BOOL.text)
+				((TContext)_localctx).BOOL = match(BOOL);
+				((TContext)_localctx).type =  Type.BOOL; ((TContext)_localctx).boolVal =  getBoolValue((((TContext)_localctx).BOOL!=null?((TContext)_localctx).BOOL.getText():null));
 				}
 				break;
 			case STR:
 				{
 				setState(12);
-				match(STR);
-				_localctx.type = Type.STR,  _localctx.strVal  = STR.text
+				((TContext)_localctx).STR = match(STR);
+				((TContext)_localctx).type =  Type.STR;  ((TContext)_localctx).strVal =  (((TContext)_localctx).STR!=null?((TContext)_localctx).STR.getText():null);
 				}
 				break;
 			default:
@@ -214,10 +217,10 @@ public class TGramParser extends Parser {
 						match(HAT);
 						setState(18);
 						((TContext)_localctx).t1 = t(8);
-						_localctx.type = ((TContext)_localctx).t0.type,  if(((TContext)_localctx).t0.type == Type.NUM && ((TContext)_localctx).t1.type == Type.NUM)
-						          												_localctx.intVal = ((TContext)_localctx).t0.intVal.pow(((TContext)_localctx).t1.intVal)
+						((TContext)_localctx).type =  ((TContext)_localctx).t0.type;  if(((TContext)_localctx).t0.type == Type.NUM && ((TContext)_localctx).t1.type == Type.NUM)
+						          												((TContext)_localctx).intVal =  (int) Math.pow(((TContext)_localctx).t0.intVal, ((TContext)_localctx).t1.intVal);
 						          											else if(((TContext)_localctx).t0.type == Type.STR && ((TContext)_localctx).t1.type == Type.NUM)
-						          												_localctx.strVal = hat(((TContext)_localctx).t0.strVal, ((TContext)_localctx).t1.intVal)
+						          												((TContext)_localctx).strVal =  hat(((TContext)_localctx).t0.strVal, ((TContext)_localctx).t1.intVal);
 						          	
 						}
 						break;
@@ -233,12 +236,12 @@ public class TGramParser extends Parser {
 						match(PLUS);
 						setState(23);
 						((TContext)_localctx).t1 = t(7);
-						_localctx.type = ((TContext)_localctx).t0.type,  if(((TContext)_localctx).t0.type == Type.NUM)
-						          												_localctx.intVal = ((TContext)_localctx).t0.intVal + ((TContext)_localctx).t1.intVal
+						((TContext)_localctx).type =  ((TContext)_localctx).t0.type;  if(((TContext)_localctx).t0.type == Type.NUM)
+						          												((TContext)_localctx).intVal =  ((TContext)_localctx).t0.intVal + ((TContext)_localctx).t1.intVal;
 						          											else if(((TContext)_localctx).t0.type == Type.BOOL)
-						          												_localctx.boolVal = ((TContext)_localctx).t0.boolVal | ((TContext)_localctx).t1.boolVal
+						          												((TContext)_localctx).boolVal =  ((TContext)_localctx).t0.boolVal | ((TContext)_localctx).t1.boolVal;
 						          											else
-						          												_localctx.strVal = ((TContext)_localctx).t0.strVal + ((TContext)_localctx).t1.strVal
+						          												((TContext)_localctx).strVal =  ((TContext)_localctx).t0.strVal + ((TContext)_localctx).t1.strVal;
 						          											
 						}
 						break;
@@ -254,15 +257,15 @@ public class TGramParser extends Parser {
 						match(EQUALS);
 						setState(28);
 						((TContext)_localctx).t1 = t(6);
-						_localctx.type = Type.BOOL, if(((TContext)_localctx).t0.type == ((TContext)_localctx).t1.type){
+						((TContext)_localctx).type =  Type.BOOL; if(((TContext)_localctx).t0.type == ((TContext)_localctx).t1.type){
 						          												if(((TContext)_localctx).t0.type == Type.NUM)
-						          													_localctx.boolVal = ((TContext)_localctx).t0.intVal == ((TContext)_localctx).t1.intVal
+						          													((TContext)_localctx).boolVal =  ((TContext)_localctx).t0.intVal == ((TContext)_localctx).t1.intVal;
 						          												else if(((TContext)_localctx).t0.type == Type.BOOL)
-						          													_localctx.boolVal = ((TContext)_localctx).t0.boolVal == ((TContext)_localctx).t1.boolVal
+						          													((TContext)_localctx).boolVal =  ((TContext)_localctx).t0.boolVal == ((TContext)_localctx).t1.boolVal;
 						          												else
-						          													_localctx.boolVal = ((TContext)_localctx).t0.strVal.equals(((TContext)_localctx).t1.strVal)
+						          													((TContext)_localctx).boolVal =  ((TContext)_localctx).t0.strVal.equals(((TContext)_localctx).t1.strVal);
 						          											}else
-						          												_localctx.boolVal = false
+						          												((TContext)_localctx).boolVal =  false;
 						          											
 						}
 						break;

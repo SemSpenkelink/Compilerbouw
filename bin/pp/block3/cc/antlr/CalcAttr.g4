@@ -11,7 +11,7 @@ import CalcVocab;
 expr returns [ int val ]
      : { System.out.println("minus expr"); }
        MINUS e0=expr
-       { $val = -1*$e0.val }
+       { $val = -1*$e0.val; }
      | e0=expr TIMES e1=expr
        { $val = $e0.val * $e1.val; }
      | e0=expr PLUS e1=expr
