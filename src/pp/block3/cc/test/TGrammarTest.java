@@ -12,9 +12,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 
-import pp.block3.cc.antlr.TGram.Lexer;
-import pp.block3.cc.antlr.TGram.Parser;
-import pp.block3.cc.antlr.TGram.ParserTContext;
+import pp.block3.cc.antlr.TGramLexer;
+import pp.block3.cc.antlr.TGramParser;
+import pp.block3.cc.antlr.TGramParser.TContext;
 
 
 import pp.block3.cc.antlr.CalcAttrLexer;
@@ -22,7 +22,6 @@ import pp.block3.cc.antlr.CalcAttrParser;
 import pp.block3.cc.antlr.TGrammarListenerLexer;
 import pp.block3.cc.antlr.TGrammarListenerParser;
 import pp.block3.cc.antlr.TGrammar;
-import pp.block3.cc.antlr.CalcAttrParser.ExprContext;
 
 public class TGrammarTest {
 	
@@ -35,29 +34,29 @@ public class TGrammarTest {
 	}
 	
 	public void test(int expected, String expr){
-		assertEquals(expected, TGram(expr).intVal);
+		assertEquals(expected, parseTGramAttr(expr).intVal);
 		ParseTree tree = parseTGram(expr);
 		gram.init();
 		walker.walk(gram, tree);
-		assertEquals(expected, gram.intVal(tree));
+	//	assertEquals(expected, gram.intVal(tree));
 	}
 	
 	
 	public void test(String expected, String expr){
-		assertEquals(expected, TGram(expr).strVal);
+		assertEquals(expected, parseTGramAttr(expr).strVal);
 		ParseTree tree = parseTGram(expr);
 		gram.init();
 		walker.walk(gram, tree);
-		assertEquals(expected, gram.strVal(tree));
+	//	assertEquals(expected, gram.strVal(tree));
 	}
 	
 	
 	public void test(boolean expected, String expr){
-		assertEquals(expected, TGram(expr).boolVal);
+		assertEquals(expected, parseTGramAttr(expr).boolVal);
 		ParseTree tree = parseTGram(expr);
 		gram.init();
 		walker.walk(gram, tree);
-		assertEquals(expected, gram.boolVal(tree));
+	//	assertEquals(expected, gram.boolVal(tree));
 	}
 	
 	private ParseTree parseTGram(String text){
@@ -68,7 +67,7 @@ public class TGrammarTest {
 		return parser.t();
 	}
 	
-	private ExprContext parseTGramAttr(String text) {
+	private TContext parseTGramAttr(String text) {
 		CharStream chars = new ANTLRInputStream(text);
 		Lexer lexer = new TGramLexer(chars);
 		TokenStream tokens = new CommonTokenStream(lexer);
