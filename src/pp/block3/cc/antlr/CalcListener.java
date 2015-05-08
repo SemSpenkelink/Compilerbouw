@@ -56,4 +56,16 @@ public interface CalcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPlus(CalcParser.PlusContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code unumber}
+	 * labeled alternative in {@link CalcParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnumber(CalcParser.UnumberContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code unumber}
+	 * labeled alternative in {@link CalcParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnumber(CalcParser.UnumberContext ctx);
 }
