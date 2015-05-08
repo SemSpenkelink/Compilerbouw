@@ -1,6 +1,5 @@
 grammar grammar3;
 
-r : e;
 e : e ('+' | '-') f | f;
 f: '(' ID ')' f | g;
 g : g ( '[' e ']' | '.' ID) | a;
