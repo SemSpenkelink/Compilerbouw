@@ -32,6 +32,8 @@ public class TGrammarTest {
 	public void test(){
 		test(9, "3^2");
 		test(5, "3+2");
+		test(9, "(3+2)+4");
+		test("(ha)(ha)", "(ha)^2");
 		test(true, "3=3");
 		test(false, "3=2");
 		test("hahahahaha", "ha^5");

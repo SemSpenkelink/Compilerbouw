@@ -32,7 +32,13 @@ public class TGrammar extends TGrammarListenerBaseListener{
 	}
 	
 	@Override public void exitPar(TGrammarListenerParser.ParContext ctx) {
-		
+		typeVal.put(ctx, typeVal.get(ctx.t()));
+		if(typeVal.get(ctx) == Type.NUM)
+			intVal.put(ctx, intVal.get(ctx.t()));
+		else if(typeVal.get(ctx) == Type.BOOL)
+			boolVal.put(ctx, boolVal.get(ctx.t()));
+		else if(typeVal.get(ctx) == Type.STR)
+			strVal.put(ctx, "(" + strVal.get(ctx.t()) + ")");
 	}
 
 	@Override public void enterStr(TGrammarListenerParser.StrContext ctx) {
