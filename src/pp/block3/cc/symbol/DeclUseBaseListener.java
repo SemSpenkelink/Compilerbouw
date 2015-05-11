@@ -17,13 +17,25 @@ public class DeclUseBaseListener implements DeclUseListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnit(@NotNull DeclUseParser.UnitContext ctx) { }
+	@Override public void enterSer(@NotNull DeclUseParser.SerContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUnit(@NotNull DeclUseParser.UnitContext ctx) { }
+	@Override public void exitSer(@NotNull DeclUseParser.SerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDec(@NotNull DeclUseParser.DecContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDec(@NotNull DeclUseParser.DecContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -72,6 +84,18 @@ public class DeclUseBaseListener implements DeclUseListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitProgram(@NotNull DeclUseParser.ProgramContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUs(@NotNull DeclUseParser.UsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUs(@NotNull DeclUseParser.UsContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

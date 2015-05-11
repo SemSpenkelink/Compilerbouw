@@ -141,26 +141,56 @@ public class DeclUseParser extends Parser {
 	}
 
 	public static class UnitContext extends ParserRuleContext {
-		public DeclContext decl() {
-			return getRuleContext(DeclContext.class,0);
-		}
-		public UseContext use() {
-			return getRuleContext(UseContext.class,0);
-		}
-		public SeriesContext series() {
-			return getRuleContext(SeriesContext.class,0);
-		}
 		public UnitContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_unit; }
+	 
+		public UnitContext() { }
+		public void copyFrom(UnitContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class SerContext extends UnitContext {
+		public SeriesContext series() {
+			return getRuleContext(SeriesContext.class,0);
+		}
+		public SerContext(UnitContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof DeclUseListener ) ((DeclUseListener)listener).enterUnit(this);
+			if ( listener instanceof DeclUseListener ) ((DeclUseListener)listener).enterSer(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof DeclUseListener ) ((DeclUseListener)listener).exitUnit(this);
+			if ( listener instanceof DeclUseListener ) ((DeclUseListener)listener).exitSer(this);
+		}
+	}
+	public static class DecContext extends UnitContext {
+		public DeclContext decl() {
+			return getRuleContext(DeclContext.class,0);
+		}
+		public DecContext(UnitContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DeclUseListener ) ((DeclUseListener)listener).enterDec(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DeclUseListener ) ((DeclUseListener)listener).exitDec(this);
+		}
+	}
+	public static class UsContext extends UnitContext {
+		public UseContext use() {
+			return getRuleContext(UseContext.class,0);
+		}
+		public UsContext(UnitContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DeclUseListener ) ((DeclUseListener)listener).enterUs(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DeclUseListener ) ((DeclUseListener)listener).exitUs(this);
 		}
 	}
 
@@ -171,18 +201,21 @@ public class DeclUseParser extends Parser {
 			setState(26);
 			switch (_input.LA(1)) {
 			case T__2:
+				_localctx = new DecContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(20); decl();
 				}
 				break;
 			case T__3:
+				_localctx = new UsContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(21); use();
 				}
 				break;
 			case T__1:
+				_localctx = new SerContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(22); match(T__1);

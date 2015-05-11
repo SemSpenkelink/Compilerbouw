@@ -2,9 +2,11 @@ grammar DeclUse;
 
 @header{package pp.block3.cc.symbol;}
 
-program : '(' series ')' ;
+program : '(' series ')' ;	
 series  : unit* ;
-unit    : decl | use | '(' series ')' ;
+unit    : decl 		#dec
+		| use 		#us
+		| '(' series ')' #ser ;
 decl    : 'D:' ID ;
 use     : 'U:' ID ;
 

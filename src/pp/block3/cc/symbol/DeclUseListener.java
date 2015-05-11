@@ -9,15 +9,29 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface DeclUseListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link DeclUseParser#unit}.
+	 * Enter a parse tree produced by the {@code ser}
+	 * labeled alternative in {@link DeclUseParser#unit}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnit(@NotNull DeclUseParser.UnitContext ctx);
+	void enterSer(@NotNull DeclUseParser.SerContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DeclUseParser#unit}.
+	 * Exit a parse tree produced by the {@code ser}
+	 * labeled alternative in {@link DeclUseParser#unit}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnit(@NotNull DeclUseParser.UnitContext ctx);
+	void exitSer(@NotNull DeclUseParser.SerContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code dec}
+	 * labeled alternative in {@link DeclUseParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void enterDec(@NotNull DeclUseParser.DecContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code dec}
+	 * labeled alternative in {@link DeclUseParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void exitDec(@NotNull DeclUseParser.DecContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DeclUseParser#decl}.
 	 * @param ctx the parse tree
@@ -58,4 +72,16 @@ public interface DeclUseListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitProgram(@NotNull DeclUseParser.ProgramContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code us}
+	 * labeled alternative in {@link DeclUseParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void enterUs(@NotNull DeclUseParser.UsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code us}
+	 * labeled alternative in {@link DeclUseParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void exitUs(@NotNull DeclUseParser.UsContext ctx);
 }
