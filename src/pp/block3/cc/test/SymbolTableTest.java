@@ -26,6 +26,7 @@ import pp.block3.cc.symbol.DeclUseParser;
 import pp.block3.cc.symbol.SymbolTable;
 import pp.block3.cc.symbol.SymbolTableImpl;
 
+
 public class SymbolTableTest {
 	private SymbolTable table;
 	private DeclUse declUse;
@@ -39,12 +40,16 @@ public class SymbolTableTest {
 	
 	@Test
 	public void testListener(){
-		
+		test("myFile.txt");
 	}
 	
 	public void test(String expr){
-		ParseTree tree = parseDecl("myFile.txt");
-		//CONTINUE HERE
+		System.out.println("inside test");
+		ParseTree tree = parseDecl(expr);
+		System.out.println("inside test");
+		declUse.init();
+		walker.walk(declUse, tree);
+		
 	}
 	
 	private ParseTree parseDecl(String text){

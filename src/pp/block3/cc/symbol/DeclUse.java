@@ -50,9 +50,11 @@ public class DeclUse extends DeclUseBaseListener{
 	}
 	
 	@Override public void exitDecl(@NotNull DeclUseParser.DeclContext ctx) {
-		System.out.println(ctx.getText());
+		System.out.println("Text: " + ctx.getText());
+		System.out.println("charPositionInLine: "+ ctx.getTokens(0).get(0).getSymbol().getCharPositionInLine());
 		if(!sti.add(ctx.getText())){
-			
+			System.out.println(ctx.getTokens(0).get(0).getSymbol().getCharPositionInLine());
+			errors.put(ctx, ctx.getTokens(0).get(0).getSymbol().getCharPositionInLine());
 		}
 	}
 

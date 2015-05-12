@@ -49,7 +49,7 @@ public class SBNTest {
 	
 	 private ParseTree parseSBN(String text){
 		CharStream chars = new ANTLRInputStream(text);
-		Lexer lexer = new SBNLexer(chars);
+		Lexer lexer = new SBN2Lexer(chars);
 		TokenStream tokens = new CommonTokenStream(lexer);
 		SBN2Parser parser = new SBN2Parser(tokens);
 		return parser.number();
