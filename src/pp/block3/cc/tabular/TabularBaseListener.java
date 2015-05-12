@@ -17,18 +17,6 @@ public class TabularBaseListener implements TabularListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterComment(TabularParser.CommentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitComment(TabularParser.CommentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterLatex(TabularParser.LatexContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -36,6 +24,18 @@ public class TabularBaseListener implements TabularListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLatex(TabularParser.LatexContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterComment(TabularParser.CommentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComment(TabularParser.CommentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

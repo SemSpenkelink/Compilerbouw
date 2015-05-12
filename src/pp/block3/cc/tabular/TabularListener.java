@@ -9,16 +9,6 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface TabularListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link TabularParser#comment}.
-	 * @param ctx the parse tree
-	 */
-	void enterComment(TabularParser.CommentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TabularParser#comment}.
-	 * @param ctx the parse tree
-	 */
-	void exitComment(TabularParser.CommentContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TabularParser#latex}.
 	 * @param ctx the parse tree
 	 */
@@ -28,6 +18,16 @@ public interface TabularListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLatex(TabularParser.LatexContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TabularParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void enterComment(TabularParser.CommentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TabularParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void exitComment(TabularParser.CommentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TabularParser#begin}.
 	 * @param ctx the parse tree

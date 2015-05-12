@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -21,13 +20,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pp.block3.cc.antlr.TGrammarListenerLexer;
-import pp.block3.cc.antlr.TGrammarListenerParser;
-import pp.block3.cc.symbol.DeclUse;
-import pp.block3.cc.symbol.DeclUseLexer;
-import pp.block3.cc.symbol.DeclUseParser;
-import pp.block3.cc.symbol.SymbolTable;
-import pp.block3.cc.symbol.SymbolTableImpl;
+import pp.block3.cc.tabular.*;
 
 
 public class TabularTest {
@@ -35,6 +28,8 @@ public class TabularTest {
 	@Test
 	public void tabTest(){
 		test(null, "tabular-1.tex");
+		//test(null, "tabular-2.tex");
+		//test(null, "tabular-3.tex");
 	}
 	
 	
@@ -47,11 +42,11 @@ public class TabularTest {
 		try {
 			chars = new ANTLRInputStream(new FileReader(text));
 	
-		Lexer lexer = new DeclUseLexer(chars);
+		Lexer lexer = new TabularLexer(chars);
 		TokenStream tokens = new CommonTokenStream(lexer);
-		DeclUseParser parser = new DeclUseParser(tokens);
+		TabularParser parser = new TabularParser(tokens);
 		
-			return parser.program();
+			return parser.latex();
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

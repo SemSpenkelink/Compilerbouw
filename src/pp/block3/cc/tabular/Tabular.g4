@@ -3,15 +3,15 @@ grammar Tabular;
 @header{package pp.block3.cc.tabular;}
 
 latex	: begin arg tabLine* end;
-comment	: '%' (TEXT | '');
 begin	: '\\begin{' begType '}';
 begType : 'tabular';
-arg		: '{' argType* '}';
-argType : 'l' | 'c' | 'r';
-tabLine : ((TEXT ('&' TEXT)*) | '') '\\\\';
+arg		: '{' ARGTYPE '}';
+tabLine : (TEXT | '&')* '\\\\';
 end		: '\\end{' endType '}';
 endType : 'tabular';
 
-TEXT: [a-zA-Z0-9 \t\r]+;
+ARGTYPE : ('l' | 'c' | 'r')+;
+TEXT: ([a-zA-Z0-9] | '.' | ' ' | '\t' | '')+;
 
-WS : [\n]+ -> skip;
+WS : [\n\r]+ -> skip;
+COMMENT : '%' (TEXT | '') -> skip;
