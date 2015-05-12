@@ -5,7 +5,7 @@ number returns [ int value, boolean negative ]
 	   ;
 sign   returns [ boolean negative ]
 	   : s0='+' 		 { $negative=false; }
-	   | s0='-'			 { $negative=true;  }
+	   | s0='-'			 { $negative=true;  } 
 	   ;
 list   returns [ int position, int value ]
 	   : List1=list Bit0=bit  { $List1.position=$position+1; $Bit0.position=$position; $value=$List1.value+$Bit0.value; }

@@ -35,6 +35,12 @@ public class SBNTest {
 	@Test
 	public void init(){
 		test(41,"+101001");
+		test(-41,"-0101001");
+		test(21,"+0010101");
+		test(-15,"-1111");
+		test(111,"+01101111");
+		test(83,"+01010011");
+		test(83,"+1010011");
 	}
 	
 	

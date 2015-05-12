@@ -246,7 +246,7 @@ public class SBNParser extends Parser {
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(23);
 					((ListContext)_localctx).Bit0 = bit();
-					 ((ListContext)_localctx).List1.position=_localctx.position+1; ((ListContext)_localctx).Bit0.position=_localctx.position; ((ListContext)_localctx).value = ((ListContext)_localctx).List1.value+((ListContext)_localctx).Bit0.value; 
+					 ((ListContext)_localctx).List1.position++; System.out.println("Position="+_localctx.position + ", List1.pos=" + ((ListContext)_localctx).List1.position); ((ListContext)_localctx).Bit0.position=_localctx.position; ((ListContext)_localctx).value = ((ListContext)_localctx).List1.value+((ListContext)_localctx).Bit0.value; 
 					}
 					} 
 				}
