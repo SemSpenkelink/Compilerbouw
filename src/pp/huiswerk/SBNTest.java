@@ -16,22 +16,34 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import pp.block3.cc.antlr.TGrammarListenerLexer;
+import pp.block3.cc.antlr.TGrammarListenerParser;
 import pp.huiswerk.SBNBaseListener;
 import pp.huiswerk.SBNLexer;
 import pp.huiswerk.SBNParser;
-
 import pp.huiswerk.SBNParser.NumberContext;
 
 public class SBNTest {
 	
+	@Test
 	public void init(){
-		
+		test(41,"+101001");
 	}
 	
 	
 	public void test(int expected, String expr){
-		assertEquals(expected, parseSBNAttr(expr));
+		System.out.println("Expected: " + expected + " Parse: " + parseSBNAttr(expr).val);
+		assertEquals(expected, parseSBNAttr(expr).val);
 	}
+	
+	/* private ParseTree parseSBN(String text){
+		CharStream chars = new ANTLRInputStream(text);
+		Lexer lexer = new SBNLexer(chars);
+		TokenStream tokens = new CommonTokenStream(lexer);
+		TGrammarListenerParser parser = new TGrammarListenerParser(tokens);
+		return parser.t();
+	}
+	*/
 	
 	private NumberContext parseSBNAttr(String text) {
 		CharStream chars = new ANTLRInputStream(text);
