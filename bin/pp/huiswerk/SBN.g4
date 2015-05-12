@@ -1,7 +1,7 @@
 grammar SBN;
 
 number returns [ int val, int pos, boolean neg ]
-	   : s0=sign l0=list { $l0.pos = 0;	$val=($s0.neg) ? -$l0.val : $l0.val;}
+	   : s0=sign l0=list { $pos = 0;	$val=($s0.neg) ? -$l0.val : $l0.val;}
 	   ;
 sign   returns [ boolean neg ]
 	   : s0='+' 		 { $neg=false; }

@@ -115,7 +115,7 @@ public class SBNParser extends Parser {
 			((NumberContext)_localctx).s0 = sign();
 			setState(9);
 			((NumberContext)_localctx).l0 = list(0);
-			 ((NumberContext)_localctx).l0.pos = 0;	((NumberContext)_localctx).val = (((NumberContext)_localctx).s0.neg) ? -((NumberContext)_localctx).l0.val : ((NumberContext)_localctx).l0.val;
+			 ((NumberContext)_localctx).pos =  0;	((NumberContext)_localctx).val = (((NumberContext)_localctx).s0.neg) ? -((NumberContext)_localctx).l0.val : ((NumberContext)_localctx).l0.val;
 			}
 		}
 		catch (RecognitionException re) {
