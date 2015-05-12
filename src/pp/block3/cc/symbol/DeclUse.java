@@ -13,7 +13,7 @@ import pp.block3.cc.symbol.SymbolTableImpl;
 
 public class DeclUse extends DeclUseBaseListener{
 	
-	ParseTreeProperty<Integer> errors = new ParseTreeProperty<Integer>();
+	ParseTreeProperty<String> errors = new ParseTreeProperty<String>();
 	
 	SymbolTableImpl sti;
 	
@@ -50,11 +50,8 @@ public class DeclUse extends DeclUseBaseListener{
 	}
 	
 	@Override public void exitDecl(@NotNull DeclUseParser.DeclContext ctx) {
-		System.out.println("Text: " + ctx.getText());
-		System.out.println("charPositionInLine: "+ ctx.getTokens(0).get(0).getSymbol().getCharPositionInLine());
 		if(!sti.add(ctx.getText())){
-			System.out.println(ctx.getTokens(0).get(0).getSymbol().getCharPositionInLine());
-			errors.put(ctx, ctx.getTokens(0).get(0).getSymbol().getCharPositionInLine());
+			errors.put(ctx, getErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
 		}
 	}
 
@@ -66,11 +63,19 @@ public class DeclUse extends DeclUseBaseListener{
 		sti.add(ctx.getText());
 	}
 
-	@Override public void exitUse(@NotNull DeclUseParser.UseContext ctx) { }
+	@Override public void exitUse(@NotNull DeclUseParser.UseContext ctx) {
+		if(!sti.contains(ctx.getText())){
+			errors.put(ctx, getErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
+		}
+	}
 
-	@Override public void enterProgram(@NotNull DeclUseParser.ProgramContext ctx) { }
+	@Override public void enterProgram(@NotNull DeclUseParser.ProgramContext ctx) {
+		sti.openScope();
+	}
 
-	@Override public void exitProgram(@NotNull DeclUseParser.ProgramContext ctx) { }
+	@Override public void exitProgram(@NotNull DeclUseParser.ProgramContext ctx) {
+		sti.closeScope();
+	}
 
 	@Override public void enterEveryRule(@NotNull ParserRuleContext ctx) { }
 	
@@ -79,5 +84,9 @@ public class DeclUse extends DeclUseBaseListener{
 	@Override public void visitTerminal(@NotNull TerminalNode node) { }
 
 	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
+	
+	private String getErrorMessage(int line, int charPos){
+		return "Found error at line " + line + ", position " + charPos;
+	}
 }
 

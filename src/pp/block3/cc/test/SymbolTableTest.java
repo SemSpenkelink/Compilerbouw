@@ -43,10 +43,8 @@ public class SymbolTableTest {
 		test("myFile.txt");
 	}
 	
-	public void test(String expr){
-		System.out.println("inside test");
-		ParseTree tree = parseDecl(expr);
-		System.out.println("inside test");
+	public void test(String fileName){
+		ParseTree tree = parseDecl(fileName);
 		declUse.init();
 		walker.walk(declUse, tree);
 		
