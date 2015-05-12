@@ -16,39 +16,72 @@ import pp.huiswerk42.SBN2Parser.NumberContext;
 
 public class SBN2 extends SBN2BaseListener
 {
-	ParseTreeProperty<Integer> result;
-	
+	ParseTreeProperty<Integer> num;
+	ParseTreeProperty<Boolean> sign;
+	ParseTreeProperty<Integer> pos;
+ 	
 	public void init(){
-		result  = new ParseTreeProperty<Integer>();
+		num  = new ParseTreeProperty<Integer>();
+		sign  = new ParseTreeProperty<Boolean>();
+		pos  = new ParseTreeProperty<Integer>();
 	}
 	
-	@Override public void enterZero(@NotNull SBN2Parser.ZeroContext ctx) { }
+	@Override public void enterZero(@NotNull SBN2Parser.ZeroContext ctx) {
+		pos.put(ctx, pos.get(ctx.getParent()));
+	}
 	
-	@Override public void exitZero(@NotNull SBN2Parser.ZeroContext ctx) { }
+	@Override public void exitZero(@NotNull SBN2Parser.ZeroContext ctx) {
+		num.put(ctx, 0);
+		
+	}
 	
-	@Override public void enterNumber(@NotNull SBN2Parser.NumberContext ctx) { }
+	@Override public void enterNumber(@NotNull SBN2Parser.NumberContext ctx) {
+		pos.put(ctx.list(), 0);
+	}
 
-	@Override public void exitNumber(@NotNull SBN2Parser.NumberContext ctx) { }
+	@Override public void exitNumber(@NotNull SBN2Parser.NumberContext ctx) {
+		int tmp = (sign.get(ctx.sign()) ) ? -1*num.get(ctx.list()) : num.get(ctx.list()); 
+			
+		num.put(ctx, tmp);
+		
+	}
 
 	@Override public void enterMin(@NotNull SBN2Parser.MinContext ctx) { }
 
-	@Override public void exitMin(@NotNull SBN2Parser.MinContext ctx) { }
+	@Override public void exitMin(@NotNull SBN2Parser.MinContext ctx) {
+		sign.put(ctx, true);
+	}
 
-	@Override public void enterOnlyBit(@NotNull SBN2Parser.OnlyBitContext ctx) { }
+	@Override public void enterOnlyBit(@NotNull SBN2Parser.OnlyBitContext ctx) {
+		pos.put(ctx.bit(),pos.get(ctx));
+	}
 	
-	@Override public void exitOnlyBit(@NotNull SBN2Parser.OnlyBitContext ctx) { }
+	@Override public void exitOnlyBit(@NotNull SBN2Parser.OnlyBitContext ctx) {
+		num.put(ctx, num.get(ctx.bit()));
+	}
 	
-	@Override public void enterListBit(@NotNull SBN2Parser.ListBitContext ctx) { }
+	@Override public void enterListBit(@NotNull SBN2Parser.ListBitContext ctx) {
+		pos.put(ctx.list(), pos.get(ctx) + 1);
+	}
 	
-	@Override public void exitListBit(@NotNull SBN2Parser.ListBitContext ctx) { }
+	@Override public void exitListBit(@NotNull SBN2Parser.ListBitContext ctx) {
+		num.put(ctx, num.get(ctx.bit()) + num.get(ctx.list()));
+	}
 	
-	@Override public void enterOne(@NotNull SBN2Parser.OneContext ctx) { }
+	@Override public void enterOne(@NotNull SBN2Parser.OneContext ctx) {
+		pos.put(ctx, pos.get(ctx.getParent()));
+	}
 	
-	@Override public void exitOne(@NotNull SBN2Parser.OneContext ctx) { }
+	@Override public void exitOne(@NotNull SBN2Parser.OneContext ctx) {
+		num.put(ctx, 1<<pos.get(ctx));
+		
+	}
 	
 	@Override public void enterPlus(@NotNull SBN2Parser.PlusContext ctx) { }
 	
-	@Override public void exitPlus(@NotNull SBN2Parser.PlusContext ctx) { }
+	@Override public void exitPlus(@NotNull SBN2Parser.PlusContext ctx) {
+		sign.put(ctx, false);
+	}
 
 	
 	@Override public void enterEveryRule(@NotNull ParserRuleContext ctx) { }
@@ -59,7 +92,7 @@ public class SBN2 extends SBN2BaseListener
 	
 	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
 	
-	public int res(){
-		return 0;
+	public int res(ParseTree tree){
+		return num.get(tree);
 	}
 }
