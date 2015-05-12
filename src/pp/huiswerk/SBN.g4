@@ -1,19 +1,19 @@
 grammar SBN;
 
-number returns [ int val, int pos, boolean neg ]
-	   : s0=sign l0=list { $l0.pos = 0;	$val=($s0.neg) ? -$l0.val : $l0.val;}
+number returns [ int value, boolean negative ]
+	   : Sign=sign List=list { $List.position = 0;	$value=($Sign.negative) ? -$List.value : $List.value;}
 	   ;
-sign   returns [ boolean neg ]
-	   : s0='+' 		 { $neg=false; }
-	   | s0='-'			 { $neg=true;  }
+sign   returns [ boolean negative ]
+	   : s0='+' 		 { $negative=false; }
+	   | s0='-'			 { $negative=true;  }
 	   ;
-list   returns [ int pos, int val ]
-	   : l0=list b0=bit  { $l0.pos=$pos+1; $b0.pos=$pos; $val=$l0.val+$b0.val; }
-	   | b0=bit			 { $b0.pos=$pos; $val=$b0.val; }
+list   returns [ int position, int value ]
+	   : List1=list Bit0=bit  { $List1.position=$position+1; $Bit0.position=$position; $value=$List1.value+$Bit0.value; }
+	   | Bit1=bit			  { $Bit1.position=$position; $value=$Bit1.value; }
 	   ;
-bit	   returns [ int pos, int val ]
-	   : b0='1' 		 { $val= (1 << $pos); }
-	   | b0='0'			 { $val=0; }
+bit	   returns [ int position, int value ]
+	   : b0='1' 		 { $value= (1 << $position); }
+	   | b0='0'			 { $value=0; }
 	   ;
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines 

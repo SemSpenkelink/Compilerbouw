@@ -32,8 +32,8 @@ public class SBNTest {
 	
 	
 	public void test(int expected, String expr){
-		System.out.println("Expected: " + expected + " Parse: " + parseSBNAttr(expr).val);
-		assertEquals(expected, parseSBNAttr(expr).val);
+		System.out.println("Expected: " + expected + " Parse: " + parseSBNAttr(expr).value);
+		assertEquals(expected, parseSBNAttr(expr).value);
 	}
 	
 	/* private ParseTree parseSBN(String text){

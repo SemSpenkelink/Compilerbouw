@@ -80,11 +80,10 @@ public class SBNParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class NumberContext extends ParserRuleContext {
-		public int val;
-		public int pos;
-		public boolean neg;
-		public SignContext s0;
-		public ListContext l0;
+		public int value;
+		public boolean negative;
+		public SignContext Sign;
+		public ListContext List;
 		public SignContext sign() {
 			return getRuleContext(SignContext.class,0);
 		}
@@ -112,10 +111,10 @@ public class SBNParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(8);
-			((NumberContext)_localctx).s0 = sign();
+			((NumberContext)_localctx).Sign = sign();
 			setState(9);
-			((NumberContext)_localctx).l0 = list(0);
-			 ((NumberContext)_localctx).l0.pos = 0;	((NumberContext)_localctx).val = (((NumberContext)_localctx).s0.neg) ? -((NumberContext)_localctx).l0.val : ((NumberContext)_localctx).l0.val;
+			((NumberContext)_localctx).List = list(0);
+			 ((NumberContext)_localctx).List.position = 0;	((NumberContext)_localctx).value = (((NumberContext)_localctx).Sign.negative) ? -((NumberContext)_localctx).List.value : ((NumberContext)_localctx).List.value;
 			}
 		}
 		catch (RecognitionException re) {
@@ -130,7 +129,7 @@ public class SBNParser extends Parser {
 	}
 
 	public static class SignContext extends ParserRuleContext {
-		public boolean neg;
+		public boolean negative;
 		public Token s0;
 		public SignContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -157,7 +156,7 @@ public class SBNParser extends Parser {
 				{
 				setState(12);
 				((SignContext)_localctx).s0 = match(T__0);
-				 ((SignContext)_localctx).neg = false; 
+				 ((SignContext)_localctx).negative = false; 
 				}
 				break;
 			case T__1:
@@ -165,7 +164,7 @@ public class SBNParser extends Parser {
 				{
 				setState(14);
 				((SignContext)_localctx).s0 = match(T__1);
-				 ((SignContext)_localctx).neg = true;  
+				 ((SignContext)_localctx).negative = true;  
 				}
 				break;
 			default:
@@ -184,10 +183,11 @@ public class SBNParser extends Parser {
 	}
 
 	public static class ListContext extends ParserRuleContext {
-		public int pos;
-		public int val;
-		public ListContext l0;
-		public BitContext b0;
+		public int position;
+		public int value;
+		public ListContext List1;
+		public BitContext Bit1;
+		public BitContext Bit0;
 		public BitContext bit() {
 			return getRuleContext(BitContext.class,0);
 		}
@@ -225,8 +225,8 @@ public class SBNParser extends Parser {
 			{
 			{
 			setState(19);
-			((ListContext)_localctx).b0 = bit();
-			 ((ListContext)_localctx).b0.pos=_localctx.pos; ((ListContext)_localctx).val = ((ListContext)_localctx).b0.val; 
+			((ListContext)_localctx).Bit1 = bit();
+			 ((ListContext)_localctx).Bit1.position=_localctx.position; ((ListContext)_localctx).value = ((ListContext)_localctx).Bit1.value; 
 			}
 			_ctx.stop = _input.LT(-1);
 			setState(28);
@@ -239,14 +239,14 @@ public class SBNParser extends Parser {
 					{
 					{
 					_localctx = new ListContext(_parentctx, _parentState);
-					_localctx.l0 = _prevctx;
-					_localctx.l0 = _prevctx;
+					_localctx.List1 = _prevctx;
+					_localctx.List1 = _prevctx;
 					pushNewRecursionContext(_localctx, _startState, RULE_list);
 					setState(22);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(23);
-					((ListContext)_localctx).b0 = bit();
-					 ((ListContext)_localctx).l0.pos=_localctx.pos+1; System.out.println(((ListContext)_localctx).l0.pos); ((ListContext)_localctx).b0.pos=_localctx.pos; ((ListContext)_localctx).val = ((ListContext)_localctx).l0.val+((ListContext)_localctx).b0.val; 
+					((ListContext)_localctx).Bit0 = bit();
+					 ((ListContext)_localctx).List1.position=_localctx.position+1; ((ListContext)_localctx).Bit0.position=_localctx.position; ((ListContext)_localctx).value = ((ListContext)_localctx).List1.value+((ListContext)_localctx).Bit0.value; 
 					}
 					} 
 				}
@@ -268,8 +268,8 @@ public class SBNParser extends Parser {
 	}
 
 	public static class BitContext extends ParserRuleContext {
-		public int pos;
-		public int val;
+		public int position;
+		public int value;
 		public Token b0;
 		public BitContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -296,7 +296,7 @@ public class SBNParser extends Parser {
 				{
 				setState(31);
 				((BitContext)_localctx).b0 = match(T__2);
-				 ((BitContext)_localctx).val =  (1 << _localctx.pos); 
+				 ((BitContext)_localctx).value =  (1 << _localctx.position); 
 				}
 				break;
 			case T__3:
@@ -304,7 +304,7 @@ public class SBNParser extends Parser {
 				{
 				setState(33);
 				((BitContext)_localctx).b0 = match(T__3);
-				 ((BitContext)_localctx).val = 0; 
+				 ((BitContext)_localctx).value = 0; 
 				}
 				break;
 			default:
