@@ -17,7 +17,7 @@ import pp.block3.cc.symbol.SymbolTableImpl;
 public class DeclUse extends DeclUseBaseListener{
 	
 	ParseTreeProperty<String> errors = new ParseTreeProperty<String>();
-	List<String> errorStrings = new ArrayList<String>();
+	public List<String> errorStrings = new ArrayList<String>();
 	
 	SymbolTableImpl sti;
 	
@@ -94,7 +94,7 @@ public class DeclUse extends DeclUseBaseListener{
 
 	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
 	
-	private String createErrorMessage(int line, int charPos){
+	public String createErrorMessage(int line, int charPos){
 		return "Found error at line " + line + ", position " + charPos + ".";
 	}
 	

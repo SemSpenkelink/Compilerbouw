@@ -2,10 +2,13 @@ package pp.block3.cc.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -40,14 +43,17 @@ public class SymbolTableTest {
 	
 	@Test
 	public void testListener(){
-		test("myFile.txt");
+		List<String> expected = new ArrayList<String>();
+		expected.add(declUse.createErrorMessage(1, 7));
+		expected.add(declUse.createErrorMessage(1, 13));
+		test(expected, "myFile.txt");
 	}
 	
-	public void test(String fileName){
+	public void test(List<String> expected, String fileName){
 		ParseTree tree = parseDecl(fileName);
 		declUse.init();
 		walker.walk(declUse, tree);
-		
+		assertEquals(expected, declUse.errorStrings);
 	}
 	
 	private ParseTree parseDecl(String text){
