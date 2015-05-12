@@ -1,5 +1,8 @@
 package pp.block3.cc.symbol;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -14,6 +17,7 @@ import pp.block3.cc.symbol.SymbolTableImpl;
 public class DeclUse extends DeclUseBaseListener{
 	
 	ParseTreeProperty<String> errors = new ParseTreeProperty<String>();
+	List<String> errorStrings = new ArrayList<String>();
 	
 	SymbolTableImpl sti;
 	
@@ -50,8 +54,10 @@ public class DeclUse extends DeclUseBaseListener{
 	}
 	
 	@Override public void exitDecl(@NotNull DeclUseParser.DeclContext ctx) {
-		if(!sti.add(ctx.getText())){
-			errors.put(ctx, getErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
+		if(!sti.add(getMessage(ctx))){
+			System.out.println(createErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
+			errors.put(ctx, createErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
+			errorStrings.add(createErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
 		}
 	}
 
@@ -60,14 +66,17 @@ public class DeclUse extends DeclUseBaseListener{
 	@Override public void exitSeries(@NotNull DeclUseParser.SeriesContext ctx) { }
 
 	@Override public void enterUse(@NotNull DeclUseParser.UseContext ctx) {
-		sti.add(ctx.getText());
-	}
-
-	@Override public void exitUse(@NotNull DeclUseParser.UseContext ctx) {
-		if(!sti.contains(ctx.getText())){
-			errors.put(ctx, getErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
+		System.out.println(getMessage(ctx));
+		if(!sti.contains(getMessage(ctx))){
+			System.out.println(createErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
+			errors.put(ctx, createErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
+			errorStrings.add(createErrorMessage(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()));
+		}else{
+			sti.add(getMessage(ctx));
 		}
 	}
+
+	@Override public void exitUse(@NotNull DeclUseParser.UseContext ctx) {  }
 
 	@Override public void enterProgram(@NotNull DeclUseParser.ProgramContext ctx) {
 		sti.openScope();
@@ -85,8 +94,16 @@ public class DeclUse extends DeclUseBaseListener{
 
 	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
 	
-	private String getErrorMessage(int line, int charPos){
-		return "Found error at line " + line + ", position " + charPos;
+	private String createErrorMessage(int line, int charPos){
+		return "Found error at line " + line + ", position " + charPos + ".";
+	}
+	
+	private String getMessage(ParseTree ctx){
+		String text = ctx.getText();
+		if(text.startsWith("D:") || text.startsWith("U:"))
+			return text.substring(2);
+		else
+			return text;
 	}
 }
 
