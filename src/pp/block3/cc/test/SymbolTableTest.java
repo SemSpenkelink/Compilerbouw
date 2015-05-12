@@ -45,7 +45,8 @@ public class SymbolTableTest {
 	public void testListener(){
 		List<String> expected = new ArrayList<String>();
 		expected.add(declUse.createErrorMessage(1, 7));
-		expected.add(declUse.createErrorMessage(1, 13));
+		expected.add(declUse.createErrorMessage(1, 14));
+		expected.add(declUse.createErrorMessage(1, 36));
 		test(expected, "myFile.txt");
 	}
 	
