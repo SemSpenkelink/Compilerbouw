@@ -39,13 +39,12 @@ public class SBNTest {
 	
 	
 	public void test(int expected, String expr){
-		System.out.println("Expected: " + expected + " Parse: " + parseSBNAttr(expr).val);
-		assertEquals(expected, parseSBNAttr(expr).val);
-		
+		System.out.println("Expected: " + expected + " Parse: " + parseSBNAttr(expr).value);
+		assertEquals(expected, parseSBNAttr(expr).value);
 		ParseTree tree = parseSBN(expr);
 		gram.init();
 		walker.walk(gram, tree);
-		
+		assertEquals(expected, gram.res());
 	}
 	
 	 private ParseTree parseSBN(String text){
