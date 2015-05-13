@@ -3,11 +3,17 @@ package pp.huiswerk;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.Lexer;
 
 import pp.huiswerk.SymbolTableImplHW;
 import pp.huiswerk.TypeUseParser.ProgramContext;
@@ -86,4 +92,19 @@ public class TypeChecker extends TypeUseBaseListener{
 		else
 			return text;
 	}
+	
+	public static void main(String args[]){
+		String text = "";
+		ParseTreeWalker walker = new ParseTreeWalker();
+		TypeChecker gram = new TypeChecker();
+		CharStream chars = new ANTLRInputStream(text);
+		Lexer lexer = new TypeUseLexer(chars);
+		TokenStream tokens = new CommonTokenStream(lexer);
+		TypeUseParser parser = new TypeUseParser(tokens);
+		
+		ParseTree tree= parser.program();
+		gram.init();
+		walker.walk(gram, tree);
+	}
+	
 }
