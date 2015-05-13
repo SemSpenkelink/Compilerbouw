@@ -21,8 +21,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pp.block3.cc.antlr.TGrammarListenerLexer;
-import pp.block3.cc.antlr.TGrammarListenerParser;
 import pp.block3.cc.symbol.DeclUse;
 import pp.block3.cc.symbol.DeclUseLexer;
 import pp.block3.cc.symbol.DeclUseParser;
