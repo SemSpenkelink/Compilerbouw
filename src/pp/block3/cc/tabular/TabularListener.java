@@ -19,16 +19,6 @@ public interface TabularListener extends ParseTreeListener {
 	 */
 	void exitLatex(TabularParser.LatexContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TabularParser#comment}.
-	 * @param ctx the parse tree
-	 */
-	void enterComment(TabularParser.CommentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TabularParser#comment}.
-	 * @param ctx the parse tree
-	 */
-	void exitComment(TabularParser.CommentContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TabularParser#begin}.
 	 * @param ctx the parse tree
 	 */
@@ -58,16 +48,6 @@ public interface TabularListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArg(TabularParser.ArgContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TabularParser#argType}.
-	 * @param ctx the parse tree
-	 */
-	void enterArgType(TabularParser.ArgTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TabularParser#argType}.
-	 * @param ctx the parse tree
-	 */
-	void exitArgType(TabularParser.ArgTypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TabularParser#tabLine}.
 	 * @param ctx the parse tree

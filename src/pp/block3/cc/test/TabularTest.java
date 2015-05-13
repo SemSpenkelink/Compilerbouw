@@ -28,8 +28,8 @@ public class TabularTest {
 	@Test
 	public void tabTest(){
 		test(null, "tabular-1.tex");
-		//test(null, "tabular-2.tex");
-		//test(null, "tabular-3.tex");
+		test(null, "tabular-2.tex");
+		test(null, "tabular-3.tex");
 	}
 	
 	
