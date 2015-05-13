@@ -65,37 +65,37 @@ public class TabularBaseListener implements TabularListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOnlyEntry(TabularParser.OnlyEntryContext ctx) { }
+	@Override public void enterTabLine(TabularParser.TabLineContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOnlyEntry(TabularParser.OnlyEntryContext ctx) { }
+	@Override public void exitTabLine(TabularParser.TabLineContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAndEntry(TabularParser.AndEntryContext ctx) { }
+	@Override public void enterText(TabularParser.TextContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAndEntry(TabularParser.AndEntryContext ctx) { }
+	@Override public void exitText(TabularParser.TextContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTabEntry(TabularParser.TabEntryContext ctx) { }
+	@Override public void enterAnd(TabularParser.AndContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTabEntry(TabularParser.TabEntryContext ctx) { }
+	@Override public void exitAnd(TabularParser.AndContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

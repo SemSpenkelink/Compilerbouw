@@ -49,39 +49,39 @@ public interface TabularListener extends ParseTreeListener {
 	 */
 	void exitArg(TabularParser.ArgContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code onlyEntry}
-	 * labeled alternative in {@link TabularParser#tabLine}.
+	 * Enter a parse tree produced by {@link TabularParser#tabLine}.
 	 * @param ctx the parse tree
 	 */
-	void enterOnlyEntry(TabularParser.OnlyEntryContext ctx);
+	void enterTabLine(TabularParser.TabLineContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code onlyEntry}
-	 * labeled alternative in {@link TabularParser#tabLine}.
+	 * Exit a parse tree produced by {@link TabularParser#tabLine}.
 	 * @param ctx the parse tree
 	 */
-	void exitOnlyEntry(TabularParser.OnlyEntryContext ctx);
+	void exitTabLine(TabularParser.TabLineContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code andEntry}
-	 * labeled alternative in {@link TabularParser#tabLine}.
+	 * Enter a parse tree produced by the {@code text}
+	 * labeled alternative in {@link TabularParser#tabEntry}.
 	 * @param ctx the parse tree
 	 */
-	void enterAndEntry(TabularParser.AndEntryContext ctx);
+	void enterText(TabularParser.TextContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code andEntry}
-	 * labeled alternative in {@link TabularParser#tabLine}.
+	 * Exit a parse tree produced by the {@code text}
+	 * labeled alternative in {@link TabularParser#tabEntry}.
 	 * @param ctx the parse tree
 	 */
-	void exitAndEntry(TabularParser.AndEntryContext ctx);
+	void exitText(TabularParser.TextContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TabularParser#tabEntry}.
+	 * Enter a parse tree produced by the {@code and}
+	 * labeled alternative in {@link TabularParser#tabEntry}.
 	 * @param ctx the parse tree
 	 */
-	void enterTabEntry(TabularParser.TabEntryContext ctx);
+	void enterAnd(TabularParser.AndContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TabularParser#tabEntry}.
+	 * Exit a parse tree produced by the {@code and}
+	 * labeled alternative in {@link TabularParser#tabEntry}.
 	 * @param ctx the parse tree
 	 */
-	void exitTabEntry(TabularParser.TabEntryContext ctx);
+	void exitAnd(TabularParser.AndContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TabularParser#end}.
 	 * @param ctx the parse tree

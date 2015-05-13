@@ -126,7 +126,7 @@ public class TabularParser extends Parser {
 			setState(21);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__5 || _la==TEXT) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__4) | (1L << T__5) | (1L << TEXT))) != 0)) {
 				{
 				{
 				setState(18);
@@ -273,78 +273,49 @@ public class TabularParser extends Parser {
 	}
 
 	public static class TabLineContext extends ParserRuleContext {
+		public List<TabEntryContext> tabEntry() {
+			return getRuleContexts(TabEntryContext.class);
+		}
+		public TabEntryContext tabEntry(int i) {
+			return getRuleContext(TabEntryContext.class,i);
+		}
 		public TabLineContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tabLine; }
-	 
-		public TabLineContext() { }
-		public void copyFrom(TabLineContext ctx) {
-			super.copyFrom(ctx);
-		}
-	}
-	public static class OnlyEntryContext extends TabLineContext {
-		public TabEntryContext tabEntry() {
-			return getRuleContext(TabEntryContext.class,0);
-		}
-		public OnlyEntryContext(TabLineContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TabularListener ) ((TabularListener)listener).enterOnlyEntry(this);
+			if ( listener instanceof TabularListener ) ((TabularListener)listener).enterTabLine(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TabularListener ) ((TabularListener)listener).exitOnlyEntry(this);
-		}
-	}
-	public static class AndEntryContext extends TabLineContext {
-		public TabEntryContext tabEntry() {
-			return getRuleContext(TabEntryContext.class,0);
-		}
-		public TabLineContext tabLine() {
-			return getRuleContext(TabLineContext.class,0);
-		}
-		public AndEntryContext(TabLineContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TabularListener ) ((TabularListener)listener).enterAndEntry(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TabularListener ) ((TabularListener)listener).exitAndEntry(this);
+			if ( listener instanceof TabularListener ) ((TabularListener)listener).exitTabLine(this);
 		}
 	}
 
 	public final TabLineContext tabLine() throws RecognitionException {
 		TabLineContext _localctx = new TabLineContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_tabLine);
+		int _la;
 		try {
-			setState(43);
-			switch (_input.LA(1)) {
-			case TEXT:
-				_localctx = new OnlyEntryContext(_localctx);
-				enterOuterAlt(_localctx, 1);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(39);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__5 || _la==TEXT) {
+				{
 				{
 				setState(36);
 				tabEntry();
-				setState(37);
-				match(T__4);
 				}
-				break;
-			case T__5:
-				_localctx = new AndEntryContext(_localctx);
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(39);
-				match(T__5);
-				setState(40);
-				tabEntry();
+				}
 				setState(41);
-				tabLine();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(42);
+			match(T__4);
 			}
 		}
 		catch (RecognitionException re) {
@@ -359,18 +330,37 @@ public class TabularParser extends Parser {
 	}
 
 	public static class TabEntryContext extends ParserRuleContext {
-		public TerminalNode TEXT() { return getToken(TabularParser.TEXT, 0); }
 		public TabEntryContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tabEntry; }
+	 
+		public TabEntryContext() { }
+		public void copyFrom(TabEntryContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class AndContext extends TabEntryContext {
+		public AndContext(TabEntryContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TabularListener ) ((TabularListener)listener).enterTabEntry(this);
+			if ( listener instanceof TabularListener ) ((TabularListener)listener).enterAnd(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TabularListener ) ((TabularListener)listener).exitTabEntry(this);
+			if ( listener instanceof TabularListener ) ((TabularListener)listener).exitAnd(this);
+		}
+	}
+	public static class TextContext extends TabEntryContext {
+		public TerminalNode TEXT() { return getToken(TabularParser.TEXT, 0); }
+		public TextContext(TabEntryContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof TabularListener ) ((TabularListener)listener).enterText(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof TabularListener ) ((TabularListener)listener).exitText(this);
 		}
 	}
 
@@ -378,10 +368,26 @@ public class TabularParser extends Parser {
 		TabEntryContext _localctx = new TabEntryContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_tabEntry);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(45);
-			match(TEXT);
+			setState(46);
+			switch (_input.LA(1)) {
+			case TEXT:
+				_localctx = new TextContext(_localctx);
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(44);
+				match(TEXT);
+				}
+				break;
+			case T__5:
+				_localctx = new AndContext(_localctx);
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(45);
+				match(T__5);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -419,11 +425,11 @@ public class TabularParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(47);
-			match(T__6);
 			setState(48);
-			endType();
+			match(T__6);
 			setState(49);
+			endType();
+			setState(50);
 			match(T__1);
 			}
 		}
@@ -459,7 +465,7 @@ public class TabularParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(51);
+			setState(52);
 			match(T__2);
 			}
 		}
@@ -475,19 +481,20 @@ public class TabularParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\r8\4\2\t\2\4\3\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\r9\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\3\2\7\2\26"+
 		"\n\2\f\2\16\2\31\13\2\3\2\3\2\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3\5\3\5\3\5"+
-		"\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6.\n\6\3\7\3\7\3\b\3\b\3\b\3\b\3\t\3\t"+
-		"\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\61\2\22\3\2\2\2\4\34\3\2\2\2\6 \3\2\2"+
-		"\2\b\"\3\2\2\2\n-\3\2\2\2\f/\3\2\2\2\16\61\3\2\2\2\20\65\3\2\2\2\22\23"+
-		"\5\4\3\2\23\27\5\b\5\2\24\26\5\n\6\2\25\24\3\2\2\2\26\31\3\2\2\2\27\25"+
-		"\3\2\2\2\27\30\3\2\2\2\30\32\3\2\2\2\31\27\3\2\2\2\32\33\5\16\b\2\33\3"+
-		"\3\2\2\2\34\35\7\3\2\2\35\36\5\6\4\2\36\37\7\4\2\2\37\5\3\2\2\2 !\7\5"+
-		"\2\2!\7\3\2\2\2\"#\7\6\2\2#$\7\n\2\2$%\7\4\2\2%\t\3\2\2\2&\'\5\f\7\2\'"+
-		"(\7\7\2\2(.\3\2\2\2)*\7\b\2\2*+\5\f\7\2+,\5\n\6\2,.\3\2\2\2-&\3\2\2\2"+
-		"-)\3\2\2\2.\13\3\2\2\2/\60\7\13\2\2\60\r\3\2\2\2\61\62\7\t\2\2\62\63\5"+
-		"\20\t\2\63\64\7\4\2\2\64\17\3\2\2\2\65\66\7\5\2\2\66\21\3\2\2\2\4\27-";
+		"\3\6\7\6(\n\6\f\6\16\6+\13\6\3\6\3\6\3\7\3\7\5\7\61\n\7\3\b\3\b\3\b\3"+
+		"\b\3\t\3\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\63\2\22\3\2\2\2\4\34\3\2\2"+
+		"\2\6 \3\2\2\2\b\"\3\2\2\2\n)\3\2\2\2\f\60\3\2\2\2\16\62\3\2\2\2\20\66"+
+		"\3\2\2\2\22\23\5\4\3\2\23\27\5\b\5\2\24\26\5\n\6\2\25\24\3\2\2\2\26\31"+
+		"\3\2\2\2\27\25\3\2\2\2\27\30\3\2\2\2\30\32\3\2\2\2\31\27\3\2\2\2\32\33"+
+		"\5\16\b\2\33\3\3\2\2\2\34\35\7\3\2\2\35\36\5\6\4\2\36\37\7\4\2\2\37\5"+
+		"\3\2\2\2 !\7\5\2\2!\7\3\2\2\2\"#\7\6\2\2#$\7\n\2\2$%\7\4\2\2%\t\3\2\2"+
+		"\2&(\5\f\7\2\'&\3\2\2\2(+\3\2\2\2)\'\3\2\2\2)*\3\2\2\2*,\3\2\2\2+)\3\2"+
+		"\2\2,-\7\7\2\2-\13\3\2\2\2.\61\7\13\2\2/\61\7\b\2\2\60.\3\2\2\2\60/\3"+
+		"\2\2\2\61\r\3\2\2\2\62\63\7\t\2\2\63\64\5\20\t\2\64\65\7\4\2\2\65\17\3"+
+		"\2\2\2\66\67\7\5\2\2\67\21\3\2\2\2\5\27)\60";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

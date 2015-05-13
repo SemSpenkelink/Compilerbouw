@@ -6,9 +6,9 @@ latex	: begin arg tabLine* end;
 begin	: '\\begin{' begType '}';
 begType : 'tabular';
 arg		: '{' ARGTYPE '}';
-tabLine : tabEntry '\\\\'		#onlyEntry
-		| '&' tabEntry tabLine	#andEntry;
-tabEntry: TEXT;
+tabLine : tabEntry* '\\\\';
+tabEntry: TEXT 				#text
+		| '&'				#and;
 end		: '\\end{' endType '}';
 endType : 'tabular';
 
