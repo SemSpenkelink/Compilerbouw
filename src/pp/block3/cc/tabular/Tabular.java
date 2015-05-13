@@ -72,7 +72,9 @@ public class Tabular extends TabularBaseListener{
 		ParseTreeWalker walker = new ParseTreeWalker();			//
 		walker.walk(this, tree);								// Walking the tree
 		
-		if(listener.getErrorMessages().size()>0){return false;}
+		if(listener.getErrorMessages().size()>0){
+			System.out.println(listener.getErrorMessages());
+			return false;}
 	
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
