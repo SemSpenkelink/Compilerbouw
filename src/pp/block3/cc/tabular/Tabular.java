@@ -2,6 +2,8 @@ package pp.block3.cc.tabular;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +48,29 @@ public class Tabular extends TabularBaseListener{
 	}
 	
 	@Override public void exitTabLine(TabularParser.TabLineContext ctx) {
-		result.concat("</tr>");
+		result.concat("</td></tr>");
 	}
+	
+	
+	@Override public void enterText(TabularParser.TextContext ctx) {
+		result.concat(ctx.getText()); //nog ff checkke 
+		System.out.println(ctx.getText());
+	}
+	
+	@Override public void exitText(TabularParser.TextContext ctx) { }
+	
+	@Override public void enterAnd(TabularParser.AndContext ctx) {
+		result.concat("</td><td>"); 
+		}
+
+	@Override public void exitAnd(TabularParser.AndContext ctx) { }
+	
 
 	@Override public void enterEnd(TabularParser.EndContext ctx) { }
 
-	@Override public void exitEnd(TabularParser.EndContext ctx) { }
+	@Override public void exitEnd(TabularParser.EndContext ctx) {
+	//	result.concat("");
+	}
 	
 	@Override public void enterEndType(TabularParser.EndTypeContext ctx) { }
 
@@ -66,10 +85,28 @@ public class Tabular extends TabularBaseListener{
 	
 	@Override public void visitErrorNode(ErrorNode node) { }
 	
+	public void writeFile(){
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter("output.html", "UTF-8");
+		
+		writer.println(result);
+		writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public static void main(String args[]){
+		Tabular myTabular = new Tabular();
 		if(args.length >0){
-			new Tabular().init(args[0]);
+			if(myTabular.init(args[0])){
+				myTabular.writeFile();
+				}
 		}else{System.out.println("No file was specified.");}
 	}
 	
