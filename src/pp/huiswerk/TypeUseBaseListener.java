@@ -41,13 +41,37 @@ public class TypeUseBaseListener implements TypeUseListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnit(TypeUseParser.UnitContext ctx) { }
+	@Override public void enterDec(TypeUseParser.DecContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUnit(TypeUseParser.UnitContext ctx) { }
+	@Override public void exitDec(TypeUseParser.DecContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAss(TypeUseParser.AssContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAss(TypeUseParser.AssContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSer(TypeUseParser.SerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSer(TypeUseParser.SerContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
