@@ -41,9 +41,13 @@ public class Tabular extends TabularBaseListener{
 	
 	@Override public void exitArg(TabularParser.ArgContext ctx) { }
 	
-	@Override public void enterTabLine(TabularParser.TabLineContext ctx) { }
+	@Override public void enterTabLine(TabularParser.TabLineContext ctx) {
+		result.concat("<tr><td>");
+	}
 	
-	@Override public void exitTabLine(TabularParser.TabLineContext ctx) { }
+	@Override public void exitTabLine(TabularParser.TabLineContext ctx) {
+		result.concat("</tr>");
+	}
 
 	@Override public void enterEnd(TabularParser.EndContext ctx) { }
 
