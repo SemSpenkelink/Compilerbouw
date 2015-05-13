@@ -62,19 +62,21 @@ public class Tabular extends TabularBaseListener{
 		
 		Lexer tabLexer = new TabularLexer(chars);
 		
-		tabLexer.removeErrorListeners();			//
 		MyListener listener = new MyListener();		//	Adding custom error listener
-		tabLexer.addErrorListener(listener);		//
 		
 		TokenStream tokens2 = new CommonTokenStream(tabLexer);	//
 		TabularParser parser2 = new TabularParser(tokens2);		//
+		parser2.removeErrorListeners();
+		parser2.addErrorListener(listener);
 		ParseTree tree=parser2.latex();							// 
+		if(listener.getErrorMessages().size()>0){
+			System.out.println(listener.getErrorMessages());
+			return false;
+		}
 		ParseTreeWalker walker = new ParseTreeWalker();			//
 		walker.walk(this, tree);								// Walking the tree
 		
-		if(listener.getErrorMessages().size()>0){
-			System.out.println(listener.getErrorMessages());
-			return false;}
+		
 	
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

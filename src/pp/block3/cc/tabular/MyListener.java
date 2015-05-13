@@ -24,22 +24,7 @@ public class MyListener extends BaseErrorListener{
 	
 	@Override
 	public void syntaxError(Recognizer<?, ?> recognizer, java.lang.Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e){
-		try {
-			PipedOutputStream pipeOut = new PipedOutputStream();
-			PipedInputStream pipeIn = new PipedInputStream(pipeOut);
-			System.setErr(new PrintStream(pipeOut));
-			baseErrListener.syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e);
-			String output = "";
-			int nextChar;
-			while((nextChar = pipeIn.read()) != -1){
-				output += (char) nextChar;				
-			}
-			errorMessages.add(output);
-			pipeIn.close();
-			pipeOut.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		errorMessages.add("line " + line + ":" + charPositionInLine + " " + msg);
 	}
 	
 	public List<String> getErrorMessages(){
