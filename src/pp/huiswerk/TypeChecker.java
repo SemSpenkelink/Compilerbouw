@@ -16,7 +16,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.Lexer;
 
 import pp.huiswerk.SymbolTableImplHW;
-import pp.huiswerk.TypeUseParser.ProgramContext;
 
 public class TypeChecker extends TypeUseBaseListener{
 	SymbolTableImplHW myImpl;
@@ -85,16 +84,16 @@ public class TypeChecker extends TypeUseBaseListener{
 		return "Found error at line " + line + ", position " + charPos + ".";
 	}
 	
-	private String getMessage(ParseTree ctx){
+	/* private String getMessage(ParseTree ctx){
 		String text = ctx.getText();
 		if(text.startsWith("ID:ID"))
 			return text.substring(2);
 		else
 			return text;
-	}
+	} */
 	
 	public static void main(String args[]){
-		String text = "";
+		String text = "(   rhaegal: Dragon; jon: Snow; eddard: Stark;(   viserion: Dragon; tywin: Lannister;(   eddard: Dead;)viserion := rhaegal;(   rhaegal := viserion;jon: Stark; jon := eddard;)tyrion: Lannister; tyrion := tywin; tywin: Dead;jon: Dead;))";
 		ParseTreeWalker walker = new ParseTreeWalker();
 		TypeChecker gram = new TypeChecker();
 		CharStream chars = new ANTLRInputStream(text);
