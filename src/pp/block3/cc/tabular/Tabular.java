@@ -1,9 +1,11 @@
 package pp.block3.cc.tabular;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +26,11 @@ public class Tabular extends TabularBaseListener{
 	String result= "";
 	
 	@Override public void enterLatex(TabularParser.LatexContext ctx) {
-		result.concat("<html><body><table border=\"1\">");
+		result += ("<html><body><table border=\"1\">");
 	}
 	
 	@Override public void exitLatex(TabularParser.LatexContext ctx) {
-		result.concat("</table></body></body>");
+		result += ("</table></body></body>");
 	}
 	
 	@Override public void enterBegin(TabularParser.BeginContext ctx) { }
@@ -44,23 +46,22 @@ public class Tabular extends TabularBaseListener{
 	@Override public void exitArg(TabularParser.ArgContext ctx) { }
 	
 	@Override public void enterTabLine(TabularParser.TabLineContext ctx) {
-		result.concat("<tr><td>");
+		result += ("<tr><td>");
 	}
 	
 	@Override public void exitTabLine(TabularParser.TabLineContext ctx) {
-		result.concat("</td></tr>");
+		result += ("</td></tr>");
 	}
 	
 	
 	@Override public void enterText(TabularParser.TextContext ctx) {
-		result.concat(ctx.getText()); //nog ff checkke 
-		System.out.println(ctx.getText());
+		result += (ctx.getText());
 	}
 	
 	@Override public void exitText(TabularParser.TextContext ctx) { }
 	
 	@Override public void enterAnd(TabularParser.AndContext ctx) {
-		result.concat("</td><td>"); 
+		result += ("</td><td>"); 
 		}
 
 	@Override public void exitAnd(TabularParser.AndContext ctx) { }
@@ -86,16 +87,18 @@ public class Tabular extends TabularBaseListener{
 	@Override public void visitErrorNode(ErrorNode node) { }
 	
 	public void writeFile(){
-		PrintWriter writer;
 		try {
-			writer = new PrintWriter("output.html", "UTF-8");
-		
-		writer.println(result);
-		writer.close();
+			Writer writer = new FileWriter("output.html");
+			System.out.println(result);
+			writer.write(result);
+			writer.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -117,7 +120,7 @@ public class Tabular extends TabularBaseListener{
 		TabularParser parser2 = new TabularParser(tokens2);		//
 		ParseTree tree=parser2.latex();							// 
 		ParseTreeWalker walker = new ParseTreeWalker();			//
-		walker.walk(new Tabular(), tree);						// Walking the tree
+		walker.walk(this, tree);								// Walking the tree
 		
 		if(listener.getErrorMessages().size()>0){return false;}
 	
@@ -137,7 +140,7 @@ public class Tabular extends TabularBaseListener{
 		if(args.length >0){
 			if(myTabular.init(args[0])){
 				myTabular.writeFile();
-				}
+			}
 		}else{System.out.println("No file was specified.");}
 	}
 }
