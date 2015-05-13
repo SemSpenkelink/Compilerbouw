@@ -3,24 +3,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.runtime.tree.TerminalNode;
 public class Tabular extends TabularBaseListener{
 	
 	String result= "";
@@ -33,18 +25,6 @@ public class Tabular extends TabularBaseListener{
 		result += ("</table></body></body>");
 	}
 	
-	@Override public void enterBegin(TabularParser.BeginContext ctx) { }
-	
-	@Override public void exitBegin(TabularParser.BeginContext ctx) { }
-	
-	@Override public void enterBegType(TabularParser.BegTypeContext ctx) { }
-	
-	@Override public void exitBegType(TabularParser.BegTypeContext ctx) { }
-	
-	@Override public void enterArg(TabularParser.ArgContext ctx) { }
-	
-	@Override public void exitArg(TabularParser.ArgContext ctx) { }
-	
 	@Override public void enterTabLine(TabularParser.TabLineContext ctx) {
 		result += ("<tr><td>");
 	}
@@ -53,57 +33,27 @@ public class Tabular extends TabularBaseListener{
 		result += ("</td></tr>");
 	}
 	
-	
 	@Override public void enterText(TabularParser.TextContext ctx) {
 		result += (ctx.getText());
 	}
 	
-	@Override public void exitText(TabularParser.TextContext ctx) { }
-	
 	@Override public void enterAnd(TabularParser.AndContext ctx) {
 		result += ("</td><td>"); 
-		}
-
-	@Override public void exitAnd(TabularParser.AndContext ctx) { }
-	
-
-	@Override public void enterEnd(TabularParser.EndContext ctx) { }
-
-	@Override public void exitEnd(TabularParser.EndContext ctx) {
-	//	result.concat("");
 	}
-	
-	@Override public void enterEndType(TabularParser.EndTypeContext ctx) { }
-
-	@Override public void exitEndType(TabularParser.EndTypeContext ctx) { }
-
-	
-	@Override public void enterEveryRule(ParserRuleContext ctx) { }
-	
-	@Override public void exitEveryRule(ParserRuleContext ctx) { }
-
-	@Override public void visitTerminal(TerminalNode node) { }
-	
-	@Override public void visitErrorNode(ErrorNode node) { }
 	
 	public void writeFile(){
 		try {
 			Writer writer = new FileWriter("output.html");
-			System.out.println(result);
 			writer.write(result);
 			writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
 	
 	private boolean init(String text) {
 		CharStream chars;
@@ -125,10 +75,8 @@ public class Tabular extends TabularBaseListener{
 		if(listener.getErrorMessages().size()>0){return false;}
 	
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true; 

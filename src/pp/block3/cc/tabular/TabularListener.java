@@ -1,6 +1,5 @@
 // Generated from Tabular.g4 by ANTLR 4.5
 package pp.block3.cc.tabular;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
