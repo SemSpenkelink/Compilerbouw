@@ -8,8 +8,8 @@ sign   returns [ boolean negative ]
 	   | s0='-'			 { $negative=true;  } 
 	   ;
 list   returns [ int position, int value ]
-	   : List1=list Bit0=bit  { $List1.position=$position+1; $Bit0.position=$position; $value=$List1.value+$Bit0.value; }
-	   | Bit1=bit			  { $Bit1.position=$position; $value=$Bit1.value; }
+	   : { $List1.position=$position+1; $Bit0.position=$position; } Bit0=bit List1=list	{ $value=$List1.value+$Bit0.value; }
+	   | { $Bit1.position=$position; }								Bit1=bit			{ $value=$Bit1.value; }
 	   ;
 bit	   returns [ int position, int value ]
 	   : b0='1' 		 { $value= (1 << $position); }
