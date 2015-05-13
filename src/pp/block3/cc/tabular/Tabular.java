@@ -101,14 +101,6 @@ public class Tabular extends TabularBaseListener{
 		}
 	}
 	
-	public static void main(String args[]){
-		Tabular myTabular = new Tabular();
-		if(args.length >0){
-			if(myTabular.init(args[0])){
-				myTabular.writeFile();
-				}
-		}else{System.out.println("No file was specified.");}
-	}
 	
 	private boolean init(String text) {
 		CharStream chars;
@@ -137,5 +129,15 @@ public class Tabular extends TabularBaseListener{
 			e.printStackTrace();
 		}
 		return true; 
+	}
+	
+
+	public static void main(String args[]){
+		Tabular myTabular = new Tabular();
+		if(args.length >0){
+			if(myTabular.init(args[0])){
+				myTabular.writeFile();
+				}
+		}else{System.out.println("No file was specified.");}
 	}
 }
