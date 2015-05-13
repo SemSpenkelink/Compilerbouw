@@ -178,26 +178,56 @@ public class TypeUseParser extends Parser {
 	}
 
 	public static class UnitContext extends ParserRuleContext {
-		public DeclContext decl() {
-			return getRuleContext(DeclContext.class,0);
-		}
-		public AssignContext assign() {
-			return getRuleContext(AssignContext.class,0);
-		}
-		public SeriesContext series() {
-			return getRuleContext(SeriesContext.class,0);
-		}
 		public UnitContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_unit; }
+	 
+		public UnitContext() { }
+		public void copyFrom(UnitContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class AssContext extends UnitContext {
+		public AssignContext assign() {
+			return getRuleContext(AssignContext.class,0);
+		}
+		public AssContext(UnitContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeUseListener ) ((TypeUseListener)listener).enterUnit(this);
+			if ( listener instanceof TypeUseListener ) ((TypeUseListener)listener).enterAss(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeUseListener ) ((TypeUseListener)listener).exitUnit(this);
+			if ( listener instanceof TypeUseListener ) ((TypeUseListener)listener).exitAss(this);
+		}
+	}
+	public static class SerContext extends UnitContext {
+		public SeriesContext series() {
+			return getRuleContext(SeriesContext.class,0);
+		}
+		public SerContext(UnitContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof TypeUseListener ) ((TypeUseListener)listener).enterSer(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof TypeUseListener ) ((TypeUseListener)listener).exitSer(this);
+		}
+	}
+	public static class DecContext extends UnitContext {
+		public DeclContext decl() {
+			return getRuleContext(DeclContext.class,0);
+		}
+		public DecContext(UnitContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof TypeUseListener ) ((TypeUseListener)listener).enterDec(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof TypeUseListener ) ((TypeUseListener)listener).exitDec(this);
 		}
 	}
 
@@ -208,6 +238,7 @@ public class TypeUseParser extends Parser {
 			setState(26);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
+				_localctx = new DecContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(20);
@@ -215,6 +246,7 @@ public class TypeUseParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new AssContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(21);
@@ -222,6 +254,7 @@ public class TypeUseParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new SerContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(22);

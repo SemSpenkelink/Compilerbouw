@@ -29,15 +29,41 @@ public interface TypeUseListener extends ParseTreeListener {
 	 */
 	void exitSeries(TypeUseParser.SeriesContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TypeUseParser#unit}.
+	 * Enter a parse tree produced by the {@code dec}
+	 * labeled alternative in {@link TypeUseParser#unit}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnit(TypeUseParser.UnitContext ctx);
+	void enterDec(TypeUseParser.DecContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TypeUseParser#unit}.
+	 * Exit a parse tree produced by the {@code dec}
+	 * labeled alternative in {@link TypeUseParser#unit}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnit(TypeUseParser.UnitContext ctx);
+	void exitDec(TypeUseParser.DecContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ass}
+	 * labeled alternative in {@link TypeUseParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void enterAss(TypeUseParser.AssContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ass}
+	 * labeled alternative in {@link TypeUseParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void exitAss(TypeUseParser.AssContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ser}
+	 * labeled alternative in {@link TypeUseParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void enterSer(TypeUseParser.SerContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ser}
+	 * labeled alternative in {@link TypeUseParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void exitSer(TypeUseParser.SerContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TypeUseParser#decl}.
 	 * @param ctx the parse tree

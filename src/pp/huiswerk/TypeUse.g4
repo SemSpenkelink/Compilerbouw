@@ -2,7 +2,10 @@ grammar TypeUse;
 
 program : '(' series ')' ;
 series : unit * ;
-unit : decl | assign | '(' series ')' ;
+unit : decl 			#dec
+	 | assign			#ass
+	 | '(' series ')' 	#ser
+	 ;
 decl : ID ':' ID ';' ;
 assign : ID ':=' ID ';' ;
 
