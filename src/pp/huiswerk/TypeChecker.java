@@ -4,7 +4,14 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import pp.huiswerk.SymbolTableImplHW;
+
 public class TypeChecker extends TypeUseBaseListener{
+	SymbolTableImplHW myImpl;
+	
+	public void init(){
+		myImpl = new SymbolTableImplHW();
+	}
 	
 	@Override public void enterProgram(TypeUseParser.ProgramContext ctx) { }
 	
