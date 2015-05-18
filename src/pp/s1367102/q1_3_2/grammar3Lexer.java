@@ -1,5 +1,5 @@
 // Generated from grammar3.g4 by ANTLR 4.5
-package pp.huiswerk;
+package pp.s1367102.q1_3_2;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
