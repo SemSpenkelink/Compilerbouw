@@ -1,4 +1,4 @@
-// Generated from grammar3.g4 by ANTLR 4.4
+// Generated from grammar3.g4 by ANTLR 4.5
 package pp.huiswerk;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -9,13 +9,43 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface grammar3Listener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link grammar3Parser#r}.
+	 * Enter a parse tree produced by {@link grammar3Parser#e}.
 	 * @param ctx the parse tree
 	 */
-	void enterR(@NotNull grammar3Parser.RContext ctx);
+	void enterE(grammar3Parser.EContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link grammar3Parser#r}.
+	 * Exit a parse tree produced by {@link grammar3Parser#e}.
 	 * @param ctx the parse tree
 	 */
-	void exitR(@NotNull grammar3Parser.RContext ctx);
+	void exitE(grammar3Parser.EContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link grammar3Parser#f}.
+	 * @param ctx the parse tree
+	 */
+	void enterF(grammar3Parser.FContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link grammar3Parser#f}.
+	 * @param ctx the parse tree
+	 */
+	void exitF(grammar3Parser.FContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link grammar3Parser#g}.
+	 * @param ctx the parse tree
+	 */
+	void enterG(grammar3Parser.GContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link grammar3Parser#g}.
+	 * @param ctx the parse tree
+	 */
+	void exitG(grammar3Parser.GContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link grammar3Parser#a}.
+	 * @param ctx the parse tree
+	 */
+	void enterA(grammar3Parser.AContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link grammar3Parser#a}.
+	 * @param ctx the parse tree
+	 */
+	void exitA(grammar3Parser.AContext ctx);
 }
