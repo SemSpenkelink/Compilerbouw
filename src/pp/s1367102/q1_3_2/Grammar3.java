@@ -1,4 +1,4 @@
-package pp.huiswerk;
+package pp.s1367102.q1_3_2;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -22,23 +22,25 @@ public class Grammar3 extends grammar3BaseListener{
 		grammar3Parser parser = new grammar3Parser(new CommonTokenStream(lexer)); 
 		ParseTree tree = parser.e();
 		new ParseTreeWalker().walk(this, tree);
-	}
-	
-	@Override public void enterR(@NotNull grammar3Parser.RContext ctx) {computeDepth(ctx);
-	}
-	
-	@Override public void exitR(@NotNull grammar3Parser.RContext ctx) {computeDepth(ctx); }
-
-	
-	@Override public void enterEveryRule(@NotNull ParserRuleContext ctx) {computeDepth(ctx); }
-	
-	@Override public void exitEveryRule(@NotNull ParserRuleContext ctx) {computeDepth(ctx); }
-	
-	@Override public void visitTerminal(@NotNull TerminalNode node) {setDepth(node, 1);
 		
 	}
 	
-	@Override public void visitErrorNode(@NotNull ErrorNode node) {setDepth(node, 1); }
+	
+	
+	@Override public void exitE(grammar3Parser.EContext ctx) {computeDepth(ctx); }
+	
+	
+	@Override public void exitF(grammar3Parser.FContext ctx) {computeDepth(ctx); }
+	
+	
+	@Override public void exitG(grammar3Parser.GContext ctx) {computeDepth(ctx); }
+
+	
+	@Override public void exitA(grammar3Parser.AContext ctx) {computeDepth(ctx); }
+
+	@Override public void visitTerminal(TerminalNode node) {setDepth(node, 1); }
+
+	@Override public void visitErrorNode(ErrorNode node) { setDepth(node, 1);}
 	
 	private void computeDepth(ParseTree tree) {
 		int depth = 1;
@@ -60,6 +62,7 @@ public class Grammar3 extends grammar3BaseListener{
 	
 	public static void main(String args[]){
 		Grammar3 myGram = new Grammar3();
-	
+		myGram.init("a[i+1] + b.field");
+		System.out.println(myGram.depths);
 	}
 }
