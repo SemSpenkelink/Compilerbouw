@@ -10,6 +10,10 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
 import pp.block4.cc.ErrorListener;
 import pp.block4.cc.cfg.FragmentParser.ProgramContext;
 
@@ -18,6 +22,9 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 	/** The CFG being built. */
 	private Graph graph;
 
+	ParseTreeProperty<Node> entry = new ParseTreeProperty<Node>();
+	ParseTreeProperty<Node> exit = new ParseTreeProperty<Node>();
+	
 	/** Builds the CFG for a program contained in a given file. */
 	public Graph build(File file) {
 		Graph result = null;
@@ -73,4 +80,65 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 			System.out.println(builder.build(file));
 		}
 	}
+	
+	public void awesomeMethod(ParserRuleContext ctx){
+		entry.put(ctx, addNode(ctx, ctx.getText()));
+		exit.put(ctx, addNode(ctx, ctx.getText()));
+		
+		entry.get(ctx.getParent()).addEdge(entry.get(ctx));
+		exit.get(ctx).addEdge(exit.get(ctx.getParent()));
+		
+	}
+	
+	@Override public void enterBlockStat(@NotNull FragmentParser.BlockStatContext ctx) {
+		awesomeMethod(ctx);
+	}
+
+	@Override public void enterContStat(@NotNull FragmentParser.ContStatContext ctx) {awesomeMethod(ctx); }
+	
+	@Override public void enterDecl(@NotNull FragmentParser.DeclContext ctx) {awesomeMethod(ctx); }
+
+	@Override public void enterPrintStat(@NotNull FragmentParser.PrintStatContext ctx) {awesomeMethod(ctx); }
+	
+	@Override public void enterProgram(@NotNull FragmentParser.ProgramContext ctx) {awesomeMethod(ctx); }
+	
+	@Override public void enterType(@NotNull FragmentParser.TypeContext ctx) { awesomeMethod(ctx);}
+
+	@Override public void enterParExpr(@NotNull FragmentParser.ParExprContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterArrayTarget(@NotNull FragmentParser.ArrayTargetContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterCompExpr(@NotNull FragmentParser.CompExprContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterBitAndExpr(@NotNull FragmentParser.BitAndExprContext ctx) { awesomeMethod(ctx);}
+
+	@Override public void enterWhileStat(@NotNull FragmentParser.WhileStatContext ctx) { awesomeMethod(ctx);}
+
+	@Override public void enterIfStat(@NotNull FragmentParser.IfStatContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterIdTarget(@NotNull FragmentParser.IdTargetContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterArrayExpr(@NotNull FragmentParser.ArrayExprContext ctx) { awesomeMethod(ctx);}
+
+	@Override public void enterInExpr(@NotNull FragmentParser.InExprContext ctx) { awesomeMethod(ctx);}
+
+	@Override public void enterOrExpr(@NotNull FragmentParser.OrExprContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterBreakStat(@NotNull FragmentParser.BreakStatContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterFieldExpr(@NotNull FragmentParser.FieldExprContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterBitOrExpr(@NotNull FragmentParser.BitOrExprContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterNotExpr(@NotNull FragmentParser.NotExprContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterAddExpr(@NotNull FragmentParser.AddExprContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterAssignStat(@NotNull FragmentParser.AssignStatContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterConstExpr(@NotNull FragmentParser.ConstExprContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterIdExpr(@NotNull FragmentParser.IdExprContext ctx) { awesomeMethod(ctx);}
+	
+	@Override public void enterAndExpr(@NotNull FragmentParser.AndExprContext ctx) { awesomeMethod(ctx);}
 }
