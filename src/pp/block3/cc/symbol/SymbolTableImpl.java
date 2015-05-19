@@ -24,7 +24,7 @@ public class SymbolTableImpl implements SymbolTable{
 	@Override
 	public void closeScope() {
 		if(treeStack.size() <= 1){
-			throw new RuntimeException();
+			throw new RuntimeException("Cannot close scope.");
 		}
 		treeStack.pop();
 	}
