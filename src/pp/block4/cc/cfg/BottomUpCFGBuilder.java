@@ -84,15 +84,15 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 		}
 	}
 	
-	public void awesomeMethod(ParseTree ctx){
-		Node tmpEntry = new Node(counter); counter++;
-		Node tmpExit = new Node(counter);	counter++;
-			for(int i = 0; i < ctx.getChildCount();i++){
-				tmpEntry.addEdge(entry.get(ctx.getChild(i)));
-				entry.get(ctx.getChild(i)).addEdge(tmpExit);
-			}
-		entry.put(ctx, tmpEntry);
-		exit.put(ctx, tmpExit);
+	public void awesomeMethod(ParserRuleContext ctx){
+		Node entryNode = addNode(ctx, ctx.getText());
+		Node exitNode = addNode(ctx, ctx.getText());
+		for(int i = 0; i < ctx.getChildCount(); i++){
+			entryNode.addEdge(entry.get(ctx.getChild(i)));
+			exit.get(ctx.getChild(i)).addEdge(exitNode);
+		}
+		entry.put(ctx, entryNode);
+		exit.put(ctx, exitNode);
 	}
 	
 	@Override public void exitBlockStat(@NotNull FragmentParser.BlockStatContext ctx) {
@@ -148,7 +148,7 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 	@Override public void exitAndExpr(@NotNull FragmentParser.AndExprContext ctx) { awesomeMethod(ctx);}
 
 	@Override public void visitTerminal(@NotNull TerminalNode node) {
-		Node tmp = new Node(counter);
+		Node tmp = addNode(null, node.getText());
 		entry.put(node, tmp);
 		exit.put(node, tmp);
 	}
