@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import pp.block4.cc.ErrorListener;
@@ -59,7 +60,9 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 	/** Builds the CFG for a program given as an ANTLR parse tree. */
 	public Graph build(ParseTree tree) {
 		this.graph = new Graph();
-		
+		ParseTreeWalker walker = new ParseTreeWalker();
+		walker.walk(this, tree);
+		return graph;
 	}
 
 	/** Adds a node to he CGF, based on a given parse tree node.
@@ -148,7 +151,7 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 	@Override public void exitAndExpr(@NotNull FragmentParser.AndExprContext ctx) { awesomeMethod(ctx);}
 
 	@Override public void visitTerminal(@NotNull TerminalNode node) {
-		Node tmp = addNode(null, node.getText());
+		Node tmp = this.graph.addNode(node.getSymbol().getLine() + ": " + node.getText());
 		entry.put(node, tmp);
 		exit.put(node, tmp);
 	}
