@@ -9,7 +9,7 @@ fragment HEX : '0'..'9' | 'A'..'F';
 BININT: 	'0b'(BIN | (BIN (BIN | '_' )* BIN));
 OCTINT:		'0'	(OCT | (OCT (OCT | '_' )* OCT));
 HEXINT:		'0x'(HEX | (HEX (HEX | '_' )* HEX));
-DECINT:		DEC1 | (DEC1 ((DEC | '_')* DEC));
+DECINT:		DEC | (DEC ((DEC | '_')* DEC));
 
 BINLONG:	'0b'(BIN | (BIN (BIN | '_' )* BIN))	('l' | 'L');
 OCTLONG: 	'0'	(OCT | (OCT (OCT | '_' )* OCT))	('l' | 'L');

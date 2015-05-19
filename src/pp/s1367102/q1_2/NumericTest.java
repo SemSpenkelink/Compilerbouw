@@ -29,11 +29,11 @@ public class NumericTest {
 		tester.correct("0xF__9__2");
 		tester.correct("0b1__0____1");
 		
-		tester.wrong("1_");
-		tester.wrong("324_");
-		tester.wrong("0237_");
-		tester.wrong("0xF92_");
-		tester.wrong("0b101_");
+		
+		tester.wrong("000_");
+		tester.wrong("09_");
+		tester.wrong("0x_P3_");
+		tester.wrong("0b2_");
 		
 		tester.wrong("_1");
 		tester.wrong("_324");
@@ -41,16 +41,16 @@ public class NumericTest {
 		tester.wrong("_0xF92");
 		tester.wrong("_0b101");
 		
-		tester.wrong("0_237");
 		tester.wrong("0_xF92");
 		tester.wrong("0x_F92");
 		tester.wrong("0_b101");
 		tester.wrong("0b_101");
 		
+		
 		tester.yields("1", Numeric.DECINT);
 		tester.yields("324", Numeric.DECINT);
 		tester.yields("0237", Numeric.OCTINT);
-		tester.yields("0xF92", Numeric.HEXINT);
+		tester.yields("0xF_92", Numeric.HEXINT);
 		tester.yields("0b101", Numeric.BININT);
 		
 		tester.yields("1l", Numeric.DECLONG);
@@ -61,6 +61,5 @@ public class NumericTest {
 		tester.yields("0xF92L", Numeric.HEXLONG);
 		tester.yields("0b101l", Numeric.BINLONG);
 		tester.yields("0b101L", Numeric.BINLONG);
-		
 	}
 }

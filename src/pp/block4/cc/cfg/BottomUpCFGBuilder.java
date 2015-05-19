@@ -27,8 +27,6 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 	ParseTreeProperty<Node> entry = new ParseTreeProperty<Node>();
 	ParseTreeProperty<Node> exit = new ParseTreeProperty<Node>();
 	
-	int counter = 1; 
-	
 	/** Builds the CFG for a program contained in a given file. */
 	public Graph build(File file) {
 		Graph result = null;
@@ -88,8 +86,8 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 	}
 	
 	public void awesomeMethod(ParserRuleContext ctx){
-		Node entryNode = addNode(ctx, ctx.getText());
-		Node exitNode = addNode(ctx, ctx.getText());
+		Node entryNode = addNode(ctx, "");
+		Node exitNode = addNode(ctx, "");
 		for(int i = 0; i < ctx.getChildCount(); i++){
 			entryNode.addEdge(entry.get(ctx.getChild(i)));
 			exit.get(ctx.getChild(i)).addEdge(exitNode);
