@@ -13,6 +13,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import pp.block4.cc.ErrorListener;
 import pp.block4.cc.cfg.FragmentParser.ProgramContext;
@@ -56,7 +57,9 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 	/** Builds the CFG for a program given as an ANTLR parse tree. */
 	public Graph build(ProgramContext tree) {
 		this.graph = new Graph();
-		// Fill in
+		ParseTreeWalker walker = new ParseTreeWalker();
+		walker.walk(this,tree);
+		return this.graph;
 	}
 
 	/** Adds a node to he CGF, based on a given parse tree node.
