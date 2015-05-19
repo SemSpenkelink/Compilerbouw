@@ -87,9 +87,10 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 	public void awesomeMethod(ParserRuleContext ctx){
 		entry.put(ctx, addNode(ctx, ctx.getText()));
 		exit.put(ctx, addNode(ctx, ctx.getText()));
-		
-		entry.get(ctx.getParent()).addEdge(entry.get(ctx));
-		exit.get(ctx).addEdge(exit.get(ctx.getParent()));
+		if(ctx.getParent() != null){
+			entry.get(ctx.getParent()).addEdge(entry.get(ctx));
+			exit.get(ctx).addEdge(exit.get(ctx.getParent()));
+		}
 		
 	}
 	
