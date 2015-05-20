@@ -3,6 +3,7 @@ package pp.block4.cc.cfg;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -23,9 +24,6 @@ import pp.block4.cc.ErrorListener;
 public class BottomUpCFGBuilder extends FragmentBaseListener {
 	/** The CFG being built. */
 	private Graph graph;
-	
-	ParseTreeProperty<Node> entry = new ParseTreeProperty<Node>();
-	ParseTreeProperty<Node> exit = new ParseTreeProperty<Node>();
 	
 	/** Builds the CFG for a program contained in a given file. */
 	public Graph build(File file) {
@@ -85,74 +83,34 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 		}
 	}
 	
-	public void awesomeMethod(ParserRuleContext ctx){
-		Node entryNode = addNode(ctx, "");
-		Node exitNode = addNode(ctx, "");
-		for(int i = 0; i < ctx.getChildCount(); i++){
-			entryNode.addEdge(entry.get(ctx.getChild(i)));
-			exit.get(ctx.getChild(i)).addEdge(exitNode);
-		}
-		entry.put(ctx, entryNode);
-		exit.put(ctx, exitNode);
-	}
-	
 	@Override public void exitBlockStat(@NotNull FragmentParser.BlockStatContext ctx) {
-		awesomeMethod(ctx);
+		System.out.println("exitBlockStat");
 	}
-
-	@Override public void exitContStat(@NotNull FragmentParser.ContStatContext ctx) {awesomeMethod(ctx); }
+	@Override public void exitContStat(@NotNull FragmentParser.ContStatContext ctx) {
+		System.out.println("exitContStat");
+	}	
 	
-	@Override public void exitDecl(@NotNull FragmentParser.DeclContext ctx) {awesomeMethod(ctx); }
-
-	@Override public void exitPrintStat(@NotNull FragmentParser.PrintStatContext ctx) {awesomeMethod(ctx); }
-	
-	@Override public void exitProgram(@NotNull FragmentParser.ProgramContext ctx) {awesomeMethod(ctx); }
-	
-	@Override public void exitType(@NotNull FragmentParser.TypeContext ctx) { awesomeMethod(ctx);}
-
-	@Override public void exitParExpr(@NotNull FragmentParser.ParExprContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitArrayTarget(@NotNull FragmentParser.ArrayTargetContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitCompExpr(@NotNull FragmentParser.CompExprContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitBitAndExpr(@NotNull FragmentParser.BitAndExprContext ctx) { awesomeMethod(ctx);}
-
-	@Override public void exitWhileStat(@NotNull FragmentParser.WhileStatContext ctx) { awesomeMethod(ctx);}
-
-	@Override public void exitIfStat(@NotNull FragmentParser.IfStatContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitIdTarget(@NotNull FragmentParser.IdTargetContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitArrayExpr(@NotNull FragmentParser.ArrayExprContext ctx) { awesomeMethod(ctx);}
-
-	@Override public void exitInExpr(@NotNull FragmentParser.InExprContext ctx) { awesomeMethod(ctx);}
-
-	@Override public void exitOrExpr(@NotNull FragmentParser.OrExprContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitBreakStat(@NotNull FragmentParser.BreakStatContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitFieldExpr(@NotNull FragmentParser.FieldExprContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitBitOrExpr(@NotNull FragmentParser.BitOrExprContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitNotExpr(@NotNull FragmentParser.NotExprContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitAddExpr(@NotNull FragmentParser.AddExprContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitAssignStat(@NotNull FragmentParser.AssignStatContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitConstExpr(@NotNull FragmentParser.ConstExprContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitIdExpr(@NotNull FragmentParser.IdExprContext ctx) { awesomeMethod(ctx);}
-	
-	@Override public void exitAndExpr(@NotNull FragmentParser.AndExprContext ctx) { awesomeMethod(ctx);}
-
-	@Override public void visitTerminal(@NotNull TerminalNode node) {
-		Node tmp = this.graph.addNode(node.getSymbol().getLine() + ": " + node.getText());
-		entry.put(node, tmp);
-		exit.put(node, tmp);
+	@Override public void exitDecl(@NotNull FragmentParser.DeclContext ctx) {
+		System.out.println("exitDecl");
 	}
-
-	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
+	
+	@Override public void exitPrintStat(@NotNull FragmentParser.PrintStatContext ctx) {
+		System.out.println("exitPrintStat");
+	}
+	
+	@Override public void exitWhileStat(@NotNull FragmentParser.WhileStatContext ctx) {
+		System.out.println("exitWhileStat");
+	}
+	
+	@Override public void exitIfStat(@NotNull FragmentParser.IfStatContext ctx) {
+		System.out.println("exitIfStat");
+	}
+	
+	@Override public void exitBreakStat(@NotNull FragmentParser.BreakStatContext ctx) {
+		System.out.println("exitBreakStat");
+	}
+	
+	@Override public void exitAssignStat(@NotNull FragmentParser.AssignStatContext ctx) {
+		System.out.println("exitAssignStat");
+	}
 }

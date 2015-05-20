@@ -29,7 +29,6 @@ public class NumericTest {
 		tester.correct("0xF__9__2");
 		tester.correct("0b1__0____1");
 		
-		
 		tester.wrong("000_");
 		tester.wrong("09_");
 		tester.wrong("0x_P3_");
