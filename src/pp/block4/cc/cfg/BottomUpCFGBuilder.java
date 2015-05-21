@@ -73,11 +73,9 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 		List<EnterExitGraph> tmpList = nodeStack.pop();
 		EnterExitGraph tmpGraph = tmpList.get(0);
 		for(int index = 1; index < tmpList.size(); index++){
-			//System.out.println(index);
 			tmpGraph.addGraph(tmpList.get(index));
 		}
 		this.graph = tmpGraph;
-		//System.out.println(tmpGraph.getNodes());
 		return graph;
 	}
 
@@ -151,27 +149,34 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 	}
 	
 	@Override public void exitIfStat(@NotNull FragmentParser.IfStatContext ctx) {
-		EnterExitGraph tmpGraph = new EnterExitGraph();
-		tmpGraph.exitNode = tmpGraph.addEnterNode(counter + ": exitIfStat");
+		EnterExitGraph enterTmpGraph = new EnterExitGraph();
+		EnterExitGraph exitTmpGraph = new EnterExitGraph();
+		enterTmpGraph.exitNode = enterTmpGraph.addEnterNode(counter + ": enterIfStat");
+		counter++;
+		exitTmpGraph.exitNode = exitTmpGraph.addEnterNode(counter + ": exitIfStat");
 		counter++;
 		EnterExitGraph ifBody = null;
 		EnterExitGraph ElseBody = null;
 		if(ctx.ELSE() != null){
 			ifBody = nodeStack.peek().get(nodeStack.peek().size()-2);
 			ElseBody = nodeStack.peek().get(nodeStack.peek().size()-1);
+			nodeStack.peek().remove(ifBody);
+			nodeStack.peek().remove(ElseBody);
 		}else{
 			ifBody = nodeStack.peek().get(nodeStack.peek().size()-1);
+			nodeStack.peek().remove(ifBody);
 		}
-		tmpGraph.addGraph(ifBody);
-		tmpGraph.exitNode.addEdge(tmpGraph.enterNode);
-		tmpGraph.exitNode = tmpGraph.enterNode;
-		if(ElseBody != null){
-			tmpGraph.addGraph(ElseBody);
-			tmpGraph.exitNode.addEdge(tmpGraph.enterNode);
-			tmpGraph.exitNode = tmpGraph.enterNode;
-			nodeStack.peek().remove(nodeStack.peek().size()-1);			
-		}
-		nodeStack.peek().set(nodeStack.peek().size()-1, tmpGraph);
+			
+		enterTmpGraph = enterTmpGraph.addGraph(ifBody);
+		enterTmpGraph.exitNode.addEdge(exitTmpGraph.enterNode);
+		
+		if(ElseBody != null){			
+			enterTmpGraph = enterTmpGraph.addGraph(ElseBody);
+			enterTmpGraph.exitNode.addEdge(exitTmpGraph.enterNode);	
+		}else{
+			enterTmpGraph.enterNode.addEdge(exitTmpGraph.enterNode);
+		}	
+		nodeStack.peek().add(enterTmpGraph);
 	}
 	
 	@Override public void exitBreakStat(@NotNull FragmentParser.BreakStatContext ctx) {
