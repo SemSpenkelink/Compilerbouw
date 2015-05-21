@@ -100,22 +100,68 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 	}
 
 */
+	public void simpleAdd(ParserRuleContext node, String text){
+		Node myNode = addNode(node, text);
+		entry.get(node.getParent()).addEdge(myNode);
+		entry.put(node.getParent(), myNode);
+		if(node.getParent().getChild(node.getParent().getChildCount()-1).equals(node))
+			myNode.addEdge(exit.get(node.getParent()));
+	}
 	
-	@Override public void enterBlockStat(@NotNull FragmentParser.BlockStatContext ctx) { System.out.println("Enter Bock stat");
+	public void aLittleBitMoreComplicatedAdd(ParserRuleContext node, String text){
+		Node enterNode = addNode(node, "enter" + text);
+		Node exitNode = addNode(node, "exit" + text);
+		entry.put(node, enterNode);
+		exit.put(node, exitNode);	
+		entry.get(node.getParent()).addEdge(enterNode);
+		entry.put(node.getParent(), exitNode);
+		if(node.getParent().getChild(node.getParent().getChildCount()-1).equals(node))
+			exitNode.addEdge(exit.get(node.getParent()));	
+	}
+	
+	@Override public void enterProgram(@NotNull FragmentParser.ProgramContext ctx) {
+		System.out.println("Enter Program");
+		entry.put(ctx, addNode(ctx, "Enter Program"));
+		exit.put(ctx, addNode(ctx, "Exit Program"));
+	}
+	
+	@Override public void enterBlockStat(@NotNull FragmentParser.BlockStatContext ctx) {
+		aLittleBitMoreComplicatedAdd(ctx, "BlockStat");
 	}
 
-	@Override public void enterContStat(@NotNull FragmentParser.ContStatContext ctx) {System.out.println("Enter ContStat"); }
+	@Override public void enterContStat(@NotNull FragmentParser.ContStatContext ctx) {simpleAdd(ctx, "enterContStat"); }
 	
-	@Override public void enterDecl(@NotNull FragmentParser.DeclContext ctx) {System.out.println("Enter Decl"); }
+	@Override public void enterDecl(@NotNull FragmentParser.DeclContext ctx) {simpleAdd(ctx, "enterDecl"); }
 
-	@Override public void enterPrintStat(@NotNull FragmentParser.PrintStatContext ctx) {System.out.println("Enter PrintStat"); }
+	@Override public void enterPrintStat(@NotNull FragmentParser.PrintStatContext ctx) {simpleAdd(ctx, "enterPrintStat"); }
 	
-	@Override public void enterWhileStat(@NotNull FragmentParser.WhileStatContext ctx) { System.out.println("Enter Whilestat");}
+	@Override public void enterWhileStat(@NotNull FragmentParser.WhileStatContext ctx) {
+		Node whileNode = addNode(ctx, "While");
+		entry.put(ctx, whileNode);
+		exit.put(ctx, whileNode);
+		
+		entry.get(ctx.getParent()).addEdge(whileNode);
+		entry.put(ctx.getParent(), whileNode);
+		
+		if(ctx.getParent().getChild(ctx.getParent().getChildCount()-1).equals(ctx))
+			whileNode.addEdge(exit.get(ctx.getParent()));
+	}
 
-	@Override public void enterIfStat(@NotNull FragmentParser.IfStatContext ctx) { System.out.println("Enter IfStat");}
+	@Override public void enterIfStat(@NotNull FragmentParser.IfStatContext ctx) {
+		Node ifEnter= addNode(ctx, "enterIf");
+		Node ifExit= addNode(ctx, "exitIf");
+		entry.put(ctx, ifEnter);
+		exit.put(ctx, ifExit);
+		
+		entry.get(ctx.getParent()).addEdge(ifEnter);
+		entry.put(ctx.getParent(), ifExit);
+		
+		if(ctx.getParent().getChild(ctx.getParent().getChildCount()-1).equals(ctx))
+			ifExit.addEdge(exit.get(ctx.getParent()));
+	}
 	
-	@Override public void enterBreakStat(@NotNull FragmentParser.BreakStatContext ctx) {System.out.println("Enter BreakStat");}
+	@Override public void enterBreakStat(@NotNull FragmentParser.BreakStatContext ctx) {simpleAdd(ctx, "enterBreakStat");}
 
-	@Override public void enterAssignStat(@NotNull FragmentParser.AssignStatContext ctx) { System.out.println("Enter AssignStat");}
+	@Override public void enterAssignStat(@NotNull FragmentParser.AssignStatContext ctx) { simpleAdd(ctx, "enterAssignStat");}
 	
 }
