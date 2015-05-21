@@ -3,7 +3,10 @@ package pp.block4.cc.cfg;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -24,6 +27,15 @@ import pp.block4.cc.ErrorListener;
 public class BottomUpCFGBuilder extends FragmentBaseListener {
 	/** The CFG being built. */
 	private Graph graph;
+	
+	private Stack<List<EnterExitGraph>> nodeStack;
+	private int counter;
+	
+	public BottomUpCFGBuilder(){
+		nodeStack = new Stack<List<EnterExitGraph>>();
+		nodeStack.push(new ArrayList<EnterExitGraph>());
+		counter = 0;
+	}
 	
 	/** Builds the CFG for a program contained in a given file. */
 	public Graph build(File file) {
@@ -58,6 +70,13 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 		this.graph = new Graph();
 		ParseTreeWalker walker = new ParseTreeWalker();
 		walker.walk(this, tree);
+		List<EnterExitGraph> tmpList = nodeStack.pop();
+		EnterExitGraph tmpGraph = tmpList.get(0);
+		for(int index = 1; index < tmpList.size(); index++){
+			System.out.println(index);
+			tmpGraph.addGraph(tmpList.get(index));
+		}
+		this.graph = tmpGraph;
 		return graph;
 	}
 
@@ -83,34 +102,112 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 		}
 	}
 	
-	@Override public void exitBlockStat(@NotNull FragmentParser.BlockStatContext ctx) {
-		System.out.println("exitBlockStat");
+	private void simpleAddNode(ParserRuleContext ctx, String msg){
+		EnterExitGraph tmpGraph = new EnterExitGraph();		
+		tmpGraph.exitNode = tmpGraph.addEnterNode(counter + ": " + msg);
+		counter++;
+		nodeStack.peek().add(tmpGraph);
 	}
+	
+	@Override public void enterBlockStat(@NotNull FragmentParser.BlockStatContext ctx) {
+		nodeStack.push(new ArrayList<EnterExitGraph>());
+	}
+	
+	@Override public void exitBlockStat(@NotNull FragmentParser.BlockStatContext ctx) {
+		if(nodeStack.size() >= 2){
+			List<EnterExitGraph> graphs = nodeStack.pop();
+			if(!graphs.isEmpty()){
+				EnterExitGraph tmpGraph = graphs.get(0);
+				for(int index = 1; index < graphs.size(); index++){
+					tmpGraph.addGraph(graphs.get(index));
+				}
+				nodeStack.peek().add(tmpGraph);
+			}
+		}
+	}
+	
 	@Override public void exitContStat(@NotNull FragmentParser.ContStatContext ctx) {
-		System.out.println("exitContStat");
+		simpleAddNode(ctx, "exitContStat");
 	}	
 	
 	@Override public void exitDecl(@NotNull FragmentParser.DeclContext ctx) {
-		System.out.println("exitDecl");
+		simpleAddNode(ctx, "exitDecl");
 	}
 	
 	@Override public void exitPrintStat(@NotNull FragmentParser.PrintStatContext ctx) {
-		System.out.println("exitPrintStat");
+		simpleAddNode(ctx, "exitPrintStat");
 	}
 	
 	@Override public void exitWhileStat(@NotNull FragmentParser.WhileStatContext ctx) {
-		System.out.println("exitWhileStat");
+		EnterExitGraph tmpGraph = new EnterExitGraph();		
+		tmpGraph.exitNode = tmpGraph.addEnterNode(counter + ": exitWhileStat");
+		counter++;
+		EnterExitGraph body = nodeStack.peek().get(nodeStack.peek().size()-1);
+		tmpGraph.addGraph(body);
+		tmpGraph.exitNode.addEdge(tmpGraph.enterNode);
+		tmpGraph.exitNode = tmpGraph.enterNode;
+		nodeStack.peek().set(nodeStack.peek().size()-1, tmpGraph);
 	}
 	
 	@Override public void exitIfStat(@NotNull FragmentParser.IfStatContext ctx) {
-		System.out.println("exitIfStat");
+		EnterExitGraph tmpGraph = new EnterExitGraph();
+		tmpGraph.exitNode = tmpGraph.addEnterNode(counter + ": exitIfStat");
+		EnterExitGraph ifBody = null;
+		EnterExitGraph ElseBody = null;
+		if(ctx.ELSE() != null){
+			ifBody = nodeStack.peek().get(nodeStack.peek().size()-2);
+			ElseBody = nodeStack.peek().get(nodeStack.peek().size()-1);
+		}else{
+			ifBody = nodeStack.peek().get(nodeStack.peek().size()-1);
+		}
+		tmpGraph.addGraph(ifBody);
+		tmpGraph.exitNode.addEdge(tmpGraph.enterNode);
+		tmpGraph.exitNode = tmpGraph.enterNode;
+		if(ElseBody != null){
+			tmpGraph.addGraph(ElseBody);
+			tmpGraph.exitNode.addEdge(tmpGraph.enterNode);
+			tmpGraph.exitNode = tmpGraph.enterNode;
+			nodeStack.peek().remove(nodeStack.peek().size()-1);			
+		}
+		nodeStack.peek().set(nodeStack.peek().size()-1, tmpGraph);
 	}
 	
 	@Override public void exitBreakStat(@NotNull FragmentParser.BreakStatContext ctx) {
-		System.out.println("exitBreakStat");
+		simpleAddNode(ctx, "exitBreakStat");
 	}
 	
 	@Override public void exitAssignStat(@NotNull FragmentParser.AssignStatContext ctx) {
-		System.out.println("exitAssignStat");
+		simpleAddNode(ctx, "exitAssignStat");
+	}
+	
+	private class EnterExitGraph extends Graph{
+		public Node enterNode;
+		public Node exitNode;
+		
+		public Node addEnterNode(){
+			this.enterNode = addNode();
+			return this.enterNode;
+		}
+		
+		public Node addEnterNode(String id){
+			this.enterNode = addNode(id);
+			return this.enterNode;
+		}
+		
+		public Node addExitNode(){
+			this.exitNode = addNode();
+			return this.exitNode;
+		}
+		
+		public Node addExitNode(String id){
+			this.exitNode = addNode(id);
+			return this.exitNode;
+		}
+		
+		public EnterExitGraph addGraph(EnterExitGraph graph){
+			this.exitNode.addEdge(graph.enterNode);
+			this.exitNode = graph.exitNode;
+			return this;
+		}
 	}
 }
