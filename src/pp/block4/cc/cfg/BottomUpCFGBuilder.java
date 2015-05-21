@@ -73,10 +73,11 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 		List<EnterExitGraph> tmpList = nodeStack.pop();
 		EnterExitGraph tmpGraph = tmpList.get(0);
 		for(int index = 1; index < tmpList.size(); index++){
-			System.out.println(index);
+			//System.out.println(index);
 			tmpGraph.addGraph(tmpList.get(index));
 		}
 		this.graph = tmpGraph;
+		//System.out.println(tmpGraph.getNodes());
 		return graph;
 	}
 
@@ -152,6 +153,7 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 	@Override public void exitIfStat(@NotNull FragmentParser.IfStatContext ctx) {
 		EnterExitGraph tmpGraph = new EnterExitGraph();
 		tmpGraph.exitNode = tmpGraph.addEnterNode(counter + ": exitIfStat");
+		counter++;
 		EnterExitGraph ifBody = null;
 		EnterExitGraph ElseBody = null;
 		if(ctx.ELSE() != null){
@@ -205,6 +207,7 @@ public class BottomUpCFGBuilder extends FragmentBaseListener {
 		}
 		
 		public EnterExitGraph addGraph(EnterExitGraph graph){
+			nodes.addAll(graph.getNodes());
 			this.exitNode.addEdge(graph.enterNode);
 			this.exitNode = graph.exitNode;
 			return this;

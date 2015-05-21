@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public class Graph implements Iterable<Node> {
 	/** Set of nodes in this graph. */
-	private final Set<Node> nodes;
+	protected final Set<Node> nodes;
 
 	/** Constructs an initially empty graph. */
 	public Graph() {
