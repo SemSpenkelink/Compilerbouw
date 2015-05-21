@@ -104,7 +104,9 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 		Node myNode = addNode(node, text);
 		entry.get(node.getParent()).addEdge(myNode);
 		entry.put(node.getParent(), myNode);
-		if(node.getParent().getChild(node.getParent().getChildCount()-1).equals(node))
+		if(node.getParent().getChild(node.getParent().getChildCount()-1).equals(node) ||
+				(node.getParent().getChild(node.getParent().getChildCount()-1).getText().equals("}") &&
+						node.getParent().getChild(node.getParent().getChildCount()-2).equals(node)))
 			myNode.addEdge(exit.get(node.getParent()));
 	}
 	
@@ -143,7 +145,9 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 		entry.get(ctx.getParent()).addEdge(whileNode);
 		entry.put(ctx.getParent(), whileNode);
 		
-		if(ctx.getParent().getChild(ctx.getParent().getChildCount()-1).equals(ctx))
+		if(ctx.getParent().getChild(ctx.getParent().getChildCount()-1).equals(ctx) ||
+				(ctx.getParent().getChild(ctx.getParent().getChildCount()-1).getText().equals("}") &&
+						ctx.getParent().getChild(ctx.getParent().getChildCount()-2).equals(ctx)))
 			whileNode.addEdge(exit.get(ctx.getParent()));
 	}
 
@@ -156,7 +160,9 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 		entry.get(ctx.getParent()).addEdge(ifEnter);
 		entry.put(ctx.getParent(), ifExit);
 		
-		if(ctx.getParent().getChild(ctx.getParent().getChildCount()-1).equals(ctx))
+		if(ctx.getParent().getChild(ctx.getParent().getChildCount()-1).equals(ctx) ||
+				(ctx.getParent().getChild(ctx.getParent().getChildCount()-1).getText().equals("}") &&
+						ctx.getParent().getChild(ctx.getParent().getChildCount()-2).equals(ctx)))
 			ifExit.addEdge(exit.get(ctx.getParent()));
 	}
 	
