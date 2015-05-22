@@ -16,8 +16,31 @@ import pp.iloc.parse.FormatException;
 
 @SuppressWarnings("javadoc")
 public class SimulatorTest {
+	
+	@Test
+	public void testMax(){
+		System.out.println("Test Max");
+		Program p = parse("src/pp/block4/cc/iloc/max");
+		Simulator s = new Simulator(p); 
+		Machine c = s.getVM();
+		
+		
+		c.init("a", 2);
+		c.init("b", 6);
+		c.init("c", 4);
+		c.init("alength", 3);
+		c.setReg("r_arp", 0);
+		
+		s.run();
+		if (SHOW) {
+			System.out.println(c);
+		}
+		assertEquals(6,c.getReg("r_max"));
+	}
+	
 	@Test(timeout = 1000)
 	public void testFig13() {
+		System.out.println("Test Figure 123");
 		Program p = parse("fig1-3");
 		Machine c = new Machine();
 		int a = c.init("a", 2);

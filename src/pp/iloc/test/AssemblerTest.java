@@ -16,7 +16,22 @@ import pp.iloc.parse.FormatException;
 
 @SuppressWarnings("javadoc")
 public class AssemblerTest {
+	
 	@Test
+	public void testMax(){
+		Program p = parse("src/pp/block4/cc/iloc/max");
+		
+		try {
+			assertEquals(Assembler.instance().assemble(p.prettyPrint()).prettyPrint(),p.prettyPrint());
+			
+		} catch (FormatException e) {
+			fail();
+			e.printStackTrace();
+		}
+		
+	}
+	
+//	@Test
 	public void testFig13() {
 		Program p = parse("fig1-3");
 		assertEquals(ints(0, 5, 6, 7, 8, 9), p.getRegMap().get("r_a"));
