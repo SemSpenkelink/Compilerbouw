@@ -43,7 +43,7 @@ public class SimulatorTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void testMax(){
 		System.out.println("Test Max");
 		Program p = parse("src/pp/block4/cc/iloc/max");
@@ -64,7 +64,7 @@ public class SimulatorTest {
 		assertEquals(6,c.getReg("r_max"));
 	}
 	
-	@Test(timeout = 1000)
+//	@Test(timeout = 1000)
 	public void testFig13() {
 		System.out.println("Test Figure 123");
 		Program p = parse("fig1-3");
