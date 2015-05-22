@@ -18,6 +18,32 @@ import pp.iloc.parse.FormatException;
 public class SimulatorTest {
 	
 	@Test
+	public void testFib(){
+		System.out.println("Test Fib");
+		Program p = parse("fib1");
+		Simulator s = new Simulator(p);
+		Machine c = s.getVM();
+		
+		c.init("n", 5);
+		c.setReg("r_arp", 0);
+		
+		s.run();
+		
+		
+		Program q = parse("fib2");
+		Simulator t = new Simulator(q);
+		Machine d = t.getVM();
+		
+		d.init("n", 5);
+		d.setReg("r_arp",0);
+		t.run();
+		
+		System.out.println("r_z fib1" + c.getReg("r_z") + "r_z fib2" + d.getReg("r_z"));
+		assertEquals(c.getReg("r_z"),d.getReg("r_z"));
+		
+	}
+	
+	@Test
 	public void testMax(){
 		System.out.println("Test Max");
 		Program p = parse("src/pp/block4/cc/iloc/max");
