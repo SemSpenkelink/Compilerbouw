@@ -33,13 +33,16 @@ public class SimulatorTest {
 		Program q = parse("fib2");
 		Simulator t = new Simulator(q);
 		Machine d = t.getVM();
-		
+
+		d.init("x", 0);
+		d.init("y", 0);
+		d.init("z", 0);
 		d.init("n", 5);
 		d.setReg("r_arp",0);
 		t.run();
 		
-		System.out.println("r_z fib1" + c.getReg("r_z") + "r_z fib2" + d.getReg("r_z"));
-		assertEquals(c.getReg("r_z"),d.getReg("r_z"));
+		System.out.println("r_z fib1" + c.getReg("r_z") + "r_z fib2" + d.getReg("r_1"));
+		assertEquals(c.getReg("r_z"),d.getReg("r_1"));
 		
 	}
 	

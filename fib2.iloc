@@ -1,11 +1,11 @@
 start: loadI 1 => r_1 			//constant 1 into r_1
-	   storeAI r_1 => r_arp, @x	//store r_1 to memory x
-	   storeAI r_1 => r_arp, @y	//store r_1 to memory y
-	   storeAI r_1 => r_arp, @z	//store r_1 to memory z
+       storeAI r_1 => r_arp, @x	//store r_1 to memory x
+       storeAI r_1 => r_arp, @y	//store r_1 to memory y
+       storeAI r_1 => r_arp, @z	//store r_1 to memory z
 while: loadAI r_arp, @n => r_1	//load n into r_1
-       loadI 1 => r2			//load 1 into r_2
-       cmp_GT r_1, r_2 => r_cmp	//check if n > 1
-       cbr r_cmp -> body, end	//depdending on r_cmp branch to body or end
+       loadI 1 => r_2			//load 1 into r_2
+       cmp_GT r_1, r_2 => r_1	//check if n > 1
+       cbr r_1 -> body, end	    //depdending on r_cmp branch to body or end
 body:  loadAI r_arp, @x => r_1	//load x into r_1
        loadAI r_arp, @y => r_2	//load y into r_2
        add r_1, r_2 => r_1		//x+y
@@ -16,6 +16,8 @@ body:  loadAI r_arp, @x => r_1	//load x into r_1
        storeAI r_1 => r_arp, @y	//store r_1 into y, i.e. y=z
        loadAI r_arp, @n => r_1	//load n into r_1
        subI r_1, 1 => r_1		//n = n-1
+       storeAI r_1 => r_arp, @n	//store r_1 into n
        jumpI -> while			//jump back to while loop
 end:   loadAI r_arp, @z => r_1	//load z into r_1
        out "Result: ", r_1		//return z
+	   
