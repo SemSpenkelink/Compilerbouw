@@ -24,7 +24,7 @@ public class SimulatorTest {
 		Simulator s = new Simulator(p);
 		Machine c = s.getVM();
 		
-		c.init("n", 5);
+		c.init("n", 5); //45 is max
 		c.setReg("r_arp", 0);
 		
 		s.run();
