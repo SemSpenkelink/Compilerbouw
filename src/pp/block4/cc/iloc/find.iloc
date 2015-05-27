@@ -1,0 +1,15 @@
+start:  in "input: ", r_x				//set input in register x
+for:	loadI 0 => r_i					//set i to 0
+		loadAI r_arp, @alength => r_l	//load a.length into r_l
+		cmp_LT r_i, r_l => r_cmp		//compare i and a.length
+		cbr r_cmp -> body, end			//if r_cmp body else end
+body:	loadAI r_arp, @a => r_a			//load offset a
+		mulI 4, r_i => r_j				//multiply 4 with r_i to get offset
+		add r_j, r_a => r_o				//get location of a[i]
+		loadAO r_arp, r_o => r_ai		//load a[i]
+		cmp_EQ r_ai, r_x => r_cmp		//compare a[i] and x
+		cbr r_cmp -> for, if			//if r_cmp if else for
+if:		jumpI -> end					//jump to end
+		addI 1, r_i => r_i				//increase i for for loop
+		jumpI -> for					//jump back to for loop
+end:	out "Index: ", r_i				//printf

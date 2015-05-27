@@ -6,7 +6,7 @@ while: loadI 1 => r_o			//constant 1 into r_o
        cmp_GT r_n, r_o => r_cmp	//check if n > 1
        cbr r_cmp -> body, end	//depdending on r_cmp branch to body or end
 body:  add r_x, r_y => r_z		//z = x+y
-       i2i r_y => r_x			//copy the contents of r_y into r_x: x= y.
+       i2i r_y => r_x			//copy the contents of r_y into r_x: x = y.
        i2i r_z => r_y			//y = z
        subI r_n, 1 => r_n		//n = n-1
        jumpI -> while			//jump back to while loop
