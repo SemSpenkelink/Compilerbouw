@@ -34,6 +34,13 @@ public class NumWordProcessor extends NumWordBaseVisitor<Integer> {
 			exc.print();
 		}
 	}
+	
+	
+	@Override public Integer visitSentence(NumWordParser.SentenceContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Integer visitNumber(NumWordParser.NumberContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Integer visitWord(NumWordParser.WordContext ctx) { return visitChildren(ctx); }
 
 	/** Groups a given sentence and prints it to stdout.
 	 * Returns the sum of the numbers in the sentence.
