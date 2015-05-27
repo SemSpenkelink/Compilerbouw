@@ -4,8 +4,11 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import pp.block4.cc.ErrorListener;
 import pp.iloc.Simulator;
@@ -47,6 +50,35 @@ public class CalcCompiler extends CalcBaseListener {
 	public Program compile(ParseTree tree) {
 		// Fill in
 	}
+	
+	
+	@Override public void enterPar(CalcParser.ParContext ctx) { }
+	
+	@Override public void exitPar(CalcParser.ParContext ctx) { }
+	
+	@Override public void enterMinus(CalcParser.MinusContext ctx) { }
+	
+	@Override public void exitMinus(CalcParser.MinusContext ctx) { }
+	
+	@Override public void enterNumber(CalcParser.NumberContext ctx) { }
+	
+	@Override public void exitNumber(CalcParser.NumberContext ctx) { }
+	
+	@Override public void enterTimes(CalcParser.TimesContext ctx) { }
+	
+	@Override public void exitTimes(CalcParser.TimesContext ctx) { }
+	
+	@Override public void enterPlus(CalcParser.PlusContext ctx) { }
+	
+	@Override public void exitPlus(CalcParser.PlusContext ctx) { }
+
+	@Override public void enterEveryRule(ParserRuleContext ctx) { }
+	
+	@Override public void exitEveryRule(ParserRuleContext ctx) { }
+	
+	@Override public void visitTerminal(TerminalNode node) { }
+	
+	@Override public void visitErrorNode(ErrorNode node) { }
 
 	/** Constructs an operation from the parameters 
 	 * and adds it to the program under construction. */
