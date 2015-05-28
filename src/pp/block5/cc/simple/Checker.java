@@ -10,6 +10,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import pp.block5.cc.ParseException;
 import pp.block5.cc.pascal.SimplePascalBaseListener;
+import pp.block5.cc.pascal.SimplePascalParser;
+import pp.block5.cc.pascal.SimplePascalParser.*;
 /** Class to type check and calculate flow entries and variable offsets. */
 public class Checker extends SimplePascalBaseListener {
 	/** Result of the latest call of {@link #check}. */
@@ -33,6 +35,44 @@ public class Checker extends SimplePascalBaseListener {
 		}
 		return this.result;
 	}
+	
+	
+	
+	
+	//TODO
+	@Override public void exitVarDecl(SimplePascalParser.VarDeclContext ctx) {
+		
+	}
+	
+	@Override public void exitAssStat(SimplePascalParser.AssStatContext ctx) {
+		
+	}
+	
+	@Override public void exitIfStat(SimplePascalParser.IfStatContext ctx) {
+		
+	}
+	
+	@Override public void exitWhileStat(SimplePascalParser.WhileStatContext ctx) {
+		
+	}
+	
+	@Override public void exitBlockStat(SimplePascalParser.BlockStatContext ctx) {
+		
+	}
+	
+	@Override public void exitInStat(SimplePascalParser.InStatContext ctx) {
+		
+	}
+	
+	@Override public void exitOutStat(SimplePascalParser.OutStatContext ctx) {
+		
+	}
+	
+	
+	
+	
+	
+	
 
 	// Override the listener methods for the statement nodes
 	@Override

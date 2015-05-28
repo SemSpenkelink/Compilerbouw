@@ -12,6 +12,9 @@ import pp.block5.cc.ParseException;
 
 /** Prettyprints a (number, word)-sentence and sums up the numbers. */
 public class NumWordProcessor extends NumWordBaseVisitor<Integer> {
+	
+	private String result = "";
+	
 	public static void main(String[] args) {
 		NumWordProcessor grouper = new NumWordProcessor();
 		if (args.length == 0) {
@@ -36,11 +39,40 @@ public class NumWordProcessor extends NumWordBaseVisitor<Integer> {
 	}
 	
 	
-	@Override public Integer visitSentence(NumWordParser.SentenceContext ctx) { return visitChildren(ctx); }
+	@Override public Integer visitSentence(NumWordParser.SentenceContext ctx) {
+		Integer resultingInt = 0;
+		if(ctx.getChildCount() >= 4){
+			for(int index = 0; index < ctx.getChildCount()-5; index++){
+				resultingInt += visit(ctx.getChild(index));
+				if((index & 1) > 0)
+					result += ", ";
+				else
+					result += " ";
+			}
+			resultingInt += visit(ctx.number(ctx.number().size()-2));
+			result += " ";
+			resultingInt += visit(ctx.word(ctx.word().size()-2));
+			result += " and ";
+			resultingInt += visit(ctx.number(ctx.number().size()-1));
+			result += " ";
+			resultingInt += visit(ctx.word(ctx.word().size()-1));
+		}
+		System.out.println(result);
+		result = "";
+		return resultingInt;
+	}
 	
-	@Override public Integer visitNumber(NumWordParser.NumberContext ctx) { return visitChildren(ctx); }
+	@Override public Integer visitNumber(NumWordParser.NumberContext ctx) {
+		Integer resultingInt = Integer.parseInt(ctx.NUMBER().getText());
+		result += resultingInt;
+		return resultingInt;
+	}
 	
-	@Override public Integer visitWord(NumWordParser.WordContext ctx) { return visitChildren(ctx); }
+	@Override public Integer visitWord(NumWordParser.WordContext ctx) {
+		Integer resultingInt = new Integer(0);
+		result += ctx.getText();
+		return resultingInt;
+	}
 
 	/** Groups a given sentence and prints it to stdout.
 	 * Returns the sum of the numbers in the sentence.
