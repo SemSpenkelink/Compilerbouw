@@ -4,9 +4,11 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import pp.block5.cc.pascal.SimplePascalBaseVisitor;
 import pp.block5.cc.pascal.SimplePascalParser;
+import pp.block5.cc.pascal.SimplePascalParser.VarContext;
 import pp.iloc.Simulator;
 import pp.iloc.model.Label;
 import pp.iloc.model.Num;
@@ -108,19 +110,43 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		this.regs.put(node, reg);
 	}
 	
-	@Override public Op visitProgram(SimplePascalParser.ProgramContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitProgram(SimplePascalParser.ProgramContext ctx) {
+		reg(ctx);
+		return visitChildren(ctx);
+	}
 	
 	@Override public Op visitBody(SimplePascalParser.BodyContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitVarDecl(SimplePascalParser.VarDeclContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitVarDecl(SimplePascalParser.VarDeclContext ctx) {
+		for(VarContext var : ctx.var())
+			visitVar(var);
+		return null;
+	}
 	
-	@Override public Op visitVar(SimplePascalParser.VarContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitVar(SimplePascalParser.VarContext ctx) {
+		for(TerminalNode id : ctx.ID())
+			this.prog.addInstr(emit(OpCode.loadAI, arp, offset(id), reg(ctx)));
+		return null;
+	}
 	
 	@Override public Op visitBlock(SimplePascalParser.BlockContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitAssStat(SimplePascalParser.AssStatContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitAssStat(SimplePascalParser.AssStatContext ctx) {
+		return emit(OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));
+	}
 	
-	@Override public Op visitIfStat(SimplePascalParser.IfStatContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
+		Op expressionOp = visit(ctx.expr());
+		this.prog.addInstr(expressionOp);
+		if(ctx.ELSE() != null){
+			Op ifPart = visit(ctx.stat(0));
+			Op elsePart = visit(ctx.stat(0));
+			//Heeft wel else
+		}else{
+			//Heeft geen else
+		}
+		return visitChildren(ctx);
+	}
 	
 	@Override public Op visitWhileStat(SimplePascalParser.WhileStatContext ctx) { return visitChildren(ctx); }
 	
@@ -136,7 +162,23 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	
 	@Override public Op visitTrueExpr(SimplePascalParser.TrueExprContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) {
+		visitChildren(ctx);
+		if(ctx.compOp().LE() != null){
+			return emit(OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+		}else if(ctx.compOp().LT() != null){
+			return emit(OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
+		}else if(ctx.compOp().GE() != null){
+			return emit(OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+		}else if(ctx.compOp().GT() != null){
+			return emit(OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+		}else if(ctx.compOp().EQ() != null){
+			return emit(OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+		}else if(ctx.compOp().NE() != null){
+			return emit(OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+		}
+		return null;
+	}
 	
 	@Override public Op visitPrfExpr(SimplePascalParser.PrfExprContext ctx) { return visitChildren(ctx); }
 	
@@ -150,7 +192,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	
 	@Override public Op visitPlusExpr(SimplePascalParser.PlusExprContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitIdExpr(SimplePascalParser.IdExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitIdExpr(SimplePascalParser.IdExprContext ctx) {	return visitChildren(ctx); }
 	
 	@Override public Op visitPrfOp(SimplePascalParser.PrfOpContext ctx) { return visitChildren(ctx); }
 	
