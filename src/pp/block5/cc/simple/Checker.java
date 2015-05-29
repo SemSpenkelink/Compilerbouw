@@ -22,6 +22,9 @@ public class Checker extends SimplePascalBaseListener {
 	private Scope scope;
 	/** List of errors collected in the latest call of {@link #check}. */
 	private List<String> errors;
+	
+	
+	Stack<Integer> offsetStack;
 
 	/** Runs this checker on a given parse tree,
 	 * and returns the checker result.
@@ -31,6 +34,7 @@ public class Checker extends SimplePascalBaseListener {
 		this.scope = new Scope();
 		this.result = new Result();
 		this.errors = new ArrayList<>();
+		offsetStack = new Stack<Integer>();
 		this.offsetStack.push(0);
 		new ParseTreeWalker().walk(this, tree);
 		if (hasErrors()) {
@@ -39,9 +43,6 @@ public class Checker extends SimplePascalBaseListener {
 		return this.result;
 	}
 	
-	
-	Stack<Integer> offsetStack = new Stack<Integer>();
-	
 	@Override public void exitVarDecl(SimplePascalParser.VarDeclContext ctx) {
 		for(VarContext var : ctx.var()){
 			for(TerminalNode id : var.ID()){
@@ -49,40 +50,52 @@ public class Checker extends SimplePascalBaseListener {
 				this.scope.put(id.getText(), getType(var.type()));
 			}
 			setType(var, getType(var.type()));
+			setEntry(var, var);
 			addOffset(var);
 		}
+		setEntry(ctx, entry(ctx.var(0)));
 	}
 	
 	@Override public void exitAssStat(SimplePascalParser.AssStatContext ctx) {
 		setType(ctx.target(), this.scope.type(ctx.target().getText()));
 		checkType(ctx.target(), getType(ctx.expr()));
-		//setEntry(ctx, entry(ctx.expr()));
+		setEntry(ctx, entry(ctx.expr()));
 	}
 	
 	@Override public void exitIfStat(SimplePascalParser.IfStatContext ctx) {
 		checkType(ctx.expr(), Type.BOOL);
-		//setEntry(ctx, entry(ctx.stat(0)));
+		setEntry(ctx, entry(ctx.stat(0)));
 	}
 	
 	@Override public void exitWhileStat(SimplePascalParser.WhileStatContext ctx) {
 		checkType(ctx.expr(), Type.BOOL);
-		//setEntry(ctx, entry(ctx.stat()));
+		setEntry(ctx, entry(ctx.stat()));
 	}
 	
-	@Override public void enterBlockStat(SimplePascalParser.BlockStatContext ctx) {
-		offsetStack.push(0);
+	@Override public void enterBlock(SimplePascalParser.BlockContext ctx){
+		offsetStack.push(0);		
+	}
+	
+	@Override public void exitBlock(SimplePascalParser.BlockContext ctx){
+		System.out.println("Here!");
+		offsetStack.pop();
+		setEntry(ctx, entry(ctx.stat(0)));
 	}
 	
 	@Override public void exitBlockStat(SimplePascalParser.BlockStatContext ctx) {
-		offsetStack.pop();
+		setEntry(ctx, entry(ctx.block()));
 	}
 	
 	@Override public void exitInStat(SimplePascalParser.InStatContext ctx) {
-		
+		setEntry(ctx, entry(ctx.target()));
 	}
 	
 	@Override public void exitOutStat(SimplePascalParser.OutStatContext ctx) {
-		
+		setEntry(ctx, entry(ctx.expr()));
+	}
+	
+	@Override public void exitIdTarget(SimplePascalParser.IdTargetContext ctx){
+		setEntry(ctx, ctx);
 	}
 	
 	private void addOffset(ParseTree node){
@@ -241,6 +254,7 @@ public class Checker extends SimplePascalBaseListener {
 
 	/** Convenience method to add an offset to the result. */
 	private void setOffset(ParseTree node, Integer offset) {
+		System.out.println("Set offset[" + node.toString() + "]: " + offset);
 		this.result.setOffset(node, offset);
 	}
 
