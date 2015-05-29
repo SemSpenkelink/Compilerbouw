@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import pp.block5.cc.pascal.SimplePascalBaseVisitor;
+import pp.block5.cc.pascal.SimplePascalParser;
 import pp.iloc.Simulator;
 import pp.iloc.model.Label;
 import pp.iloc.model.Num;
@@ -106,4 +107,62 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	private void setReg(ParseTree node, Reg reg) {
 		this.regs.put(node, reg);
 	}
+	
+	@Override public Op visitProgram(SimplePascalParser.ProgramContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitBody(SimplePascalParser.BodyContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitVarDecl(SimplePascalParser.VarDeclContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitVar(SimplePascalParser.VarContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitBlock(SimplePascalParser.BlockContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitAssStat(SimplePascalParser.AssStatContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitIfStat(SimplePascalParser.IfStatContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitWhileStat(SimplePascalParser.WhileStatContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitBlockStat(SimplePascalParser.BlockStatContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitInStat(SimplePascalParser.InStatContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitOutStat(SimplePascalParser.OutStatContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitIdTarget(SimplePascalParser.IdTargetContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitParExpr(SimplePascalParser.ParExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitTrueExpr(SimplePascalParser.TrueExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitPrfExpr(SimplePascalParser.PrfExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitFalseExpr(SimplePascalParser.FalseExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitBoolExpr(SimplePascalParser.BoolExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitMultExpr(SimplePascalParser.MultExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitNumExpr(SimplePascalParser.NumExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitPlusExpr(SimplePascalParser.PlusExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitIdExpr(SimplePascalParser.IdExprContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitPrfOp(SimplePascalParser.PrfOpContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitMultOp(SimplePascalParser.MultOpContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitPlusOp(SimplePascalParser.PlusOpContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitBoolOp(SimplePascalParser.BoolOpContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitCompOp(SimplePascalParser.CompOpContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitIntType(SimplePascalParser.IntTypeContext ctx) { return visitChildren(ctx); }
+	
+	@Override public Op visitBoolType(SimplePascalParser.BoolTypeContext ctx) { return visitChildren(ctx); }
 }
