@@ -56,14 +56,17 @@ public class Checker extends SimplePascalBaseListener {
 	@Override public void exitAssStat(SimplePascalParser.AssStatContext ctx) {
 		setType(ctx.target(), this.scope.type(ctx.target().getText()));
 		checkType(ctx.target(), getType(ctx.expr()));
+		//setEntry(ctx, entry(ctx.expr()));
 	}
 	
 	@Override public void exitIfStat(SimplePascalParser.IfStatContext ctx) {
 		checkType(ctx.expr(), Type.BOOL);
+		//setEntry(ctx, entry(ctx.stat(0)));
 	}
 	
 	@Override public void exitWhileStat(SimplePascalParser.WhileStatContext ctx) {
 		checkType(ctx.expr(), Type.BOOL);
+		//setEntry(ctx, entry(ctx.stat()));
 	}
 	
 	@Override public void enterBlockStat(SimplePascalParser.BlockStatContext ctx) {
