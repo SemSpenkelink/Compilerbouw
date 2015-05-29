@@ -2,6 +2,7 @@ package pp.block5.cc.simple;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -37,27 +38,31 @@ public class Checker extends SimplePascalBaseListener {
 	}
 	
 	
+	Stack<Integer> offsetStack = new Stack<Integer>();
 	
-	
-	//TODO
 	@Override public void exitVarDecl(SimplePascalParser.VarDeclContext ctx) {
-		
+		for(VarContext var : ctx.var())
+			addOffset(var);
 	}
 	
 	@Override public void exitAssStat(SimplePascalParser.AssStatContext ctx) {
-		
+		checkType(ctx.target(), getType(ctx.expr()));
 	}
 	
 	@Override public void exitIfStat(SimplePascalParser.IfStatContext ctx) {
-		
+		checkType(ctx.expr(), Type.BOOL);
 	}
 	
 	@Override public void exitWhileStat(SimplePascalParser.WhileStatContext ctx) {
-		
+		checkType(ctx.expr(), Type.BOOL);
+	}
+	
+	@Override public void enterBlockStat(SimplePascalParser.BlockStatContext ctx) {
+		offsetStack.push(0);
 	}
 	
 	@Override public void exitBlockStat(SimplePascalParser.BlockStatContext ctx) {
-		
+		offsetStack.pop();
 	}
 	
 	@Override public void exitInStat(SimplePascalParser.InStatContext ctx) {
@@ -68,7 +73,12 @@ public class Checker extends SimplePascalBaseListener {
 		
 	}
 	
-	
+	private void addOffset(ParseTree node){
+		setOffset(node, offsetStack.peek());
+		Integer offset = offsetStack.pop();
+		offset += 4;
+		offsetStack.push(offset);
+	}
 	
 	
 	
