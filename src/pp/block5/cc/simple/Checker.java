@@ -30,6 +30,7 @@ public class Checker extends SimplePascalBaseListener {
 		this.scope = new Scope();
 		this.result = new Result();
 		this.errors = new ArrayList<>();
+		this.offsetStack.push(0);
 		new ParseTreeWalker().walk(this, tree);
 		if (hasErrors()) {
 			throw new ParseException(getErrors());
