@@ -34,17 +34,17 @@ public class SimpleCheckerTest {
 		assertEquals(0, result.getOffset(assX.getChild(0)));
 	}
 
-	//@Test
+	@Test
 	public void testGCD() throws IOException, ParseException {
 		check(parse("gcd"));
 	}
 
-	//@Test
+	@Test
 	public void testPrime() throws IOException, ParseException {
 		check(parse("prime"));
 	}
 
-	//@Test
+	@Test
 	public void testTypeErr() throws IOException {
 		checkFail("typeErr1");
 		checkFail("typeErr2");

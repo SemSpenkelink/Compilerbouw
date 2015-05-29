@@ -22,9 +22,6 @@ public class Checker extends SimplePascalBaseListener {
 	private Scope scope;
 	/** List of errors collected in the latest call of {@link #check}. */
 	private List<String> errors;
-	
-	
-	Stack<Integer> offsetStack;
 
 	/** Runs this checker on a given parse tree,
 	 * and returns the checker result.
@@ -34,8 +31,6 @@ public class Checker extends SimplePascalBaseListener {
 		this.scope = new Scope();
 		this.result = new Result();
 		this.errors = new ArrayList<>();
-		offsetStack = new Stack<Integer>();
-		this.offsetStack.push(0);
 		new ParseTreeWalker().walk(this, tree);
 		if (hasErrors()) {
 			throw new ParseException(getErrors());
@@ -48,10 +43,10 @@ public class Checker extends SimplePascalBaseListener {
 			for(TerminalNode id : var.ID()){
 				setType(id, getType(var.type()));
 				this.scope.put(id.getText(), getType(var.type()));
+				setOffset(id, scope.offset(id.getText()));
 			}
 			setType(var, getType(var.type()));
 			setEntry(var, var);
-			addOffset(var);
 		}
 		setEntry(ctx, entry(ctx.var(0)));
 	}
@@ -60,6 +55,7 @@ public class Checker extends SimplePascalBaseListener {
 		setType(ctx.target(), this.scope.type(ctx.target().getText()));
 		checkType(ctx.target(), getType(ctx.expr()));
 		setEntry(ctx, entry(ctx.expr()));
+		setOffset(ctx.target(), scope.offset(ctx.target().getText()));
 	}
 	
 	@Override public void exitIfStat(SimplePascalParser.IfStatContext ctx) {
@@ -72,13 +68,7 @@ public class Checker extends SimplePascalBaseListener {
 		setEntry(ctx, entry(ctx.stat()));
 	}
 	
-	@Override public void enterBlock(SimplePascalParser.BlockContext ctx){
-		offsetStack.push(0);		
-	}
-	
 	@Override public void exitBlock(SimplePascalParser.BlockContext ctx){
-		System.out.println("Here!");
-		offsetStack.pop();
 		setEntry(ctx, entry(ctx.stat(0)));
 	}
 	
@@ -96,13 +86,6 @@ public class Checker extends SimplePascalBaseListener {
 	
 	@Override public void exitIdTarget(SimplePascalParser.IdTargetContext ctx){
 		setEntry(ctx, ctx);
-	}
-	
-	private void addOffset(ParseTree node){
-		setOffset(node, offsetStack.peek());
-		Integer offset = offsetStack.pop();
-		offset += 4;
-		offsetStack.push(offset);
 	}
 	
 	
@@ -254,7 +237,6 @@ public class Checker extends SimplePascalBaseListener {
 
 	/** Convenience method to add an offset to the result. */
 	private void setOffset(ParseTree node, Integer offset) {
-		System.out.println("Set offset[" + node.toString() + "]: " + offset);
 		this.result.setOffset(node, offset);
 	}
 
