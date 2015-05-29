@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import pp.block5.cc.ParseException;
 import pp.block5.cc.pascal.SimplePascalBaseListener;
@@ -42,11 +43,18 @@ public class Checker extends SimplePascalBaseListener {
 	Stack<Integer> offsetStack = new Stack<Integer>();
 	
 	@Override public void exitVarDecl(SimplePascalParser.VarDeclContext ctx) {
-		for(VarContext var : ctx.var())
+		for(VarContext var : ctx.var()){
+			for(TerminalNode id : var.ID()){
+				setType(id, getType(var.type()));
+				this.scope.put(id.getText(), getType(var.type()));
+			}
+			setType(var, getType(var.type()));
 			addOffset(var);
+		}
 	}
 	
 	@Override public void exitAssStat(SimplePascalParser.AssStatContext ctx) {
+		setType(ctx.target(), this.scope.type(ctx.target().getText()));
 		checkType(ctx.target(), getType(ctx.expr()));
 	}
 	
@@ -84,6 +92,7 @@ public class Checker extends SimplePascalBaseListener {
 	
 	
 	
+	
 
 	// Override the listener methods for the statement nodes
 	@Override
@@ -92,6 +101,11 @@ public class Checker extends SimplePascalBaseListener {
 		checkType(ctx.expr(1), Type.BOOL);
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, entry(ctx.expr(0)));
+	}
+	
+	@Override
+	public void exitIntType(SimplePascalParser.IntTypeContext ctx) {
+		setType(ctx, Type.INT);
 	}
 
 	@Override
