@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import pp.block5.cc.pascal.SimplePascalBaseVisitor;
 import pp.block5.cc.pascal.SimplePascalParser;
+import pp.block5.cc.pascal.SimplePascalParser.StatContext;
 import pp.block5.cc.pascal.SimplePascalParser.VarContext;
 import pp.iloc.Simulator;
 import pp.iloc.model.Label;
@@ -17,6 +18,7 @@ import pp.iloc.model.OpCode;
 import pp.iloc.model.Operand;
 import pp.iloc.model.Program;
 import pp.iloc.model.Reg;
+import pp.iloc.model.Str;
 /** Class to generate ILOC code for Simple Pascal. */
 public class Generator extends SimplePascalBaseVisitor<Op> {
 	/** The representation of the boolean value <code>false</code>. */
@@ -111,7 +113,6 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitProgram(SimplePascalParser.ProgramContext ctx) {
-		reg(ctx);
 		return visitChildren(ctx);
 	}
 	
@@ -136,27 +137,71 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
+		//Put own label onto expr
+		if(labels.get(ctx) != null)
+			labels.put(ctx.expr(), labels.get(ctx));
+		//Retrieve expression instruction
 		Op expressionOp = visit(ctx.expr());
+		//Add expression instruction
 		this.prog.addInstr(expressionOp);
+		//Add continue label
+		Label continueLabel = createLabel(ctx, "continue");
+		//Create label for if-statement
+		Label ifLabel = createLabel(ctx, "if");
+		//Check for if-statement or if-else-statement
 		if(ctx.ELSE() != null){
-			Op ifPart = visit(ctx.stat(0));
-			Op elsePart = visit(ctx.stat(0));
-			//Heeft wel else
+			//Create labels for else-statement
+			Label elseLabel = createLabel(ctx, "else");
+			//Add instruction cbr
+			this.prog.addInstr(emit(OpCode.cbr, reg(ctx.expr()), ifLabel, elseLabel));
+			//Visit if then else
+			for(StatContext stat : ctx.stat()){
+				visit(stat);
+				//End body with jump to continue
+				this.prog.addInstr(emit(OpCode.jumpI, continueLabel));
+			}
 		}else{
-			//Heeft geen else
+			//Add instruction cbr
+			this.prog.addInstr(emit(OpCode.cbr, reg(ctx.expr()), ifLabel, continueLabel));
+			visit(ctx.stat(0));
+			//End body with jump to continue
+			this.prog.addInstr(emit(OpCode.jumpI, continueLabel));
 		}
+		return null;
+	}
+	
+	@Override public Op visitWhileStat(SimplePascalParser.WhileStatContext ctx) {
+		labels.put(ctx, createLabel(ctx, "while"));
+		labels.put(ctx.expr(), labels.get(ctx));
+		labels.put(ctx.stat(), createLabel(ctx, "whileBody"));
+		Label continueLabel = createLabel(ctx, "continue");
+		this.prog.addInstr(visit(ctx.expr()));
+		this.prog.addInstr(emit(OpCode.cbr, reg(ctx.expr()), labels.get(ctx.stat()), continueLabel));
+		visit(ctx.stat());
+		this.prog.addInstr(emit(OpCode.jumpI, labels.get(ctx)));
+		return null;
+	}
+	
+	@Override public Op visitBlockStat(SimplePascalParser.BlockStatContext ctx) {
 		return visitChildren(ctx);
 	}
 	
-	@Override public Op visitWhileStat(SimplePascalParser.WhileStatContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitInStat(SimplePascalParser.InStatContext ctx) {
+		visit(ctx.target());
+		this.prog.addInstr(emit(OpCode.in, new Str("agruments? "), reg(ctx.target())));
+		return null;
+	}
 	
-	@Override public Op visitBlockStat(SimplePascalParser.BlockStatContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitOutStat(SimplePascalParser.OutStatContext ctx) {
+		visit(ctx.expr());
+		this.prog.addInstr(emit(OpCode.out, new Str("Result: "), reg(ctx.expr())));
+		return null;
+	}
 	
-	@Override public Op visitInStat(SimplePascalParser.InStatContext ctx) { return visitChildren(ctx); }
-	
-	@Override public Op visitOutStat(SimplePascalParser.OutStatContext ctx) { return visitChildren(ctx); }
-	
-	@Override public Op visitIdTarget(SimplePascalParser.IdTargetContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitIdTarget(SimplePascalParser.IdTargetContext ctx) {
+		this.prog.addInstr(emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx)));
+		return null;
+	}
 	
 	@Override public Op visitParExpr(SimplePascalParser.ParExprContext ctx) { return visitChildren(ctx); }
 	
@@ -165,17 +210,35 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	@Override public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) {
 		visitChildren(ctx);
 		if(ctx.compOp().LE() != null){
-			return emit(OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			if(labels.get(ctx) != null)
+				return emit(labels.get(ctx), OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			else
+				return emit(OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().LT() != null){
-			return emit(OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
+			if(labels.get(ctx) != null)
+				return emit(labels.get(ctx), OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			else
+				return emit(OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
 		}else if(ctx.compOp().GE() != null){
-			return emit(OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			if(labels.get(ctx) != null)
+				return emit(labels.get(ctx), OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			else
+				return emit(OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().GT() != null){
-			return emit(OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			if(labels.get(ctx) != null)
+				return emit(labels.get(ctx), OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			else
+				return emit(OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().EQ() != null){
-			return emit(OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			if(labels.get(ctx) != null)
+				return emit(labels.get(ctx), OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			else
+				return emit(OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().NE() != null){
-			return emit(OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			if(labels.get(ctx) != null)
+				return emit(labels.get(ctx), OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+			else
+				return emit(OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}
 		return null;
 	}
