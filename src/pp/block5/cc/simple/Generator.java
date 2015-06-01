@@ -1,5 +1,7 @@
 package pp.block5.cc.simple;
 
+import java.math.BigInteger;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -140,10 +142,8 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		//Put own label onto expr
 		if(labels.get(ctx) != null)
 			labels.put(ctx.expr(), labels.get(ctx));
-		//Retrieve expression instruction
-		Op expressionOp = visit(ctx.expr());
-		//Add expression instruction
-		this.prog.addInstr(expressionOp);
+		//visit and add expression
+		visit(ctx.expr());
 		//Add continue label
 		Label continueLabel = createLabel(ctx, "continue");
 		//Create label for if-statement
@@ -205,57 +205,133 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	
 	@Override public Op visitParExpr(SimplePascalParser.ParExprContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitTrueExpr(SimplePascalParser.TrueExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitTrueExpr(SimplePascalParser.TrueExprContext ctx) {
+		if(labels.get(ctx) != null)
+			this.prog.addInstr(emit(labels.get(ctx), OpCode.loadI, new Num(-1), reg(ctx)));
+		else
+			this.prog.addInstr(emit(OpCode.loadI, new Num(-1), reg(ctx)));
+		return null;
+	}
 	
 	@Override public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) {
 		visitChildren(ctx);
 		if(ctx.compOp().LE() != null){
 			if(labels.get(ctx) != null)
-				return emit(labels.get(ctx), OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 			else
-				return emit(OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 		}else if(ctx.compOp().LT() != null){
 			if(labels.get(ctx) != null)
-				return emit(labels.get(ctx), OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 			else
-				return emit(OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
+				this.prog.addInstr(emit(OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));			
 		}else if(ctx.compOp().GE() != null){
 			if(labels.get(ctx) != null)
-				return emit(labels.get(ctx), OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 			else
-				return emit(OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 		}else if(ctx.compOp().GT() != null){
 			if(labels.get(ctx) != null)
-				return emit(labels.get(ctx), OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 			else
-				return emit(OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 		}else if(ctx.compOp().EQ() != null){
 			if(labels.get(ctx) != null)
-				return emit(labels.get(ctx), OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 			else
-				return emit(OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 		}else if(ctx.compOp().NE() != null){
 			if(labels.get(ctx) != null)
-				return emit(labels.get(ctx), OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 			else
-				return emit(OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+				this.prog.addInstr(emit(OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
 		}
 		return null;
 	}
 	
-	@Override public Op visitPrfExpr(SimplePascalParser.PrfExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitPrfExpr(SimplePascalParser.PrfExprContext ctx) {
+		if(ctx.prfOp().MINUS() != null){
+			if(labels.get(ctx) != null)
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.multI, reg(ctx.expr()), new Num(-1), reg(ctx)));
+			else
+				this.prog.addInstr(emit(OpCode.multI, reg(ctx.expr()), new Num(-1), reg(ctx)));
+		}else{
+			if(labels.get(ctx) != null)
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.xorI, reg(ctx.expr()), new Num(-1), reg(ctx)));
+			else
+				this.prog.addInstr(emit(OpCode.xorI, reg(ctx.expr()), new Num(-1), reg(ctx)));			
+		}
+		return null;
+	}
 	
-	@Override public Op visitFalseExpr(SimplePascalParser.FalseExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitFalseExpr(SimplePascalParser.FalseExprContext ctx) {
+		if(labels.get(ctx) != null)
+			this.prog.addInstr(emit(labels.get(ctx), OpCode.loadI, new Num(0), reg(ctx)));
+		else
+			this.prog.addInstr(emit(OpCode.loadI, new Num(0), reg(ctx)));
+		return null;
+	}
 	
-	@Override public Op visitBoolExpr(SimplePascalParser.BoolExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitBoolExpr(SimplePascalParser.BoolExprContext ctx) {
+		if(ctx.boolOp().AND() != null){
+			if(labels.get(ctx) != null)
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.and, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
+			else
+				this.prog.addInstr(emit(OpCode.and, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
+		}else{
+			if(labels.get(ctx) != null)
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.or, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
+			else
+				this.prog.addInstr(emit(OpCode.or, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));			
+		}
+		return null;
+	}
 	
-	@Override public Op visitMultExpr(SimplePascalParser.MultExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitMultExpr(SimplePascalParser.MultExprContext ctx) {
+		if(ctx.multOp().STAR() != null){
+			if(labels.get(ctx) != null)
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.mult, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
+			else
+				this.prog.addInstr(emit(OpCode.mult, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
+		}else{
+			if(labels.get(ctx) != null)
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.div, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
+			else
+				this.prog.addInstr(emit(OpCode.div, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));			
+		}
+		return null;
+	}
 	
-	@Override public Op visitNumExpr(SimplePascalParser.NumExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitNumExpr(SimplePascalParser.NumExprContext ctx) {
+		if(labels.get(ctx) != null)
+			this.prog.addInstr(emit(labels.get(ctx), OpCode.loadI, new Num(Integer.parseInt(ctx.NUM().toString())), reg(ctx)));
+		else
+			this.prog.addInstr(emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUM().toString())), reg(ctx)));			
+		return null;
+	}
 	
-	@Override public Op visitPlusExpr(SimplePascalParser.PlusExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitPlusExpr(SimplePascalParser.PlusExprContext ctx) {
+		if(ctx.plusOp().PLUS() != null){
+			if(labels.get(ctx) != null)
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.add, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
+			else
+				this.prog.addInstr(emit(OpCode.add, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
+		}else{
+			if(labels.get(ctx) != null)
+				this.prog.addInstr(emit(labels.get(ctx), OpCode.sub, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));
+			else
+				this.prog.addInstr(emit(OpCode.sub, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx)));			
+		}
+		return null;
+	}
 	
-	@Override public Op visitIdExpr(SimplePascalParser.IdExprContext ctx) {	return visitChildren(ctx); }
+	@Override public Op visitIdExpr(SimplePascalParser.IdExprContext ctx) {
+		if(labels.get(ctx) != null)
+			this.prog.addInstr(emit(labels.get(ctx), OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx)));
+		else
+			this.prog.addInstr(emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx)));			
+		return null;
+	}
 	
 	@Override public Op visitPrfOp(SimplePascalParser.PrfOpContext ctx) { return visitChildren(ctx); }
 	
