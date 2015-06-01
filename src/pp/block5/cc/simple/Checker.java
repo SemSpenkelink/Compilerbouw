@@ -85,7 +85,10 @@ public class Checker extends SimplePascalBaseListener {
 	}
 	
 	@Override public void exitIdTarget(SimplePascalParser.IdTargetContext ctx){
-		setEntry(ctx, ctx);
+		if(scope.contains(ctx.getText())){
+			setOffset(ctx, this.scope.offset(ctx.getText()));
+			setEntry(ctx, ctx);
+		}	
 	}
 	
 	
