@@ -136,10 +136,9 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	@Override public Op visitBlock(SimplePascalParser.BlockContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitAssStat(SimplePascalParser.AssStatContext ctx) {
+		if(labels.get(ctx) != null)
+			labels.put(ctx.expr(), labels.get(ctx));
 		visitChildren(ctx);
-		if(labels.get(ctx) != null){
-			emit(labels.get(ctx), OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));
-		}else
 			emit(OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));
 		return emit(OpCode.storeAI, reg(ctx.target()), arp, offset(ctx.target()));
 	}
@@ -152,12 +151,16 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		visit(ctx.expr());
 		//Add continue label
 		Label continueLabel;
-		if(labels.get(getSibling(ctx)) == null){
+		if(labels.get(getSibling(ctx)) == null && getWhileParent(ctx) == null){
 			continueLabel = createLabel(ctx, "continue");
 			labels.put(getSibling(ctx), continueLabel);
-		}else
+			labels.put(getSibling(ctx.getParent()), continueLabel);
+		}else if(getWhileParent(ctx) == null){
 			continueLabel = labels.get(getSibling(ctx));
-		labels.put(getSibling(ctx.getParent()), continueLabel);
+			labels.put(getSibling(ctx.getParent()), continueLabel);
+		}else{
+			continueLabel = labels.get(getWhileParent(ctx));
+		}
 		//Create label for if-statement
 		Label ifLabel = createLabel(ctx, "if");
 		labels.put(ctx.stat(0), ifLabel);
@@ -252,40 +255,23 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 			labels.put(ctx.expr(0), label(ctx));
 		visitChildren(ctx);
 		if(ctx.compOp().LE() != null){
-//			if(labels.get(ctx) != null)
-//				emit(label(ctx), OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-//			else
 				emit(OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().LT() != null){
-//			if(labels.get(ctx) != null)
-//				emit(label(ctx), OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-//			else
 				emit(OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
 		}else if(ctx.compOp().GE() != null){
-//			if(labels.get(ctx) != null)
-//				emit(label(ctx), OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-//			else
 				emit(OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().GT() != null){
-//			if(labels.get(ctx) != null)
-//				emit(label(ctx), OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-//			else
 				emit(OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().EQ() != null){
-//			if(labels.get(ctx) != null)
-//				emit(label(ctx), OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-//			else
 				emit(OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().NE() != null){
-//			if(labels.get(ctx) != null)
-//				emit(label(ctx), OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-//			else
 				emit(OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}
 		return null;
 	}
 	
 	@Override public Op visitPrfExpr(SimplePascalParser.PrfExprContext ctx) {
+		visitChildren(ctx);
 		if(ctx.prfOp().MINUS() != null){
 			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.multI, reg(ctx.expr()), new Num(-1), reg(ctx));
@@ -309,32 +295,24 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitBoolExpr(SimplePascalParser.BoolExprContext ctx) {
-		if(ctx.boolOp().AND() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.and, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+		if(labels.get(ctx) != null)
+			labels.put(ctx.expr(0), labels.get(ctx));
+		visitChildren(ctx);
+		if(ctx.boolOp().AND() != null)
 				emit(OpCode.and, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-		}else{
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.or, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+		else
 				emit(OpCode.or, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
-		}
 		return null;
 	}
 	
 	@Override public Op visitMultExpr(SimplePascalParser.MultExprContext ctx) {
-		if(ctx.multOp().STAR() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.mult, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+		if(labels.get(ctx) != null)
+			labels.put(ctx.expr(0), labels.get(ctx));
+		visitChildren(ctx);
+		if(ctx.multOp().STAR() != null)
 				emit(OpCode.mult, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-		}else{
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.div, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+		else
 				emit(OpCode.div, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
-		}
 		return null;
 	}
 	
@@ -347,16 +325,12 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitPlusExpr(SimplePascalParser.PlusExprContext ctx) {
+		if(labels.get(ctx) != null)
+			labels.put(ctx.expr(0), labels.get(ctx));
 		visitChildren(ctx);
 		if(ctx.plusOp().PLUS() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.add, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
 				emit(OpCode.add, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else{
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.sub, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
 				emit(OpCode.sub, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
 		}
 		return null;
@@ -384,17 +358,26 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	
 	@Override public Op visitBoolType(SimplePascalParser.BoolTypeContext ctx) { return visitChildren(ctx); }
 	
-	public ParseTree getSibling(ParseTree ctx){
+	private ParseTree getSibling(ParseTree ctx){
 		ParseTree parent = ctx.getParent();
 		if(parent != null){
 			for(int index = 0; index < parent.getChildCount(); index++)
 				if(parent.getChild(index).equals(ctx))
 					for(int index_b = index+1; index_b < parent.getChildCount(); index_b++)
 						if(!(parent.getChild(index_b) instanceof TerminalNode)){
-							//System.out.println("Sibling found: " + parent.getChild(index_b).getText());
 							return parent.getChild(index_b);
 						}
 			return getSibling(parent);
+		}
+		return null;
+	}
+	
+	private ParseTree getWhileParent(ParseTree ctx){
+		ParseTree parent = ctx.getParent();
+		if(parent != null){
+			if(parent.getText().toLowerCase().startsWith("while"))
+				return parent;
+			return getWhileParent(parent);
 		}
 		return null;
 	}
