@@ -136,10 +136,12 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	@Override public Op visitBlock(SimplePascalParser.BlockContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitAssStat(SimplePascalParser.AssStatContext ctx) {
-		if(labels.get(ctx) != null)
-			return emit(labels.get(ctx), OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));			
-		else
-			return emit(OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));
+		visitChildren(ctx);
+		if(labels.get(ctx) != null){
+			emit(labels.get(ctx), OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));
+		}else
+			emit(OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));
+		return emit(OpCode.storeAI, reg(ctx.target()), arp, offset(ctx.target()));
 	}
 	
 	@Override public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
@@ -210,7 +212,8 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		if(labels.get(ctx) != null)
 			labels.put(ctx.target(), labels.get(ctx));
 		visit(ctx.target());
-		return emit(OpCode.in, new Str("agruments? "), reg(ctx.target()));
+		emit(OpCode.in, new Str("agruments? "), reg(ctx.target()));
+		return emit(OpCode.storeAI, reg(ctx.target()), arp, offset(ctx.target()));
 	}
 	
 	@Override public Op visitOutStat(SimplePascalParser.OutStatContext ctx) {
@@ -344,6 +347,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitPlusExpr(SimplePascalParser.PlusExprContext ctx) {
+		visitChildren(ctx);
 		if(ctx.plusOp().PLUS() != null){
 			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.add, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
