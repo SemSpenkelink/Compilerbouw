@@ -136,7 +136,10 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	@Override public Op visitBlock(SimplePascalParser.BlockContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitAssStat(SimplePascalParser.AssStatContext ctx) {
-		return emit(OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));
+		if(labels.get(ctx) != null)
+			return emit(labels.get(ctx), OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));			
+		else
+			return emit(OpCode.i2i, reg(ctx.expr()), reg(ctx.target()));
 	}
 	
 	@Override public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
@@ -146,7 +149,13 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		//visit and add expression
 		visit(ctx.expr());
 		//Add continue label
-		Label continueLabel = createLabel(ctx, "continue");
+		Label continueLabel;
+		if(labels.get(getSibling(ctx)) == null){
+			continueLabel = createLabel(ctx, "continue");
+			labels.put(getSibling(ctx), continueLabel);
+		}else
+			continueLabel = labels.get(getSibling(ctx));
+		labels.put(getSibling(ctx.getParent()), continueLabel);
 		//Create label for if-statement
 		Label ifLabel = createLabel(ctx, "if");
 		labels.put(ctx.stat(0), ifLabel);
@@ -177,7 +186,12 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		labels.put(ctx, createLabel(ctx, "while"));
 		labels.put(ctx.expr(), label(ctx));
 		labels.put(ctx.stat(), createLabel(ctx, "whileBody"));
-		Label continueLabel = createLabel(ctx, "continue");
+		Label continueLabel;
+		if(labels.get(getSibling(ctx)) == null){
+			continueLabel = createLabel(ctx, "continue");
+			labels.put(getSibling(ctx), continueLabel);
+		}else
+			continueLabel = labels.get(getSibling(ctx));
 		visit(ctx.expr());
 		emit(OpCode.cbr, reg(ctx.expr()), label(ctx.stat()), continueLabel);
 		visit(ctx.stat());
@@ -186,25 +200,24 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitBlockStat(SimplePascalParser.BlockStatContext ctx) {
-		if(labels.get(ctx) != null)
+		if(labels.get(ctx) != null){
 			labels.put(ctx.block().stat(0), label(ctx));
+		}
 		return visitChildren(ctx);
 	}
 	
 	@Override public Op visitInStat(SimplePascalParser.InStatContext ctx) {
 		if(labels.get(ctx) != null)
-			labels.put(ctx.getChild(0), label(ctx));
+			labels.put(ctx.target(), labels.get(ctx));
 		visit(ctx.target());
-		emit(OpCode.in, new Str("agruments? "), reg(ctx.target()));
-		return null;
+		return emit(OpCode.in, new Str("agruments? "), reg(ctx.target()));
 	}
 	
 	@Override public Op visitOutStat(SimplePascalParser.OutStatContext ctx) {
 		if(labels.get(ctx) != null)
-			labels.put(ctx.getChild(0), label(ctx));
+			labels.put(ctx.expr(), labels.get(ctx));
 		visit(ctx.expr());
-		emit(OpCode.out, new Str("Result: "), reg(ctx.expr()));
-		return null;
+		return emit(OpCode.out, new Str("Result: "), reg(ctx.expr()));
 	}
 	
 	@Override public Op visitIdTarget(SimplePascalParser.IdTargetContext ctx) {
@@ -232,36 +245,38 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) {
+		if(labels.get(ctx) != null)
+			labels.put(ctx.expr(0), label(ctx));
 		visitChildren(ctx);
 		if(ctx.compOp().LE() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+//			if(labels.get(ctx) != null)
+//				emit(label(ctx), OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+//			else
 				emit(OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().LT() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+//			if(labels.get(ctx) != null)
+//				emit(label(ctx), OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+//			else
 				emit(OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
 		}else if(ctx.compOp().GE() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+//			if(labels.get(ctx) != null)
+//				emit(label(ctx), OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+//			else
 				emit(OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().GT() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+//			if(labels.get(ctx) != null)
+//				emit(label(ctx), OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+//			else
 				emit(OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().EQ() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+//			if(labels.get(ctx) != null)
+//				emit(label(ctx), OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+//			else
 				emit(OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().NE() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
-			else
+//			if(labels.get(ctx) != null)
+//				emit(label(ctx), OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+//			else
 				emit(OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}
 		return null;
@@ -364,4 +379,19 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	@Override public Op visitIntType(SimplePascalParser.IntTypeContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitBoolType(SimplePascalParser.BoolTypeContext ctx) { return visitChildren(ctx); }
+	
+	public ParseTree getSibling(ParseTree ctx){
+		ParseTree parent = ctx.getParent();
+		if(parent != null){
+			for(int index = 0; index < parent.getChildCount(); index++)
+				if(parent.getChild(index).equals(ctx))
+					for(int index_b = index+1; index_b < parent.getChildCount(); index_b++)
+						if(!(parent.getChild(index_b) instanceof TerminalNode)){
+							//System.out.println("Sibling found: " + parent.getChild(index_b).getText());
+							return parent.getChild(index_b);
+						}
+			return getSibling(parent);
+		}
+		return null;
+	}
 }
