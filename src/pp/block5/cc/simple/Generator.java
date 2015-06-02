@@ -141,7 +141,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	
 	@Override public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
 		//Put own label onto expr
-		if(label(ctx) != null)
+		if(labels.get(ctx) != null)
 			labels.put(ctx.expr(), label(ctx));
 		//visit and add expression
 		visit(ctx.expr());
@@ -149,10 +149,12 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		Label continueLabel = createLabel(ctx, "continue");
 		//Create label for if-statement
 		Label ifLabel = createLabel(ctx, "if");
+		labels.put(ctx.stat(0), ifLabel);
 		//Check for if-statement or if-else-statement
 		if(ctx.ELSE() != null){
 			//Create labels for else-statement
 			Label elseLabel = createLabel(ctx, "else");
+			labels.put(ctx.stat(1), elseLabel);
 			//Add instruction cbr
 			emit(OpCode.cbr, reg(ctx.expr()), ifLabel, elseLabel);
 			//Visit if then else
@@ -184,30 +186,45 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitBlockStat(SimplePascalParser.BlockStatContext ctx) {
+		if(labels.get(ctx) != null)
+			labels.put(ctx.block().stat(0), label(ctx));
 		return visitChildren(ctx);
 	}
 	
 	@Override public Op visitInStat(SimplePascalParser.InStatContext ctx) {
+		if(labels.get(ctx) != null)
+			labels.put(ctx.getChild(0), label(ctx));
 		visit(ctx.target());
 		emit(OpCode.in, new Str("agruments? "), reg(ctx.target()));
 		return null;
 	}
 	
 	@Override public Op visitOutStat(SimplePascalParser.OutStatContext ctx) {
+		if(labels.get(ctx) != null)
+			labels.put(ctx.getChild(0), label(ctx));
 		visit(ctx.expr());
 		emit(OpCode.out, new Str("Result: "), reg(ctx.expr()));
 		return null;
 	}
 	
 	@Override public Op visitIdTarget(SimplePascalParser.IdTargetContext ctx) {
-		emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));
+		if(labels.get(ctx) != null)
+			labels.put(ctx.getChild(0), label(ctx));
+		if(labels.get(ctx) != null)
+			emit(label(ctx), OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));
+		else
+			emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));
 		return null;
 	}
 	
-	@Override public Op visitParExpr(SimplePascalParser.ParExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitParExpr(SimplePascalParser.ParExprContext ctx) {
+		if(labels.get(ctx) != null)
+			labels.put(ctx.getChild(0), label(ctx));
+		return visitChildren(ctx);
+	}
 	
 	@Override public Op visitTrueExpr(SimplePascalParser.TrueExprContext ctx) {
-		if(label(ctx) != null)
+		if(labels.get(ctx) != null)
 			emit(label(ctx), OpCode.loadI, new Num(-1), reg(ctx));
 		else
 			emit(OpCode.loadI, new Num(-1), reg(ctx));
@@ -217,32 +234,32 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	@Override public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) {
 		visitChildren(ctx);
 		if(ctx.compOp().LE() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.cmp_LE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().LT() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.cmp_LT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
 		}else if(ctx.compOp().GE() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.cmp_GE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().GT() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.cmp_GT, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().EQ() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.cmp_EQ, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else if(ctx.compOp().NE() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.cmp_NE, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
@@ -252,12 +269,12 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	
 	@Override public Op visitPrfExpr(SimplePascalParser.PrfExprContext ctx) {
 		if(ctx.prfOp().MINUS() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.multI, reg(ctx.expr()), new Num(-1), reg(ctx));
 			else
 				emit(OpCode.multI, reg(ctx.expr()), new Num(-1), reg(ctx));
 		}else{
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.xorI, reg(ctx.expr()), new Num(-1), reg(ctx));
 			else
 				emit(OpCode.xorI, reg(ctx.expr()), new Num(-1), reg(ctx));			
@@ -266,7 +283,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitFalseExpr(SimplePascalParser.FalseExprContext ctx) {
-		if(label(ctx) != null)
+		if(labels.get(ctx) != null)
 			emit(label(ctx), OpCode.loadI, new Num(0), reg(ctx));
 		else
 			emit(OpCode.loadI, new Num(0), reg(ctx));
@@ -275,12 +292,12 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	
 	@Override public Op visitBoolExpr(SimplePascalParser.BoolExprContext ctx) {
 		if(ctx.boolOp().AND() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.and, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.and, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else{
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.or, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.or, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
@@ -290,12 +307,12 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	
 	@Override public Op visitMultExpr(SimplePascalParser.MultExprContext ctx) {
 		if(ctx.multOp().STAR() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.mult, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.mult, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else{
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.div, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.div, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
@@ -304,7 +321,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitNumExpr(SimplePascalParser.NumExprContext ctx) {
-		if(label(ctx) != null)
+		if(labels.get(ctx) != null)
 			emit(label(ctx), OpCode.loadI, new Num(Integer.parseInt(ctx.NUM().toString())), reg(ctx));
 		else
 			emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUM().toString())), reg(ctx));			
@@ -313,12 +330,12 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	
 	@Override public Op visitPlusExpr(SimplePascalParser.PlusExprContext ctx) {
 		if(ctx.plusOp().PLUS() != null){
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.add, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.add, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 		}else{
-			if(label(ctx) != null)
+			if(labels.get(ctx) != null)
 				emit(label(ctx), OpCode.sub, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 			else
 				emit(OpCode.sub, reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));			
@@ -327,7 +344,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitIdExpr(SimplePascalParser.IdExprContext ctx) {
-		if(label(ctx) != null)
+		if(labels.get(ctx) != null)
 			emit(label(ctx), OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));
 		else
 			emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));			

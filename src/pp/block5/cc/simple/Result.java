@@ -35,7 +35,6 @@ public class Result {
 	/** Returns the declaration offset of the variable 
 	 * accessed in a given parse tree node. */
 	public int getOffset(ParseTree node) {
-		System.out.println("Returning offset[" + node.toString() + "]: " + this.offsets.get(node));
 		return this.offsets.get(node);
 	}
 
