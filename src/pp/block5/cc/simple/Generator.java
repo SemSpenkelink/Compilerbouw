@@ -56,7 +56,6 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	 * and adds it to the program under construction. */
 	private Op emit(Label label, OpCode opCode, Operand... args) {
 		Op result = new Op(label, opCode, args);
-		System.out.println(result.toString());
 		this.prog.addInstr(result);
 		return result;
 	}
@@ -122,8 +121,8 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	@Override public Op visitBody(SimplePascalParser.BodyContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitVarDecl(SimplePascalParser.VarDeclContext ctx) {
-		for(VarContext var : ctx.var())
-			visitVar(var);
+		//for(VarContext var : ctx.var())
+			//visitVar(var);
 		return null;
 	}
 	
@@ -144,12 +143,9 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
-		//Put own label onto expr
 		if(labels.get(ctx) != null)
 			labels.put(ctx.expr(), label(ctx));
-		//visit and add expression
 		visit(ctx.expr());
-		//Add continue label
 		Label continueLabel;
 		if(labels.get(getSibling(ctx)) == null && getWhileParent(ctx) == null){
 			continueLabel = createLabel(ctx, "continue");
@@ -161,29 +157,23 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		}else{
 			continueLabel = labels.get(getWhileParent(ctx));
 		}
-		//Create label for if-statement
 		Label ifLabel = createLabel(ctx, "if");
 		labels.put(ctx.stat(0), ifLabel);
-		//Check for if-statement or if-else-statement
 		if(ctx.ELSE() != null){
-			//Create labels for else-statement
 			Label elseLabel = createLabel(ctx, "else");
 			labels.put(ctx.stat(1), elseLabel);
-			//Add instruction cbr
 			emit(OpCode.cbr, reg(ctx.expr()), ifLabel, elseLabel);
-			//Visit if then else
 			for(StatContext stat : ctx.stat()){
 				visit(stat);
-				//End body with jump to continue
 				emit(OpCode.jumpI, continueLabel);
 			}
 		}else{
-			//Add instruction cbr
 			emit(OpCode.cbr, reg(ctx.expr()), ifLabel, continueLabel);
 			visit(ctx.stat(0));
-			//End body with jump to continue
 			emit(OpCode.jumpI, continueLabel);
 		}
+		if(getSibling(ctx.getParent()) == null)
+			emit(continueLabel, OpCode.i2i, arp, arp);
 		return null;
 	}
 	
@@ -223,7 +213,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		if(labels.get(ctx) != null)
 			labels.put(ctx.expr(), labels.get(ctx));
 		visit(ctx.expr());
-		return emit(OpCode.out, new Str("Result: "), reg(ctx.expr()));
+		return emit(OpCode.out, new Str(ctx.STR().getText().substring(1, ctx.STR().getText().length()-1)), reg(ctx.expr()));
 	}
 	
 	@Override public Op visitIdTarget(SimplePascalParser.IdTargetContext ctx) {
@@ -239,7 +229,8 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	@Override public Op visitParExpr(SimplePascalParser.ParExprContext ctx) {
 		if(labels.get(ctx) != null)
 			labels.put(ctx.getChild(0), label(ctx));
-		return visitChildren(ctx);
+		visitChildren(ctx);
+		return emit(OpCode.i2i, reg(ctx.expr()), reg(ctx));
 	}
 	
 	@Override public Op visitTrueExpr(SimplePascalParser.TrueExprContext ctx) {
@@ -271,18 +262,13 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 	
 	@Override public Op visitPrfExpr(SimplePascalParser.PrfExprContext ctx) {
+		if(labels.get(ctx) != null)
+			labels.put(ctx.expr(), label(ctx));
 		visitChildren(ctx);
-		if(ctx.prfOp().MINUS() != null){
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.multI, reg(ctx.expr()), new Num(-1), reg(ctx));
-			else
+		if(ctx.prfOp().MINUS() != null)
 				emit(OpCode.multI, reg(ctx.expr()), new Num(-1), reg(ctx));
-		}else{
-			if(labels.get(ctx) != null)
-				emit(label(ctx), OpCode.xorI, reg(ctx.expr()), new Num(-1), reg(ctx));
-			else
+		else
 				emit(OpCode.xorI, reg(ctx.expr()), new Num(-1), reg(ctx));			
-		}
 		return null;
 	}
 	

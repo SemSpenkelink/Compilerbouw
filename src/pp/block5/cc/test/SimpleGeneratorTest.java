@@ -22,13 +22,13 @@ public class SimpleGeneratorTest {
 	private final SimplePascalCompiler compiler = SimplePascalCompiler
 			.instance();
 
-	//@Test
+	@Test
 	public void testGCD() throws IOException, ParseException {
 		Program prog = compile("gcd");
 		String out = sim(prog, "3\n8");
-		assertEquals("Result: 1", out.trim());
+		assertEquals("Greatest common divisor: 1", out.trim());
 		out = sim(prog, "435\n1935");
-		assertEquals("Result: 15", out.trim());
+		assertEquals("Greatest common divisor: 15", out.trim());
 	}
 
 	@Test
