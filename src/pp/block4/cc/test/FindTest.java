@@ -33,7 +33,7 @@ public class FindTest {
 		run(sim, 10, 3);
 	}
 	
-	@Test(timeout = 100)
+	@Test(timeout = 10000)
 	public void tmpTest(){
 		Program p = assemble("fib");
 		if(SHOW) {
@@ -41,9 +41,18 @@ public class FindTest {
 		}
 		Machine vm = new Machine();
 		Simulator sim = new Simulator(p, vm);
-		//run2(sim, 1, 1);
-		//run2(sim, 2, 1);
-		run2(sim, 3, 1);
+		run2(sim, 1, 1);
+		run2(sim, 2, 2);
+		run2(sim, 3, 3);
+		run2(sim, 4, 5);
+		run2(sim, 5, 8);
+		run2(sim, 6, 13);
+		run2(sim, 7, 21);
+		run2(sim, 8, 34);
+		run2(sim, 9, 55);
+		run2(sim, 10, 89);
+		run2(sim, 20, 10946);
+		run2(sim, 30, 1346269);
 	}
 	
 	private void run2(Simulator sim, int input, int output){

@@ -1,56 +1,60 @@
-start:  in "Argument? " => r_n					//set input in register n
-		i2i sp => r_sp
-		loadI 0 => r_ret				//set return value in r_ret
-		push r_n						//push n
-		push r_ret						//push return value		
-start2:	loadI 1 => r_compare
-		cmp_LE r_n, r_compare => r_cmp
-		out "n: ", r_n
-		cbr r_cmp -> end1, cont
-cont:	loadI 0 => r_compare				//Check if r_ret = 0
-		cmp_EQ r_compare, r_ret => r_cmp	//Check if r_ret = 0
-		cbr r_cmp -> fib1, fib2				//Call first child
-		
-fib1:	nop								//Label first child
-		out "fib1 ", r_n
-		subI r_n, 1 => r_n				//n-1
-		loadI 0 => r_ret				//set return value in r_ret
-		push r_n						//push n
-		push r_ret						//push return value
-		load sp => r_ret
-		addI sp, 4 => sp
-		load sp => r_n
-		subI sp, 4 => sp
-		jumpI -> start2					//Return to start2
+start:  	loadI 0 => r_ret						//set return value to 0
+			in "Argument? " => r_n					//set input n in register n
+			loadI #final => r_ret_label				//set return address to final
+			push r_ret_label						//push return address
+			push r_n								//push n
+			push r_ret								//push return value
 
-fib2:	nop								//Label second child
-		out "fib2 ", r_n
-		subI r_n, 2 => r_n				//n-2
-		loadI 0 => r_1
-		push r_n
-		push r_1
-		jumpI -> end2
-
-end1:	nop
-		out "end1 ", r_n
-		loadI 1 => r_ret				//Load 1 in r_ret
-		store r_ret => sp				//Store r_ret into own r_ret stack
-		jumpI -> end2
-		
-end2:	nop
-		out "end2 ", r_n
-		cmp_EQ r_sp, sp => r_cmp
-		cbr r_cmp -> final, tmp
-tmp:	nop
-		out "tmp ", r_n
-		pop => r_ret
-		pop => r_n
-		out "pop ", r_n
-		cmp_EQ r_sp, sp => r_cmp
-		cbr r_cmp -> final, tmp2
-tmp2:	load sp => r_tmp
-		add r_tmp, r_ret => r_ret
-		store r_ret => sp
-		jumpI -> start2
-		
-final:  out "Result: ", r_ret
+start2:		loadI #cont1 => r_local_label			//set temporary continue label for call to copy
+			jumpI -> copy							//copy values to local 
+cont1:		loadI 1 => r_cmp						//load 1 into compare register
+			cmp_LE r_n, r_cmp => r_cmp				//check if n <= 1
+			cbr r_cmp -> set_1, fib_1				//if n <= 1 set return value to 1 else go to fibonacci 1
+			
+fib_1:		loadI #fib1_cont => r_local_label		//set temporary continue label for call to copy
+			jumpI -> copy							//copy values to local
+fib1_cont:	loadI #fib_2 => r_ret_label				//set return label to fib_2
+			push r_ret_label						//push return label
+			subI r_n, 1 => r_n						//n-1
+			push r_n								//push n-1
+			loadI 0 => r_ret						//return value to 0
+			push r_ret								//push return value
+			jumpI -> start2							//recursive call to fibonacci
+			
+fib_2:		pop => r_ret_a							//return value of fib_1 is above this part of the stack, temporarily pop it
+			loadI #fib2_cont => r_local_label		//set temporary continue label for call to copy
+			jumpI -> copy							//copy values to local
+fib2_cont:	push r_ret_a							//push value of fib_1 back to stack
+			loadI #addition => r_ret_label			//set return label to addition
+			push r_ret_label						//push return label
+			subI r_n, 2 => r_n						//n-2
+			push r_n								//push n-2
+			loadI 0 => r_ret						//return value to 0
+			push r_ret								//push return value
+			jumpI -> start2							//recursive call to fibonacci
+			
+copy:		pop => r_ret							//retrieve local r_ret
+			pop => r_n								//retrieve local r_n
+			pop => r_ret_label						//retrieve local r_ret_label
+			push r_ret_label						//restore
+			push r_n								//restore
+			push r_ret								//restore
+			jump -> r_local_label
+			
+set_1:		pop => r_ret							//remove current return value
+			pop => r_n								//remove current n
+			pop => r_ret_label						//retrieve return label
+			loadI 1 => r_ret						//set r_ret to 1
+			push r_ret								//push only the return value
+			jump -> r_ret_label						//return to return label
+			
+addition:	pop => r_ret_a							//retrieve fib(n-2)
+			pop => r_ret_b							//retrieve fib(n-1)
+			pop => r_ret							//remove current return value
+			pop => r_n								//remove current n
+			pop => r_ret_label						//retrieve return label
+			add r_ret_a, r_ret_b => r_ret			//set return value to fib(n-2)+fib(n-1)
+			push r_ret								//push return value
+			jump -> r_ret_label						//return to return label
+			
+final:		out "Result: ", r_ret					//Print return value
