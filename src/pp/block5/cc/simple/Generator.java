@@ -56,6 +56,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	 * and adds it to the program under construction. */
 	private Op emit(Label label, OpCode opCode, Operand... args) {
 		Op result = new Op(label, opCode, args);
+		System.out.println(result.toString());
 		this.prog.addInstr(result);
 		return result;
 	}
