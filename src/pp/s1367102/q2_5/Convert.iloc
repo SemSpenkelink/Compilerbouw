@@ -1,0 +1,39 @@
+main:			in "Number? " => r_num
+				in "Base? " => r_base
+				loadI #main_finish => r_return_label
+				loadI 0 => r_return_value
+				push r_return_label
+				push r_base
+				push r_num
+				push r_return_value
+				jumpI -> convert
+main_finish:	out "Length: ", r_return_value
+				jumpI -> exit
+
+convert:		pop => r_return_value
+				pop => r_num
+				pop => r_base
+				pop => r_return_label
+				div r_num, r_base => r_rest
+				mult r_base, r_rest => r_tmp
+				sub r_num, r_tmp => r_tmp
+				out "Next digit: ", r_tmp
+				loadI 0 => r_0
+				cmp_EQ r_rest, r_0 => r_cmp
+				cbr r_cmp -> one, recursive
+
+one:			loadI 1 => r_return_value
+				push r_return_value
+				jump -> r_return_label
+				
+recursive:		loadI #addition => r_return_label
+				push r_return_label
+				push r_rest
+				push r_base
+				push r_return_value
+				jumpI -> convert
+				
+addition:		addI r_return_value, 1 => r_return_value
+				jump -> r_return_label
+				
+exit:			nop
