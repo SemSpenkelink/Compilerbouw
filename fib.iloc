@@ -1,0 +1,56 @@
+start:  in "Argument? " => r_n					//set input in register n
+		i2i sp => r_sp
+		loadI 0 => r_ret				//set return value in r_ret
+		push r_n						//push n
+		push r_ret						//push return value		
+start2:	loadI 1 => r_compare
+		cmp_LE r_n, r_compare => r_cmp
+		out "n: ", r_n
+		cbr r_cmp -> end1, cont
+cont:	loadI 0 => r_compare				//Check if r_ret = 0
+		cmp_EQ r_compare, r_ret => r_cmp	//Check if r_ret = 0
+		cbr r_cmp -> fib1, fib2				//Call first child
+		
+fib1:	nop								//Label first child
+		out "fib1 ", r_n
+		subI r_n, 1 => r_n				//n-1
+		loadI 0 => r_ret				//set return value in r_ret
+		push r_n						//push n
+		push r_ret						//push return value
+		load sp => r_ret
+		addI sp, 4 => sp
+		load sp => r_n
+		subI sp, 4 => sp
+		jumpI -> start2					//Return to start2
+
+fib2:	nop								//Label second child
+		out "fib2 ", r_n
+		subI r_n, 2 => r_n				//n-2
+		loadI 0 => r_1
+		push r_n
+		push r_1
+		jumpI -> end2
+
+end1:	nop
+		out "end1 ", r_n
+		loadI 1 => r_ret				//Load 1 in r_ret
+		store r_ret => sp				//Store r_ret into own r_ret stack
+		jumpI -> end2
+		
+end2:	nop
+		out "end2 ", r_n
+		cmp_EQ r_sp, sp => r_cmp
+		cbr r_cmp -> final, tmp
+tmp:	nop
+		out "tmp ", r_n
+		pop => r_ret
+		pop => r_n
+		out "pop ", r_n
+		cmp_EQ r_sp, sp => r_cmp
+		cbr r_cmp -> final, tmp2
+tmp2:	load sp => r_tmp
+		add r_tmp, r_ret => r_ret
+		store r_ret => sp
+		jumpI -> start2
+		
+final:  out "Result: ", r_ret

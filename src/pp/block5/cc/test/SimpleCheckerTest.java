@@ -20,7 +20,7 @@ public class SimpleCheckerTest {
 	private final static String EXT = ".pascal";
 	private final SimplePascalCompiler compiler = SimplePascalCompiler
 			.instance();
-
+	
 	@Test
 	public void testBasic() throws IOException, ParseException {
 		ParseTree tree = parse("basic");
