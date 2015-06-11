@@ -28,7 +28,9 @@ public class ConvertTest {
 		}
 		Machine vm = new Machine();
 		Simulator sim = new Simulator(p, vm);
+		run(sim, 64, 2, 7);
 		run(sim, 32, 2, 6);
+		run(sim, 16, 2, 5);
 	}
 	
 	private void run(Simulator sim, int number, int base, int output){
@@ -39,7 +41,7 @@ public class ConvertTest {
 		if (SHOW) {
 			System.out.println(vm);
 		}
-		assertEquals(output, vm.getReg("r_return_value"));
+		assertEquals(output, vm.getReg("r_function_convert"));
 	}
 	
 	private Program assemble(String filename) {
