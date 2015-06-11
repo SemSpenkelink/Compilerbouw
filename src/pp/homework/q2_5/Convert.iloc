@@ -1,0 +1,64 @@
+main_start: 			nop
+						in "Number? " => r_num
+						in "Base? " => r_base
+						loadI #error => r_caller_label
+						loadI 1 => r_function_convert
+						push r_function_convert
+						push r_caller_label
+						push r_num
+						push r_base
+						loadI 0 => r_function_convert
+						
+						push r_function_convert	// push register for return value of callee
+						loadI #main_after_convert => r_caller_label
+						push r_caller_label
+						push r_num				//pushing arguments
+						push r_base				//pushing arguments
+						jumpI -> convert			//Call convert function
+main_after_convert:		nop
+						pop => r_function_convert
+						out "Length: ", r_function_convert
+						jumpI -> end
+					
+convert:				nop
+						pop => r_base
+						pop => r_num
+						div r_num, r_base => r_rest				//
+						mult r_base, r_rest => r_tmp			//
+						sub r_num, r_tmp => r_tmp				//
+						out "Next digit: ", r_tmp				// print the next digit
+						loadI 0 => r_tmp
+						cmp_EQ r_tmp, r_rest => r_cmp
+						cbr r_cmp -> convert_return_one, convert_return_convert
+convert_return_one: 	nop
+						loadI 1 => r_return_value				//create local register and store 1
+						pop => r_caller_label					//pop the return label so that the function knows where to return to
+						pop => r_function_convert							// pop the return_value from the stack, then you can load the actual return value computed
+						push r_return_value						//push the computed return value
+						jump -> r_caller_label						//Return to where this function was called
+convert_return_convert: nop
+						//Save the activation record
+						push r_num
+						push r_base
+						//Create activation record of the child
+						loadI #convert_rec_cont => r_caller_label	//the return address 
+						push r_function_convert
+						push r_caller_label
+						push r_rest								//Passing arguments
+						push r_base								//Passing arguments
+						jumpI -> convert
+convert_rec_cont:		nop
+						//Load the activation record
+						pop => r_function_convert 				//The return value pushed by its callee
+						addI r_function_convert,1  => r_result
+						pop =>r_base
+						pop => r_num
+						pop => r_caller_label
+						pop => r_function_convert
+						push r_result
+						jump -> r_caller_label						//Return to where this function was called
+error:					nop
+						out "Error! Length: ", r_function_convert
+end:					nop
+					
+					
