@@ -45,24 +45,33 @@ public class ILOC2CFG {
 	}
 
 	public Graph convert(Program prog) {
-		Graph graph = new Graph();
-		Node currentNode = null;
-		Map <Label,Node> labels = new HashMap<Label,Node>();
-		List <Operand> operands; 
-		Op current;
-		int size = prog.size();
+		Graph graph = new Graph();								//Graph to be returned
+		Map <Label,Node> labels = new HashMap<Label,Node>();	//
+		Node currentNode 		= null;
+		Node lastNode			= null;
+		List <Operand> operands = null; 
+		Op current 				= null;
+		boolean hasJump			= false;
+		
+		int size 				= prog.size();
 		for(int index = 0; index < size; index++){
 			current = prog.getOpAt(index);
-			
+			if(current.hasLabel() && !hasJump && index >= 1){
+				lastNode = currentNode;
+			}				
 			//Add and check label//
-			if(current.hasLabel() && !labels.containsKey(current.getLabel())){
+			if(current.hasLabel() && !labels.containsKey(current.getLabel())){	
 				currentNode = graph.addNode(current.getLabel().toString());
 				labels.put(current.getLabel(),currentNode);
-			}else if(current.hasLabel()){
-				currentNode = labels.get(current.getLabel());
+			}else if(current.hasLabel()){					
+				currentNode = labels.get(current.getLabel());				
 			}
 			
+			if(current.hasLabel() && !hasJump && index >= 1)
+				lastNode.addEdge(currentNode);
+			
 			if(current.getOpCode().equals(OpCode.jumpI)){
+				hasJump = true;
 				operands = current.getOpnds();
 				Label tmp;
 				for(int i = 0; i < operands.size(); i++){
@@ -78,6 +87,7 @@ public class ILOC2CFG {
 					}					
 				}
 			} else	if(current.getOpCode().equals(OpCode.cbr)){
+				hasJump = true;
 				operands = current.getOpnds();
 				Label tmp;
 				for(int i = 0; i < operands.size(); i++){
