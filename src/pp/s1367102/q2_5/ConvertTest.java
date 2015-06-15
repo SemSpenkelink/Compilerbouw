@@ -18,30 +18,30 @@ import pp.iloc.parse.FormatException;
 @SuppressWarnings("javadoc")
 public class ConvertTest {
 	private Assembler assembler = Assembler.instance();
-	private final static boolean SHOW = true;
+	private final static boolean SHOW = false;
 	
 	@Test(timeout = 1000)
 	public void tmpTest(){
 		Program p = assemble("src/pp/s1367102/q2_5/Convert");
 		if(SHOW) {
-			//System.out.println(p.prettyPrint());
+			System.out.println(p.prettyPrint());
 		}
 		Machine vm = new Machine();
 		Simulator sim = new Simulator(p, vm);
-		run(sim, 64, 2, 7);
-		run(sim, 32, 2, 6);
-		run(sim, 16, 2, 5);
+		run(sim, 115, 7);
+		run(sim, 99, 3);
+		run(sim, 87, 6);
 	}
 	
-	private void run(Simulator sim, int number, int base, int output){
+	private void run(Simulator sim, int number, int base){
 		Machine vm = sim.getVM();
 		vm.clear();
-		sim.setIn(new ByteArrayInputStream(("" + number + "\n" + base).getBytes()));
+		sim.setIn(new ByteArrayInputStream((number + "\n" + base).getBytes()));
 		sim.run();
 		if (SHOW) {
 			System.out.println(vm);
 		}
-		assertEquals(output, vm.getReg("r_function_convert"));
+		assertEquals(Convert.convert(number, base), vm.getReg("r_return"));
 	}
 	
 	private Program assemble(String filename) {
