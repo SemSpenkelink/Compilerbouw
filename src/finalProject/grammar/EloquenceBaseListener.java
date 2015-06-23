@@ -389,37 +389,37 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnaryMult(EloquenceParser.UnaryMultContext ctx) { }
+	@Override public void enterMultMult(EloquenceParser.MultMultContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUnaryMult(EloquenceParser.UnaryMultContext ctx) { }
+	@Override public void exitMultMult(EloquenceParser.MultMultContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnaryDiv(EloquenceParser.UnaryDivContext ctx) { }
+	@Override public void enterMultDiv(EloquenceParser.MultDivContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUnaryDiv(EloquenceParser.UnaryDivContext ctx) { }
+	@Override public void exitMultDiv(EloquenceParser.MultDivContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnaryMod(EloquenceParser.UnaryModContext ctx) { }
+	@Override public void enterMultMod(EloquenceParser.MultModContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUnaryMod(EloquenceParser.UnaryModContext ctx) { }
+	@Override public void exitMultMod(EloquenceParser.MultModContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -581,13 +581,25 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunc(EloquenceParser.FuncContext ctx) { }
+	@Override public void enterFuncVoid(EloquenceParser.FuncVoidContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunc(EloquenceParser.FuncContext ctx) { }
+	@Override public void exitFuncVoid(EloquenceParser.FuncVoidContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFuncReturn(EloquenceParser.FuncReturnContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFuncReturn(EloquenceParser.FuncReturnContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

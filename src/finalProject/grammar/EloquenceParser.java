@@ -1369,40 +1369,40 @@ public class EloquenceParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class UnaryMultContext extends MultiplyContext {
-		public TerminalNode MULTIPLY() { return getToken(EloquenceParser.MULTIPLY, 0); }
-		public UnaryMultContext(MultiplyContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterUnaryMult(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitUnaryMult(this);
-		}
-	}
-	public static class UnaryModContext extends MultiplyContext {
-		public TerminalNode MODULO() { return getToken(EloquenceParser.MODULO, 0); }
-		public UnaryModContext(MultiplyContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterUnaryMod(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitUnaryMod(this);
-		}
-	}
-	public static class UnaryDivContext extends MultiplyContext {
+	public static class MultDivContext extends MultiplyContext {
 		public TerminalNode DIVIDE() { return getToken(EloquenceParser.DIVIDE, 0); }
-		public UnaryDivContext(MultiplyContext ctx) { copyFrom(ctx); }
+		public MultDivContext(MultiplyContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterUnaryDiv(this);
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterMultDiv(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitUnaryDiv(this);
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitMultDiv(this);
+		}
+	}
+	public static class MultModContext extends MultiplyContext {
+		public TerminalNode MODULO() { return getToken(EloquenceParser.MODULO, 0); }
+		public MultModContext(MultiplyContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterMultMod(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitMultMod(this);
+		}
+	}
+	public static class MultMultContext extends MultiplyContext {
+		public TerminalNode MULTIPLY() { return getToken(EloquenceParser.MULTIPLY, 0); }
+		public MultMultContext(MultiplyContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterMultMult(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitMultMult(this);
 		}
 	}
 
@@ -1413,7 +1413,7 @@ public class EloquenceParser extends Parser {
 			setState(194);
 			switch (_input.LA(1)) {
 			case MULTIPLY:
-				_localctx = new UnaryMultContext(_localctx);
+				_localctx = new MultMultContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(191);
@@ -1421,7 +1421,7 @@ public class EloquenceParser extends Parser {
 				}
 				break;
 			case DIVIDE:
-				_localctx = new UnaryDivContext(_localctx);
+				_localctx = new MultDivContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(192);
@@ -1429,7 +1429,7 @@ public class EloquenceParser extends Parser {
 				}
 				break;
 			case MODULO:
-				_localctx = new UnaryModContext(_localctx);
+				_localctx = new MultModContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(193);
@@ -1845,23 +1845,42 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class FuncContext extends ParserRuleContext {
-		public VoidFuncContext voidFunc() {
-			return getRuleContext(VoidFuncContext.class,0);
-		}
-		public ReturnFuncContext returnFunc() {
-			return getRuleContext(ReturnFuncContext.class,0);
-		}
 		public FuncContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_func; }
+	 
+		public FuncContext() { }
+		public void copyFrom(FuncContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class FuncReturnContext extends FuncContext {
+		public ReturnFuncContext returnFunc() {
+			return getRuleContext(ReturnFuncContext.class,0);
+		}
+		public FuncReturnContext(FuncContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterFunc(this);
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterFuncReturn(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitFunc(this);
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitFuncReturn(this);
+		}
+	}
+	public static class FuncVoidContext extends FuncContext {
+		public VoidFuncContext voidFunc() {
+			return getRuleContext(VoidFuncContext.class,0);
+		}
+		public FuncVoidContext(FuncContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterFuncVoid(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitFuncVoid(this);
 		}
 	}
 
@@ -1872,6 +1891,7 @@ public class EloquenceParser extends Parser {
 			setState(219);
 			switch (_input.LA(1)) {
 			case VOID:
+				_localctx = new FuncVoidContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(217);
@@ -1881,6 +1901,7 @@ public class EloquenceParser extends Parser {
 			case BOOLEAN:
 			case CHAR:
 			case INTEGER:
+				_localctx = new FuncReturnContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(218);

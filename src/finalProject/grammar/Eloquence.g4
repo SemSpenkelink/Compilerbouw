@@ -63,9 +63,9 @@ unary
 	;
 	
 multiply
-	: MULTIPLY									#unaryMult
-	| DIVIDE									#unaryDiv
-	| MODULO									#unaryMod
+	: MULTIPLY									#multMult
+	| DIVIDE									#multDiv
+	| MODULO									#multMod
 	;
 	
 addition
@@ -97,8 +97,8 @@ type
 	;
 	
 func
-	: voidFunc 
-	| returnFunc
+	: voidFunc 									#funcVoid
+	| returnFunc								#funcReturn
 	;
 	
 functionID

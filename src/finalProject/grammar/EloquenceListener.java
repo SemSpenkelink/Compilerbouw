@@ -371,41 +371,41 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitUnaryNot(EloquenceParser.UnaryNotContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code unaryMult}
+	 * Enter a parse tree produced by the {@code multMult}
 	 * labeled alternative in {@link EloquenceParser#multiply}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnaryMult(EloquenceParser.UnaryMultContext ctx);
+	void enterMultMult(EloquenceParser.MultMultContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code unaryMult}
+	 * Exit a parse tree produced by the {@code multMult}
 	 * labeled alternative in {@link EloquenceParser#multiply}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnaryMult(EloquenceParser.UnaryMultContext ctx);
+	void exitMultMult(EloquenceParser.MultMultContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code unaryDiv}
+	 * Enter a parse tree produced by the {@code multDiv}
 	 * labeled alternative in {@link EloquenceParser#multiply}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnaryDiv(EloquenceParser.UnaryDivContext ctx);
+	void enterMultDiv(EloquenceParser.MultDivContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code unaryDiv}
+	 * Exit a parse tree produced by the {@code multDiv}
 	 * labeled alternative in {@link EloquenceParser#multiply}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnaryDiv(EloquenceParser.UnaryDivContext ctx);
+	void exitMultDiv(EloquenceParser.MultDivContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code unaryMod}
+	 * Enter a parse tree produced by the {@code multMod}
 	 * labeled alternative in {@link EloquenceParser#multiply}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnaryMod(EloquenceParser.UnaryModContext ctx);
+	void enterMultMod(EloquenceParser.MultModContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code unaryMod}
+	 * Exit a parse tree produced by the {@code multMod}
 	 * labeled alternative in {@link EloquenceParser#multiply}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnaryMod(EloquenceParser.UnaryModContext ctx);
+	void exitMultMod(EloquenceParser.MultModContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code addPlus}
 	 * labeled alternative in {@link EloquenceParser#addition}.
@@ -559,15 +559,29 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitTypeChar(EloquenceParser.TypeCharContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link EloquenceParser#func}.
+	 * Enter a parse tree produced by the {@code funcVoid}
+	 * labeled alternative in {@link EloquenceParser#func}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunc(EloquenceParser.FuncContext ctx);
+	void enterFuncVoid(EloquenceParser.FuncVoidContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link EloquenceParser#func}.
+	 * Exit a parse tree produced by the {@code funcVoid}
+	 * labeled alternative in {@link EloquenceParser#func}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunc(EloquenceParser.FuncContext ctx);
+	void exitFuncVoid(EloquenceParser.FuncVoidContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code funcReturn}
+	 * labeled alternative in {@link EloquenceParser#func}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncReturn(EloquenceParser.FuncReturnContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code funcReturn}
+	 * labeled alternative in {@link EloquenceParser#func}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncReturn(EloquenceParser.FuncReturnContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link EloquenceParser#functionID}.
 	 * @param ctx the parse tree
