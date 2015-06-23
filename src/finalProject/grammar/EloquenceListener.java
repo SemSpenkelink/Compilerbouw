@@ -169,6 +169,18 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitStatBlock(EloquenceParser.StatBlockContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code targetId}
+	 * labeled alternative in {@link EloquenceParser#target}.
+	 * @param ctx the parse tree
+	 */
+	void enterTargetId(EloquenceParser.TargetIdContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code targetId}
+	 * labeled alternative in {@link EloquenceParser#target}.
+	 * @param ctx the parse tree
+	 */
+	void exitTargetId(EloquenceParser.TargetIdContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link EloquenceParser#returnStat}.
 	 * @param ctx the parse tree
 	 */
@@ -335,173 +347,45 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitExprArray(EloquenceParser.ExprArrayContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code unaryMin}
-	 * labeled alternative in {@link EloquenceParser#unary}.
+	 * Enter a parse tree produced by {@link EloquenceParser#unary}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnaryMin(EloquenceParser.UnaryMinContext ctx);
+	void enterUnary(EloquenceParser.UnaryContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code unaryMin}
-	 * labeled alternative in {@link EloquenceParser#unary}.
+	 * Exit a parse tree produced by {@link EloquenceParser#unary}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnaryMin(EloquenceParser.UnaryMinContext ctx);
+	void exitUnary(EloquenceParser.UnaryContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code unaryPlus}
-	 * labeled alternative in {@link EloquenceParser#unary}.
+	 * Enter a parse tree produced by {@link EloquenceParser#multiply}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnaryPlus(EloquenceParser.UnaryPlusContext ctx);
+	void enterMultiply(EloquenceParser.MultiplyContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code unaryPlus}
-	 * labeled alternative in {@link EloquenceParser#unary}.
+	 * Exit a parse tree produced by {@link EloquenceParser#multiply}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnaryPlus(EloquenceParser.UnaryPlusContext ctx);
+	void exitMultiply(EloquenceParser.MultiplyContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code unaryNot}
-	 * labeled alternative in {@link EloquenceParser#unary}.
+	 * Enter a parse tree produced by {@link EloquenceParser#addition}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnaryNot(EloquenceParser.UnaryNotContext ctx);
+	void enterAddition(EloquenceParser.AdditionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code unaryNot}
-	 * labeled alternative in {@link EloquenceParser#unary}.
+	 * Exit a parse tree produced by {@link EloquenceParser#addition}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnaryNot(EloquenceParser.UnaryNotContext ctx);
+	void exitAddition(EloquenceParser.AdditionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code multMult}
-	 * labeled alternative in {@link EloquenceParser#multiply}.
+	 * Enter a parse tree produced by {@link EloquenceParser#compare}.
 	 * @param ctx the parse tree
 	 */
-	void enterMultMult(EloquenceParser.MultMultContext ctx);
+	void enterCompare(EloquenceParser.CompareContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code multMult}
-	 * labeled alternative in {@link EloquenceParser#multiply}.
+	 * Exit a parse tree produced by {@link EloquenceParser#compare}.
 	 * @param ctx the parse tree
 	 */
-	void exitMultMult(EloquenceParser.MultMultContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code multDiv}
-	 * labeled alternative in {@link EloquenceParser#multiply}.
-	 * @param ctx the parse tree
-	 */
-	void enterMultDiv(EloquenceParser.MultDivContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code multDiv}
-	 * labeled alternative in {@link EloquenceParser#multiply}.
-	 * @param ctx the parse tree
-	 */
-	void exitMultDiv(EloquenceParser.MultDivContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code multMod}
-	 * labeled alternative in {@link EloquenceParser#multiply}.
-	 * @param ctx the parse tree
-	 */
-	void enterMultMod(EloquenceParser.MultModContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code multMod}
-	 * labeled alternative in {@link EloquenceParser#multiply}.
-	 * @param ctx the parse tree
-	 */
-	void exitMultMod(EloquenceParser.MultModContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code addPlus}
-	 * labeled alternative in {@link EloquenceParser#addition}.
-	 * @param ctx the parse tree
-	 */
-	void enterAddPlus(EloquenceParser.AddPlusContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code addPlus}
-	 * labeled alternative in {@link EloquenceParser#addition}.
-	 * @param ctx the parse tree
-	 */
-	void exitAddPlus(EloquenceParser.AddPlusContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code addMin}
-	 * labeled alternative in {@link EloquenceParser#addition}.
-	 * @param ctx the parse tree
-	 */
-	void enterAddMin(EloquenceParser.AddMinContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code addMin}
-	 * labeled alternative in {@link EloquenceParser#addition}.
-	 * @param ctx the parse tree
-	 */
-	void exitAddMin(EloquenceParser.AddMinContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code compLess}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void enterCompLess(EloquenceParser.CompLessContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code compLess}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void exitCompLess(EloquenceParser.CompLessContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code compLessEq}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void enterCompLessEq(EloquenceParser.CompLessEqContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code compLessEq}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void exitCompLessEq(EloquenceParser.CompLessEqContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code compGreatEq}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void enterCompGreatEq(EloquenceParser.CompGreatEqContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code compGreatEq}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void exitCompGreatEq(EloquenceParser.CompGreatEqContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code compGreat}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void enterCompGreat(EloquenceParser.CompGreatContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code compGreat}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void exitCompGreat(EloquenceParser.CompGreatContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code compEq}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void enterCompEq(EloquenceParser.CompEqContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code compEq}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void exitCompEq(EloquenceParser.CompEqContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code compNotEq}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void enterCompNotEq(EloquenceParser.CompNotEqContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code compNotEq}
-	 * labeled alternative in {@link EloquenceParser#compare}.
-	 * @param ctx the parse tree
-	 */
-	void exitCompNotEq(EloquenceParser.CompNotEqContext ctx);
+	void exitCompare(EloquenceParser.CompareContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link EloquenceParser#and}.
 	 * @param ctx the parse tree

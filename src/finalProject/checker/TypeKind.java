@@ -7,5 +7,7 @@ public enum TypeKind {
 	/** Boolean base type. */
 	BOOL,
 	/** Array compound type. */
-	ARRAY;
+	ARRAY,
+	/** Char base type. */
+	CHAR;
 }

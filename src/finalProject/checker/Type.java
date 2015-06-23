@@ -8,6 +8,8 @@ abstract public class Type {
 	public static final Type BOOL = new Bool();
 	/** The singleton instance of the {@link Int} type. */
 	public static final Type INT = new Int();
+	/** The singleton instance of the {@link Char} type. */
+	public static final Type CHAR = new Int();
 	private final TypeKind kind;
 
 	public Type(TypeKind kind) {
@@ -50,6 +52,22 @@ abstract public class Type {
 		@Override
 		public String toString() {
 			return "Integer";
+		}
+	}
+	
+	static public class Char extends Type {
+		private Char() {
+			super(TypeKind.CHAR);
+		}
+
+		@Override
+		public int size() {
+			return Machine.INT_SIZE;
+		}
+
+		@Override
+		public String toString() {
+			return "Char";
 		}
 	}
 

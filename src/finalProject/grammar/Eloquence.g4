@@ -31,9 +31,13 @@ stat
 	: returnStat								#statReturn
 	| IF LPAR expression RPAR stat (ELSE stat)?	#statIf
 	| WHILE LPAR expression RPAR stat			#statWhile
-	| ID ASSIGN expression SEMI					#statAssign
-	| ID LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI #statAssignArray
+	| target ASSIGN expression SEMI				#statAssign
+	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI #statAssignArray
 	| LBRACE body RBRACE						#statBlock
+	;
+	
+target
+	: ID										#targetId
 	;
 	
 returnStat
@@ -57,29 +61,29 @@ expression
 	;
 	
 unary
-	: MINUS										#unaryMin
-	| PLUS										#unaryPlus
-	| NOT										#unaryNot
+	: MINUS
+	| PLUS
+	| NOT
 	;
 	
 multiply
-	: MULTIPLY									#multMult
-	| DIVIDE									#multDiv
-	| MODULO									#multMod
+	: MULTIPLY
+	| DIVIDE
+	| MODULO
 	;
 	
 addition
-	: PLUS										#addPlus
-	| MINUS										#addMin
+	: PLUS
+	| MINUS
 	;
 	
 compare
-	: LT										#compLess
-	| LE										#compLessEq
-	| GE										#compGreatEq
-	| GT										#compGreat
-	| EQ										#compEq
-	| NE										#compNotEq
+	: LT
+	| LE
+	| GE
+	| GT
+	| EQ
+	| NE
 	;
 	
 and
