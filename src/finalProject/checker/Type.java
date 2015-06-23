@@ -9,7 +9,7 @@ abstract public class Type {
 	/** The singleton instance of the {@link Int} type. */
 	public static final Type INT = new Int();
 	/** The singleton instance of the {@link Char} type. */
-	public static final Type CHAR = new Int();
+	public static final Type CHAR = new Char();
 	private final TypeKind kind;
 
 	public Type(TypeKind kind) {

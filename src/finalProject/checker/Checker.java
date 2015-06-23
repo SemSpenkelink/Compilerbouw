@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import finalProject.grammar.EloquenceBaseListener;
 import finalProject.grammar.EloquenceParser;
+import finalProject.grammar.EloquenceParser.ExpressionContext;
 /** Class to type check and calculate flow entries and variable offsets. */
 public class Checker extends EloquenceBaseListener {
 	/** Result of the latest call of {@link #check}. */
@@ -62,7 +63,12 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitDeclConstArray(EloquenceParser.DeclConstArrayContext ctx) { }
 	
 	//TODO
-	@Override public void exitArrayDecl(EloquenceParser.ArrayDeclContext ctx) { }
+	@Override public void exitArrayDecl(EloquenceParser.ArrayDeclContext ctx) {
+		for(ExpressionContext expr : ctx.expression()){
+			checkType(expr, getType(ctx.type()));
+		}
+		setType(ctx, getType(ctx.type()));
+	}
 	
 	//TODO
 	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) { }
