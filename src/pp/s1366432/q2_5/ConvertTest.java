@@ -1,4 +1,4 @@
-package pp.homework.q2_5;
+package pp.s1366432.q2_5;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -22,7 +22,7 @@ public class ConvertTest {
 	
 	@Test(timeout = 1000)
 	public void tmpTest(){
-		Program p = assemble("src/pp/s1367102/q2_5/Convert");
+		Program p = assemble("src/pp/s1366432/q2_5/Convert");
 		if(SHOW) {
 			//System.out.println(p.prettyPrint());
 		}

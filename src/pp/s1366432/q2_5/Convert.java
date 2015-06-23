@@ -1,4 +1,4 @@
-package pp.homework.q2_5;
+package pp.s1366432.q2_5;
 
 import java.util.Scanner;
 

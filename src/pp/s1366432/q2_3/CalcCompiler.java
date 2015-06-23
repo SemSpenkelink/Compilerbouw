@@ -1,4 +1,4 @@
-package pp.homework.q2_3;
+package pp.s1366432.q2_3;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -71,33 +71,39 @@ public class CalcCompiler extends CalcBaseListener {
 	}
 	
 	@Override public void exitMinus(@NotNull CalcParser.MinusContext ctx) {
-		emit(OpCode.pop, reg1);
-		emit(OpCode.rsubI, reg1, new Num(0), reg1);
+		emit(OpCode.pop, reg1);				//Get value of reg 1
+		emit(OpCode.rsubI, reg1, new Num(0), reg1);	//Subtract 0 by value of reg 1. This creates a negative value
 		emit(OpCode.push, reg1);
 	}
 	
 	@Override public void exitNumber(@NotNull CalcParser.NumberContext ctx) {
-		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.getText())), reg1);
+		int tmp = Integer.parseInt(ctx.getText());	//The text needs to be parsed to int
+		emit(OpCode.loadI, new Num(tmp), reg1);		//Create a new num and load it into the reg
+		
 		emit(OpCode.push, reg1);
 	}
 	
 	@Override public void exitTimes(@NotNull CalcParser.TimesContext ctx) {
-		emit(OpCode.pop, reg1);
+		emit(OpCode.pop, reg1);			//Get the two required values
 		emit(OpCode.pop, reg2);
-		emit(OpCode.mult, reg1, reg2, reg1);
-		emit(OpCode.push, reg1);
+		
+		emit(OpCode.mult, reg1, reg2, reg1);		//Multiply the two values
+		
+		emit(OpCode.push, reg1);			//Store it back on the stack
 	}
 	
 	@Override public void exitComplete(@NotNull CalcParser.CompleteContext ctx) {
-		emit(OpCode.pop, reg1);
-		emit(OpCode.out, new Str("Outcome: "), reg1);
+		emit(OpCode.pop, reg1);		//Get value and store in reg1
+		emit(OpCode.out, new Str("Outcome: "), reg1); //Output the value of reg1
 	}
 	
 	@Override public void exitPlus(@NotNull CalcParser.PlusContext ctx) {
-		emit(OpCode.pop, reg1);
+		emit(OpCode.pop, reg1);		//Get the required values and store them in reg1, reg2 resp.
 		emit(OpCode.pop, reg2);
-		emit(OpCode.add, reg1, reg2, reg1);
-		emit(OpCode.push, reg1);
+		
+		emit(OpCode.add, reg1, reg2, reg1);		//Add the two retrieved values
+		
+		emit(OpCode.push, reg1);				//Store the result back on the stack
 	}	
 
 	/** Compiles a given Calc-parse tree into an ILOC program. */

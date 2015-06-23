@@ -49,23 +49,17 @@ public class ILOC2CFG {
 	}
 	
 	public Graph convert(Program prog) {
-		/*Graph to return.*/
-		Graph graph							= new Graph();
-		/*List of reachable nodes, excludes dead code.*/
-		List<Node> reachableNodes 			= new ArrayList<Node>();
-		/*list of vertices in the form Node.toString -> List<Nodes.toString>,
-		 * this adds all vertices regardless of dead code.*/
-		Map<String, List<String>> vertices 	= new HashMap<String, List<String>>();
-		/*Current label the program is in.*/
-		Label currentLabel 					= null;
-		/*Indication of boolean.*/
-		boolean hasJump						= false;
+		Graph graph	= new Graph();
+		List<Node> reachableNodes = new ArrayList<Node>(); 		//List of all the nodes which can be reached.
+		Map<String, List<String>> vertices	= new HashMap<String, List<String>>(); //A map of nodes. Every nodes is associated to a list of other nodes. These are the nodes it could reach, before determining dead code.
+		Label currentLabel 	= null; 		//The label associated to the current node being worked on.
+		boolean hasJump	= false; 			//Indicates whether this node has a branch or jump. If it does then no edge, necessarily, needs to be drawn to the next node. 
 		
-		/*Add first node to reachableNodes.*/
+		// Since the program starts with a label, the initial node can already be added. 
 		reachableNodes.add(graph.addNode(prog.getOpAt(0).getLabel().toString()));
 		
-		/*Iterate the program.*/
-		for(int line = 0; line < prog.size(); line++){
+		
+		for(int line = 0; line < prog.size(); line++){ //Looping over all instructions of the program
 			Op operation = prog.getOpAt(line);
 			
 			/*When a line is preceded by a label:*/
