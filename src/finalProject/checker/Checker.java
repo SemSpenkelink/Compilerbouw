@@ -3,6 +3,8 @@ package finalProject.checker;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdk.nashorn.internal.ir.SetSplitState;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -13,6 +15,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import finalProject.grammar.EloquenceBaseListener;
 import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
+import finalProject.grammar.EloquenceParser.StatOutContext;
 /** Class to type check and calculate flow entries and variable offsets. */
 public class Checker extends EloquenceBaseListener {
 	/** Result of the latest call of {@link #check}. */
@@ -110,23 +113,24 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, getType(ctx.returnStat()));
 		if(getType(ctx.returnStat()) != null)
 			setEntry(ctx, ctx.returnStat());
-		else
-			setEntry(ctx, null);
 	}
 	
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
-		setEntry(ctx, entry(ctx.stat(0)));
+		if(ctx.ELSE() != null && getType(ctx.stat(0)).equals(getType(ctx.stat(1))))
+			setType(ctx, getType(ctx.stat(0)));
+		else
+			setType(ctx, null);
 	}
 	
 	@Override public void exitStatWhile(EloquenceParser.StatWhileContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
-		setEntry(ctx, entry(ctx.stat()));
+		setType(ctx, null);
 	}
 	
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
-		setType(ctx.target(), this.scope.type(ctx.target().getText()));
 		checkType(ctx.target(), getType(ctx.expression()));
+		setType(ctx, this.scope.type(ctx.target().getText()));
 		setEntry(ctx, entry(ctx.expression()));
 		setOffset(ctx.target(), scope.offset(ctx.target().getText()));
 	}
@@ -139,15 +143,27 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
+		setType(ctx, getType(ctx.body()));
 		setEntry(ctx, entry(ctx.body().stat(0)));
 	}
 	
 	@Override public void exitStatIn(EloquenceParser.StatInContext ctx){
-		setEntry(ctx, entry(ctx.ID(0)));
+		if(ctx.ID().size() == 1){
+			setType(ctx, this.scope.type(ctx.ID(0).getText()));
+			setEntry(ctx, entry(ctx.ID(0)));
+		}else{
+			setType(ctx, null);
+		}
 	}
 	
 	@Override public void exitStatOut(EloquenceParser.StatOutContext ctx){
-		setEntry(ctx, entry(ctx.expression(0)));		
+		for(ExpressionContext expr : ctx.expression())
+			checkNotNull(expr);
+		if(ctx.expression().size() == 1){
+			setType(ctx, this.scope.type(ctx.expression(0).getText()));
+			setEntry(ctx, entry(ctx.expression(0)));	
+		}else
+			setType(ctx, null);
 	}
 	
 	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) {
@@ -335,6 +351,15 @@ public class Checker extends EloquenceBaseListener {
 			addError(node, "Expected type '%s' but found '%s'", expected,
 					actual);
 		}
+	}
+	
+	/** Checks if node is not of type null.
+	 * @param node;
+	 */
+	private void checkNotNull(ParserRuleContext node){
+		Type actual = getType(node);
+		if(actual.equals(null))
+			addError(node, "Expected type not null but found '%s'", actual);
 	}
 
 	/** Records an error at a given parse tree node.
