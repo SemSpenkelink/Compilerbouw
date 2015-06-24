@@ -117,6 +117,8 @@ public class Checker extends EloquenceBaseListener {
 	
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
+		if(ctx.ELSE() != null)
+			System.out.println("Testing types " + ctx.stat(0) + " and " + ctx.stat(1));
 		if(ctx.ELSE() != null && getType(ctx.stat(0)).equals(getType(ctx.stat(1))))
 			setType(ctx, getType(ctx.stat(0)));
 		else
@@ -131,6 +133,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
 		checkType(ctx.target(), getType(ctx.expression()));
 		setType(ctx, this.scope.type(ctx.target().getText()));
+		System.out.println("Setting type[" + ctx + "]: " + this.scope.type(ctx.target().getText()));
 		setEntry(ctx, entry(ctx.expression()));
 		setOffset(ctx.target(), scope.offset(ctx.target().getText()));
 	}
@@ -175,6 +178,12 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitTargetId(finalProject.grammar.EloquenceParser.TargetIdContext ctx) {
+		if(scope.contains(ctx.getText())){
+			setOffset(ctx, this.scope.offset(ctx.getText()));
+			setOffset(ctx.getChild(0), this.scope.offset(ctx.getText()));
+			setEntry(ctx, ctx);
+			setEntry(ctx.getChild(0), ctx);
+		}	
 		setType(ctx, this.scope.type(ctx.ID().getText()));
 	}
 	
@@ -293,7 +302,6 @@ public class Checker extends EloquenceBaseListener {
 	
 	@Override public void exitFuncVoid(EloquenceParser.FuncVoidContext ctx) {
 		setType(ctx, null);
-		setEntry(ctx, null);
 	}
 
 	@Override public void exitFuncReturn(EloquenceParser.FuncReturnContext ctx) {
@@ -305,15 +313,23 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
 		setType(ctx, this.scope.type(ctx.ID(0).getText()));
 	}
-
+	
+	//TODO
 	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
 		setType(ctx, null);
-		setEntry(ctx, null);		
 	}
 
+	//TODO
 	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
-		setType(ctx, getType(ctx.type(0)));
+		setType(ctx, getType(ctx.type()));
 		setEntry(ctx, entry(ctx.returnStat()));
+	}
+	
+	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
+		for(int index = 4; index < ctx.getChildCount()-4; index++){
+			this.scope.put(ctx.getChild(index).getText(), getType(ctx.getChild(index-1)));
+			setOffset(ctx.getChild(index), scope.offset(ctx.getChild(index).getText()));
+		}			
 	}
 	
 	

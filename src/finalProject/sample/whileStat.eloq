@@ -1,6 +1,6 @@
 program whileLoop{
 	highPowered numericalDigit x = 10;
-	throughout(x < 10){
+	throughout(x inferiorTo 10){
 		exude(x);
 		x = x + 1;
 	}

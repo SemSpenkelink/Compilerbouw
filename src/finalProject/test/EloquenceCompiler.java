@@ -24,7 +24,7 @@ public class EloquenceCompiler {
 	/** The singleton instance of this class. */
 	private final static EloquenceCompiler instance = new EloquenceCompiler();
 	/** Debug flag. */
-	private final static boolean SHOW = true;
+	private final static boolean SHOW = false;
 
 	/** Returns the singleton instance of this class. */
 	public static EloquenceCompiler instance() {
@@ -43,8 +43,8 @@ public class EloquenceCompiler {
 			if (SHOW) {
 				System.out.println(prog.prettyPrint());
 			}
-			Simulator sim = new Simulator(prog);
-			sim.run();
+			//Simulator sim = new Simulator(prog);
+			//sim.run();
 			System.out.println("--- Done with " + args[0]);
 		} catch (ParseException exc) {
 			exc.print();

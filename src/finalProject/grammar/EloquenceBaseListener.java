@@ -612,6 +612,18 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParameters(EloquenceParser.ParametersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParameters(EloquenceParser.ParametersContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

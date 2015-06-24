@@ -1,0 +1,7 @@
+Program expressionFault {
+	highPowered numericalDigit x = 10;
+	highPowered George bool = bogus;
+	
+	x = x+5/3-(2*(3+4));
+	x = bool or x inferiorTo 2*x;
+}

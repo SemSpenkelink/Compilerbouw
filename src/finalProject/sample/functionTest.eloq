@@ -1,0 +1,16 @@
+program funcTest{
+	highpowered numericaldigit x;
+	//void function
+	godforsaken func1(numericalDigit one){
+		x = one;
+		relinquish;
+	}
+	
+	//int function
+	
+//	numericaldigit func2(numericalDigit one){
+//		relinquish one*2;
+//	}
+	
+
+}

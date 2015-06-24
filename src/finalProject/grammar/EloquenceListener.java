@@ -582,4 +582,14 @@ public interface EloquenceListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EloquenceParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameters(EloquenceParser.ParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EloquenceParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameters(EloquenceParser.ParametersContext ctx);
 }
