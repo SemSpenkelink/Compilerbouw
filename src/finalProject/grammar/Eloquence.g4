@@ -16,7 +16,7 @@ decl
 	: VAR variable (ASSIGN expression)? SEMI	#declVar
 	| CONST variable ASSIGN expression SEMI		#declConstVar
 	| arrayDecl SEMI							#declArray
-	| CONST arrayDecl SEMI						#declConstArray
+	| CONST minArrayDecl SEMI					#declConstArray
 	;
 	
 variable
@@ -24,16 +24,24 @@ variable
 	;
 	
 arrayDecl
-	: type ID LSQBRACKET NUM RSQBRACKET (ASSIGN LBRACE expression (COMMA expression)* RBRACE)?
+	: type ID LSQBRACKET expression RSQBRACKET															#arraySize
+	| minArrayDecl																						#arrayMinInput			
+	;
+	
+minArrayDecl
+	: type ID LSQBRACKET RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE					#arrayInput
+	| type ID LSQBRACKET expression RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE		#arraySizeInput
 	;
 	
 stat
-	: returnStat								#statReturn
-	| IF LPAR expression RPAR stat (ELSE stat)?	#statIf
-	| WHILE LPAR expression RPAR stat			#statWhile
-	| target ASSIGN expression SEMI				#statAssign
-	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI #statAssignArray
-	| LBRACE body RBRACE						#statBlock
+	: IF LPAR expression RPAR stat (ELSE stat)?							#statIf
+	| WHILE LPAR expression RPAR stat									#statWhile
+	| target ASSIGN expression SEMI										#statAssign
+	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI 	#statAssignArray
+	| LBRACE body RBRACE												#statBlock
+	| returnStat														#statReturn
+	| IN LPAR ID (COMMA ID)* RPAR SEMI									#statIn
+	| OUT LPAR expression (COMMA expression)* RPAR SEMI					#statOut
 	;
 	
 target
@@ -53,11 +61,12 @@ expression
 	| expression and expression					#exprAnd
 	| expression or expression					#exprOr
 	| ID LSQBRACKET expression RSQBRACKET		#exprArray
+	| LPAR expression RPAR						#exprPar
 	| ID										#exprId
 	| NUM										#exprNum
 	| TRUE										#exprTrue
 	| FALSE										#exprFalse
-	| CHAR										#exprChar
+	| CHARACTER									#exprChar
 	;
 	
 unary
@@ -132,12 +141,14 @@ FALSE:		B O G U S;
 GE:			S U P E R I O R O R E Q U A L T O;
 GT:			S U P E R I O R T O;
 IF:			A S S U M I N G;
+IN:			E X P R O P R I A T E;
 INTEGER:	N U M E R I C A L D I G I T;
 LE:			I N F E R I O R O R E Q U A L T O;
 LT:			I N F E R I O R T O;
 NE:			N O T E Q U A L T O;
 NOT:		N O T;
 OR:			O R;
+OUT:		E X U D E;
 PROGRAM: 	P R O G R A M;
 RETURN:		R E L I N Q U I S H;
 TRUE:		U N F E I G N E D;
@@ -155,6 +166,7 @@ MINUS:		'-';
 MODULO:		'%';
 MULTIPLY:	'*';
 PLUS:		'+';
+QUOTE:		'\'';
 RBRACE: 	'}';
 RPAR:		')';
 RSQBRACKET: ']';
@@ -164,6 +176,7 @@ SEMI:		';';
 // Content-bearing token types
 ID: LETTER (LETTER | DIGIT)*;
 NUM: DIGIT (DIGIT)*;
+CHARACTER: QUOTE LETTER QUOTE;
 
 fragment LETTER: [a-zA-Z];
 fragment DIGIT: [0-9];

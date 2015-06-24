@@ -71,6 +71,26 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	//TODO
+	@Override public void exitArraySize(finalProject.grammar.EloquenceParser.ArraySizeContext ctx) {
+		
+	}
+	
+	//TODO
+	@Override public void exitArrayMinInput(finalProject.grammar.EloquenceParser.ArrayMinInputContext ctx) {
+		
+	}
+	
+	//TODO
+	@Override public void exitArrayInput(finalProject.grammar.EloquenceParser.ArrayInputContext ctx) {
+		
+	}
+	
+	//TODO
+	@Override public void exitArraySizeInput(finalProject.grammar.EloquenceParser.ArraySizeInputContext ctx) {
+		
+	}
+	
+	//TODO
 	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) { }
 	
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
@@ -93,8 +113,19 @@ public class Checker extends EloquenceBaseListener {
 	//TODO
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) { }
 	
+	//TODO
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		setEntry(ctx, entry(ctx.body().stat(0)));
+	}
+	
+	//TODO
+	@Override public void exitStatIn(EloquenceParser.StatInContext ctx){
+		
+	}
+	
+	//TODO
+	@Override public void exitStatOut(EloquenceParser.StatOutContext ctx){
+		
 	}
 	
 	//TODO
@@ -194,6 +225,11 @@ public class Checker extends EloquenceBaseListener {
 	
 	//TODO
 	@Override public void exitExprArray(EloquenceParser.ExprArrayContext ctx) { }
+	
+	//TODO
+	@Override public void exitExprPar(finalProject.grammar.EloquenceParser.ExprParContext ctx) {
+		
+	}
 	
 	@Override public void exitTypeInt(EloquenceParser.TypeIntContext ctx) {
 		setType(ctx, Type.INT);

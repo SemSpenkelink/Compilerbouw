@@ -1,0 +1,70 @@
+Program basic {
+	/****************************/
+	/*	Testing declarations	*/
+	/****************************/
+	//char characterVariable;
+	highPowered lexographicIdentifyingUnit characterVariable;
+	//boolean booleanVariable = false;
+	highPowered George booleanVariable = bogus;
+	//final int intVariable = 10;
+	sacrosanct numericalDigit intVariable = 10;
+	//int array[10];
+	numericalDigit arraya[10];
+	//int array[10] = {1,2,3,4,5,6,7,8,9,10};
+	numericalDigit arrayb[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	//final int array[3] = {1, 2, 3, 4};
+	sacrosanct numericalDigit arrayc[3] = {1, 2, 3, 4};
+	
+	/****************************/
+	/*	  Testing statements	*/
+	/****************************/
+	//If statement brackets (body)
+	assuming(booleanVariable equalTo bogus){
+		booleanVariable = unfeigned;
+	//If Else statement no brackets
+	}contrariwise assuming(intVariable inferiorTo 5)
+		intVariable = intVariable+1;
+	//Else statement brackets
+	contrariwise{
+		relinquish 5;
+	}
+	
+	//While statement
+	throughout(characterVariable notEqualTo 'x'){
+		characterVariable = characterVariable+1;
+		//Nested if statement
+		assuming(booleanVariable equalTo bogus)
+			//returnStat
+			relinquish;
+	}
+	
+	//Assign variable
+	characterVariable = 'y';
+	
+	//Assign array
+	arraya[5-intVariable] = 2;
+	
+	//Input
+	expropriate(booleanVariable, intVariable);
+	
+	//Output
+	exude(5, intVariable, characterVariable);
+	
+	/****************************/
+	/*	  Testing expressions	*/
+	/****************************/
+	intVariable = function(intVariable)+(1-2)*3/4;
+	booleanVariable = intVariable superiorOrEqualTo 10 and characterVariable equalTo 'x' or booleanVariable equalTo bogus;
+	arraya[1] = arraya[3*5];
+	
+	/****************************/
+	/*	  Testing functions		*/
+	/****************************/
+	numericalDigit function(numericalDigit variable){
+		relinquish 5;
+	}
+	
+	godforsaken functionb(){
+		relinquish;
+	}
+}

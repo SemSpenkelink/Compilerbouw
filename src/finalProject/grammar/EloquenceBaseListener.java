@@ -101,25 +101,49 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArrayDecl(EloquenceParser.ArrayDeclContext ctx) { }
+	@Override public void enterArraySize(EloquenceParser.ArraySizeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArrayDecl(EloquenceParser.ArrayDeclContext ctx) { }
+	@Override public void exitArraySize(EloquenceParser.ArraySizeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatReturn(EloquenceParser.StatReturnContext ctx) { }
+	@Override public void enterArrayMinInput(EloquenceParser.ArrayMinInputContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) { }
+	@Override public void exitArrayMinInput(EloquenceParser.ArrayMinInputContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArrayInput(EloquenceParser.ArrayInputContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayInput(EloquenceParser.ArrayInputContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArraySizeInput(EloquenceParser.ArraySizeInputContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArraySizeInput(EloquenceParser.ArraySizeInputContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -180,6 +204,42 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStatReturn(EloquenceParser.StatReturnContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStatIn(EloquenceParser.StatInContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatIn(EloquenceParser.StatInContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStatOut(EloquenceParser.StatOutContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatOut(EloquenceParser.StatOutContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -300,6 +360,18 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExprOr(EloquenceParser.ExprOrContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprPar(EloquenceParser.ExprParContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprPar(EloquenceParser.ExprParContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
