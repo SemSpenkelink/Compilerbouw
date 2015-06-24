@@ -110,6 +110,8 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, getType(ctx.returnStat()));
 		if(getType(ctx.returnStat()) != null)
 			setEntry(ctx, ctx.returnStat());
+		else
+			setEntry(ctx, null);
 	}
 	
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
@@ -198,16 +200,8 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitExprChar(EloquenceParser.ExprCharContext ctx) {
-		String id = ctx.CHARACTER().getText();
-		Type type = this.scope.type(id);
-		if (type == null) {
-			addError(ctx, "Variable '%s' not declared", id);
-		} else {
-			setType(ctx, type);
-			setOffset(ctx, this.scope.offset(id));
-			setOffset(ctx.CHARACTER(), this.scope.offset(id));
-			setEntry(ctx, ctx);
-		}
+		setType(ctx, Type.CHAR);
+		setEntry(ctx, ctx);
 	}
 	
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
