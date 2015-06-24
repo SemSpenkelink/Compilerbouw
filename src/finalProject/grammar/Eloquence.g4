@@ -116,7 +116,7 @@ func
 	;
 	
 functionID
-	: ID LPAR (ID (COMMA ID)*)? RPAR LBRACE body RBRACE
+	: ID LPAR (ID (COMMA ID)*)? RPAR
 	;
 	
 voidFunc

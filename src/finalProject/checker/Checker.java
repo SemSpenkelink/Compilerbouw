@@ -129,24 +129,23 @@ public class Checker extends EloquenceBaseListener {
 		setOffset(ctx.target(), scope.offset(ctx.target().getText()));
 	}
 	
-	//TODO
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
-		
+		checkType(ctx.expression(0), Type.INT);
+		checkType(ctx.expression(1), getType(ctx.target()));
+		setType(ctx, getType(ctx.target()));
+		setEntry(ctx, entry(ctx.target()));
 	}
 	
-	//TODO
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		setEntry(ctx, entry(ctx.body().stat(0)));
 	}
 	
-	//TODO
 	@Override public void exitStatIn(EloquenceParser.StatInContext ctx){
-		
+		setEntry(ctx, entry(ctx.ID(0)));
 	}
 	
-	//TODO
 	@Override public void exitStatOut(EloquenceParser.StatOutContext ctx){
-		
+		setEntry(ctx, entry(ctx.expression(0)));		
 	}
 	
 	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) {
@@ -155,6 +154,10 @@ public class Checker extends EloquenceBaseListener {
 			setEntry(ctx, ctx.expression());
 		}else
 			setType(ctx, null);
+	}
+	
+	@Override public void exitTargetId(finalProject.grammar.EloquenceParser.TargetIdContext ctx) {
+		setType(ctx, this.scope.type(ctx.ID().getText()));
 	}
 	
 	@Override public void exitExprComp(EloquenceParser.ExprCompContext ctx) {
@@ -207,12 +210,14 @@ public class Checker extends EloquenceBaseListener {
 		}
 	}
 	
-	//TODO
-	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) { }
+	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
+		setType(ctx, getType(ctx.functionID()));
+		setEntry(ctx, entry(ctx.functionID()));
+	}
 	
-	//TODO
 	@Override public void exitExprCompound(finalProject.grammar.EloquenceParser.ExprCompoundContext ctx) {
-		
+		setType(ctx, getType(ctx.expression()));
+		setEntry(ctx, entry(ctx.expression()));
 	}
 	
 	@Override public void exitExprOr(EloquenceParser.ExprOrContext ctx) {
@@ -254,12 +259,14 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, ctx);
 	}
 	
-	//TODO
-	@Override public void exitExprArray(EloquenceParser.ExprArrayContext ctx) { }
+	@Override public void exitExprArray(EloquenceParser.ExprArrayContext ctx) {
+		checkType(ctx.expression(), Type.INT);
+		setEntry(ctx, entry(ctx.expression()));
+	}
 	
-	//TODO
 	@Override public void exitExprPar(finalProject.grammar.EloquenceParser.ExprParContext ctx) {
-		
+		setType(ctx, getType(ctx.expression()));
+		setEntry(ctx, entry(ctx.expression()));
 	}
 	
 	@Override public void exitTypeInt(EloquenceParser.TypeIntContext ctx) {
@@ -274,20 +281,30 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, Type.CHAR);
 	}
 	
-	//TODO
-	@Override public void exitFuncVoid(EloquenceParser.FuncVoidContext ctx) { }
+	@Override public void exitFuncVoid(EloquenceParser.FuncVoidContext ctx) {
+		setType(ctx, null);
+		setEntry(ctx, null);
+	}
 
-	//TODO
-	@Override public void exitFuncReturn(EloquenceParser.FuncReturnContext ctx) { }
+	@Override public void exitFuncReturn(EloquenceParser.FuncReturnContext ctx) {
+		setType(ctx, getType(ctx.returnFunc()));
+		setEntry(ctx, entry(ctx.returnFunc()));
+	}
 
-	//TODO
-	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) { }
+	//TODO maybe set entry?
+	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
+		setType(ctx, this.scope.type(ctx.ID(0).getText()));
+	}
 
-	//TODO
-	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) { }
+	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
+		setType(ctx, null);
+		setEntry(ctx, null);		
+	}
 
-	//TODO
-	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) { }
+	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
+		setType(ctx, getType(ctx.type(0)));
+		setEntry(ctx, entry(ctx.returnStat()));
+	}
 	
 	
 	
