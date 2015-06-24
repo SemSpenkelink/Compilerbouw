@@ -53,45 +53,64 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, ctx);
 	}
 	
-	//TODO
-	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) { }
+	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
+		setEntry(ctx, entry(ctx.variable()));
+	}
 	
-	//TODO
-	@Override public void exitDeclArray(EloquenceParser.DeclArrayContext ctx) { }
+	@Override public void exitDeclArray(EloquenceParser.DeclArrayContext ctx) {
+		setType(ctx, getType(ctx.arrayDecl()));
+	}
 	
-	//TODO
-	@Override public void exitDeclConstArray(EloquenceParser.DeclConstArrayContext ctx) { }
+	@Override public void exitDeclConstArray(EloquenceParser.DeclConstArrayContext ctx) {
+		setType(ctx, getType(ctx.minArrayDecl()));
+	}
 	
-	//TODO
-	@Override public void exitArrayDecl(EloquenceParser.ArrayDeclContext ctx) {
+	@Override public void exitArraySize(finalProject.grammar.EloquenceParser.ArraySizeContext ctx) {
+		checkType(ctx.expression(), Type.INT);
+		if(getType(ctx.type()).equals(Type.INT))
+			setType(ctx, Type.ARRAY_INT);
+		else if(getType(ctx.type()).equals(Type.BOOL))
+			setType(ctx, Type.ARRAY_BOOL);			
+		else
+			setType(ctx, Type.ARRAY_CHAR);
+	}
+	
+	@Override public void exitArrayMinInput(finalProject.grammar.EloquenceParser.ArrayMinInputContext ctx) {
+		setType(ctx, getType(ctx.minArrayDecl()));
+	}
+	
+	@Override public void exitArrayInput(finalProject.grammar.EloquenceParser.ArrayInputContext ctx) {
 		for(ExpressionContext expr : ctx.expression()){
 			checkType(expr, getType(ctx.type()));
 		}
-		setType(ctx, getType(ctx.type()));
+		if(getType(ctx.type()).equals(Type.INT))
+			setType(ctx, Type.ARRAY_INT);
+		else if(getType(ctx.type()).equals(Type.BOOL))
+			setType(ctx, Type.ARRAY_BOOL);			
+		else
+			setType(ctx, Type.ARRAY_CHAR);
 	}
 	
-	//TODO
-	@Override public void exitArraySize(finalProject.grammar.EloquenceParser.ArraySizeContext ctx) {
-		
-	}
-	
-	//TODO
-	@Override public void exitArrayMinInput(finalProject.grammar.EloquenceParser.ArrayMinInputContext ctx) {
-		
-	}
-	
-	//TODO
-	@Override public void exitArrayInput(finalProject.grammar.EloquenceParser.ArrayInputContext ctx) {
-		
-	}
-	
-	//TODO
 	@Override public void exitArraySizeInput(finalProject.grammar.EloquenceParser.ArraySizeInputContext ctx) {
-		
+		checkType(ctx.expression(0), Type.INT);
+		for(ExpressionContext expr : ctx.expression()){
+			if(expr.equals(ctx.expression(0)))
+				continue;
+			checkType(expr, getType(ctx.type()));
+		}
+		if(getType(ctx.type()).equals(Type.INT))
+			setType(ctx, Type.ARRAY_INT);
+		else if(getType(ctx.type()).equals(Type.BOOL))
+			setType(ctx, Type.ARRAY_BOOL);			
+		else
+			setType(ctx, Type.ARRAY_CHAR);
 	}
 	
-	//TODO
-	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) { }
+	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) {
+		setType(ctx, getType(ctx.returnStat()));
+		if(getType(ctx.returnStat()) != null)
+			setEntry(ctx, ctx.returnStat());
+	}
 	
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
@@ -111,7 +130,9 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	//TODO
-	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) { }
+	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
+		
+	}
 	
 	//TODO
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
@@ -128,8 +149,13 @@ public class Checker extends EloquenceBaseListener {
 		
 	}
 	
-	//TODO
-	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) { }
+	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) {
+		if(ctx.expression() != null){
+			setType(ctx, getType(ctx.expression()));
+			setEntry(ctx, ctx.expression());
+		}else
+			setType(ctx, null);
+	}
 	
 	@Override public void exitExprComp(EloquenceParser.ExprCompContext ctx) {
 		checkType(ctx.expression(0), Type.INT);
@@ -169,20 +195,25 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitExprChar(EloquenceParser.ExprCharContext ctx) {
-		String id = ctx.CHAR().getText();
+		String id = ctx.CHARACTER().getText();
 		Type type = this.scope.type(id);
 		if (type == null) {
 			addError(ctx, "Variable '%s' not declared", id);
 		} else {
 			setType(ctx, type);
 			setOffset(ctx, this.scope.offset(id));
-			setOffset(ctx.CHAR(), this.scope.offset(id));
+			setOffset(ctx.CHARACTER(), this.scope.offset(id));
 			setEntry(ctx, ctx);
 		}
 	}
 	
 	//TODO
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) { }
+	
+	//TODO
+	@Override public void exitExprCompound(finalProject.grammar.EloquenceParser.ExprCompoundContext ctx) {
+		
+	}
 	
 	@Override public void exitExprOr(EloquenceParser.ExprOrContext ctx) {
 		checkType(ctx.expression(0), Type.BOOL);

@@ -10,6 +10,12 @@ abstract public class Type {
 	public static final Type INT = new Int();
 	/** The singleton instance of the {@link Char} type. */
 	public static final Type CHAR = new Char();
+	/** The singleton instance of the {@link Char} type. */
+	public static final Type ARRAY_INT = new Array(0, 0, Type.INT);
+	/** The singleton instance of the {@link Char} type. */
+	public static final Type ARRAY_BOOL = new Array(0, 0, Type.BOOL);
+	/** The singleton instance of the {@link Char} type. */
+	public static final Type ARRAY_CHAR = new Array(0, 0, Type.CHAR);
 	private final TypeKind kind;
 
 	public Type(TypeKind kind) {

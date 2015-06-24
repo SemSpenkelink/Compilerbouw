@@ -281,6 +281,18 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterExprCompound(EloquenceParser.ExprCompoundContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprCompound(EloquenceParser.ExprCompoundContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExprMult(EloquenceParser.ExprMultContext ctx) { }
 	/**
 	 * {@inheritDoc}

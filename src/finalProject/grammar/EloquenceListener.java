@@ -265,6 +265,18 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitExprComp(EloquenceParser.ExprCompContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code exprCompound}
+	 * labeled alternative in {@link EloquenceParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCompound(EloquenceParser.ExprCompoundContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCompound}
+	 * labeled alternative in {@link EloquenceParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCompound(EloquenceParser.ExprCompoundContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code exprMult}
 	 * labeled alternative in {@link EloquenceParser#expression}.
 	 * @param ctx the parse tree

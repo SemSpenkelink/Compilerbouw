@@ -68,3 +68,10 @@ Program basic {
 		relinquish;
 	}
 }
+
+Program test{
+	c = { highPowered George a; expropriate(a);
+		  highPowered George b; expropriate (b);
+		  (a and not b) or (not a and b);
+} ;
+}

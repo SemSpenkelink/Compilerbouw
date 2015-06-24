@@ -54,6 +54,7 @@ returnStat
 	
 expression
 	: functionID								#exprFunc
+	| LBRACE body expression SEMI RBRACE		#exprCompound
 	| unary expression							#exprUnary		
 	| expression multiply expression			#exprMult
 	| expression addition expression			#exprAdd
