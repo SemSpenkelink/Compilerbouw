@@ -27,6 +27,7 @@ public class SymbolTable {
 	public boolean add(String id) {
 		Set<String> current = scopes.pop();
 		if(current.contains(id)){
+			scopes.push(current);
 			return false;
 		}else{
 			current.add(id);

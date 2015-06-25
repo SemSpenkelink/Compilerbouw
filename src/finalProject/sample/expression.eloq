@@ -1,5 +1,6 @@
 Program expression {
 	highPowered numericalDigit x = 10;
+	highPowered numericalDigit x = 5;
 	highPowered George bool = bogus;
 	
 	x = x+5/3-(2*(3+4));

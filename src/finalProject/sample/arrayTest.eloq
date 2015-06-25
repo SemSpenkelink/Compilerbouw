@@ -9,10 +9,8 @@ program arrayTest{
 	
 	//Assign array
 	highPowered a, b = x;
-	//Assign array
-	sacrosanct c = y;
 	//Constant array decl
-	sacrosanct q = y << {[1,2,3], [1,2,3]};
+	sacrosanct hodgePodge q = y << {[1,2,3], [1,2,3]};
 	
 	//Assign indexed variable
 	x[1] = 5;

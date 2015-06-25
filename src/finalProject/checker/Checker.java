@@ -54,6 +54,7 @@ public class Checker extends EloquenceBaseListener {
 		for(TerminalNode id : ctx.ID()){
 			setType(id, getType(ctx.type()));
 			this.scope.put(id.getText(), getType(ctx.type()));
+			addSymbol(id);
 			symbolTable.add(id.getText());
 			setOffset(id, scope.offset(id.getText()));
 		}
@@ -377,6 +378,11 @@ public class Checker extends EloquenceBaseListener {
 	private void checkScope(ParserRuleContext node){
 		if(!symbolTable.contains(node.getText()))
 			addError(node, "'%s' not defined in scope", node.getText());
+	}
+	
+	private void addSymbol(ParserRuleContext node){
+		if(!symbolTable.add(node.getText()))
+			addError(node, "'%s' already defined within the scope", node.getText());
 	}
 	
 	/** Checks the inferred type of a given parse tree,
