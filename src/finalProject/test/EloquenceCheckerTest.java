@@ -54,7 +54,7 @@ public class EloquenceCheckerTest {
 
 	private void checkFail(String filename) throws IOException {
 		try {
-			check(parse(filename));
+			this.compiler.check(parse(filename));
 			fail(filename + " shouldn't check but did");
 		} catch (ParseException exc) {
 			// this is the expected behaviour
