@@ -1,18 +1,20 @@
 package finalProject.checker;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 public class SymbolTable {
 	
-	Stack<Scope> scopes;
+	Stack<Set<String>> scopes;
 	
 	public SymbolTable(){
-		scopes = new Stack<Scope>();
-		scopes.push(new Scope());
+		scopes = new Stack<Set<String>>();
+		scopes.push(new HashSet<String>());
 	}
 	
 	public void openScope() {
-		scopes.push(new Scope());
+		scopes.push(new HashSet<String>());
 	}
 
 	public void closeScope() {
@@ -22,42 +24,23 @@ public class SymbolTable {
 		scopes.pop();
 	}
 
-	public boolean add(String id, Type type) {
-		Scope current = scopes.pop();
+	public boolean add(String id) {
+		Set<String> current = scopes.pop();
 		if(current.contains(id)){
 			return false;
 		}else{
-			current.put(id, type);
+			current.add(id);
+			scopes.push(current);
 			return true;
 		}
 	}
 
 	public boolean contains(String id) {
-		for(Scope scope : scopes){
+		for(Set<String> scope : scopes){
 			if(scope.contains(id))
 				return true;
 		}
 		return false;
-	}
-	
-	/** Returns the type of a given (presumably declared) identifier.
-	 */
-	public Type type(String id) {
-		for(int index = scopes.size()-1; index >= 0; index--)
-			if(scopes.get(index).contains(id))
-				return scopes.get(index).type(id);
-		return null;
-	}
-
-	/** Returns the offset of a given (presumably declared) identifier. 
-	  * with respect to the beginning of this scope's activation record.
-	  * Offsets are assigned in order of declaration. 
-	  */
-	public Integer offset(String id) {
-		for(int index = scopes.size()-1; index >= 0; index--)
-			if(scopes.get(index).contains(id))
-				return scopes.get(index).offset(id);
-		return null;
 	}
 
 }

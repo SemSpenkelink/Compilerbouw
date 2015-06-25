@@ -231,6 +231,16 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitStatOut(EloquenceParser.StatOutContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link EloquenceParser#statBlockBody}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatBlockBody(EloquenceParser.StatBlockBodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EloquenceParser#statBlockBody}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code targetId}
 	 * labeled alternative in {@link EloquenceParser#target}.
 	 * @param ctx the parse tree
