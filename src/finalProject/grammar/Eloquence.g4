@@ -16,28 +16,27 @@ decl
 	: VAR variable (ASSIGN expression)? SEMI	#declVar
 	| CONST variable ASSIGN expression SEMI		#declConstVar
 	| arrayDecl SEMI							#declArray
-	| CONST minArrayDecl SEMI					#declConstArray
 	;
 	
 variable
 	: type ID (COMMA ID)*
 	;
+
+arrayTypeDecl
+	: ARRAY ID ASSIGN type LSQBRACKET expression DOT DOT expression (COMMA expression DOT DOT expression)* RSQBRACKET SEMI
+	;
 	
 arrayDecl
-	: type ID LSQBRACKET expression RSQBRACKET															#arraySize
-	| minArrayDecl																						#arrayMinInput			
-	;
-	
-minArrayDecl
-	: type ID LSQBRACKET RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE					#arrayInput
-	| type ID LSQBRACKET expression RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE		#arraySizeInput
-	;
+	: VAR ID (COMMA ID)* ASSIGN target
+	| CONST ID (COMMA ID)* ASSIGN target
+	;	
+
 	
 stat
 	: IF LPAR expression RPAR stat (ELSE stat)?							#statIf
 	| WHILE LPAR expression RPAR stat									#statWhile
 	| target ASSIGN expression SEMI										#statAssign
-	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI 	#statAssignArray
+	| target LSQBRACKET expression (COMMA expression)* RSQBRACKET ASSIGN expression SEMI 	#statAssignArray
 	| statBlockBody														#statBlock
 	| returnStat														#statReturn
 	| IN LPAR target (COMMA target)* RPAR SEMI							#statIn
@@ -72,6 +71,12 @@ expression
 	| TRUE										#exprTrue
 	| FALSE										#exprFalse
 	| CHARACTER									#exprChar
+	| target LSQBRACKET arrayExpression (COMMA arrayExpression)* RSQBRACKET 	#arrayExpr
+	;
+	
+arrayExpression
+	: LSQBRACKET expression (COMMA expression)* RSQBRACKET
+	| expression
 	;
 	
 unary
@@ -140,6 +145,7 @@ parameters
 
 
 AND:		A N D;
+ARRAY:		A R R A Y;
 BOOLEAN:	G E O R G E;
 CHAR:		L E X O G R A P H I C I D E N T I F Y I N G U N I T;
 CONST:		S A C R O S A N C T;
@@ -167,6 +173,7 @@ WHILE:		T H R O U G H O U T;
 ASSIGN: 	'=';
 COMMA:		',';
 DIVIDE:		'/';
+DOT:		'.';
 LBRACE: 	'{';
 LPAR:		'(';
 LSQBRACKET: '[';
