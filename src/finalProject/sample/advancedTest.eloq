@@ -1,0 +1,39 @@
+program advancedTest{
+
+highpowered numericaldigit a = 10;
+highpowered george b;
+
+sacrosanct lexographicidentifyingunit c = 'c';
+
+hodgePodge z = George [0..2];
+highpowered i = z;
+
+	numericaldigit myFunction1(numericaldigit param1, george param2){
+		b = param2;
+		a = param1;
+	}
+	
+	godforsaken myFunction2(numericaldigit param1, george param2){
+		highpowered numericaldigit d;
+		d = d*2 + param1;
+		b = param2;
+		a = param1;
+	}
+
+	assuming(a ={
+		numericaldigit myFunction3(george h){
+			assuming(h){
+				exude(h);
+			}
+			
+		relinquish 14;
+		}
+		highpowered numericaldigit y = myFunction3(unfeigned);
+	} > 10){
+		
+		
+	} contrariwise{
+	
+	}
+
+}
