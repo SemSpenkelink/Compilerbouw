@@ -38,12 +38,16 @@ stat
 	| WHILE LPAR expression RPAR stat									#statWhile
 	| target ASSIGN expression SEMI										#statAssign
 	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI 	#statAssignArray
-	| LBRACE body RBRACE												#statBlock
+	| statBlockBody															#statBlock
 	| returnStat														#statReturn
 	| IN LPAR ID (COMMA ID)* RPAR SEMI									#statIn
 	| OUT LPAR expression (COMMA expression)* RPAR SEMI					#statOut
 	;
 	
+statBlockBody
+	:	LBRACE body RBRACE
+	;	
+
 target
 	: ID										#targetId
 	;
@@ -120,7 +124,7 @@ functionID
 	;
 	
 voidFunc
-	: VOID ID LPAR (parameters (COMMA parameters)*)? RPAR LBRACE body RBRACE
+	: VOID ID LPAR (parameters (COMMA parameters)*)? RPAR statBlockBody
 	;
 	
 returnFunc
