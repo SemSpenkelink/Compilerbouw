@@ -257,6 +257,18 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNewID(EloquenceParser.NewIDContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNewID(EloquenceParser.NewIDContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterReturnStat(EloquenceParser.ReturnStatContext ctx) { }
 	/**
 	 * {@inheritDoc}

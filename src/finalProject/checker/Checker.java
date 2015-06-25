@@ -9,11 +9,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import finalProject.grammar.EloquenceBaseListener;
 import finalProject.grammar.EloquenceParser;
+import finalProject.grammar.EloquenceParser.ArrayExpressionContext;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
+import finalProject.grammar.EloquenceParser.NewIDContext;
 /** Class to type check and calculate flow entries and variable offsets. */
 public class Checker extends EloquenceBaseListener {
 	/** Result of the latest call of {@link #check}. */
@@ -51,30 +52,43 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitVariable(EloquenceParser.VariableContext ctx){
-		for(TerminalNode id : ctx.ID()){
+		for(NewIDContext id : ctx.newID()){
 			setType(id, getType(ctx.type()));
 			this.scope.put(id.getText(), getType(ctx.type()));
-			addSymbol(id);
-			symbolTable.add(id.getText());
 			setOffset(id, scope.offset(id.getText()));
 		}
 		setType(ctx, getType(ctx.type()));
 		setEntry(ctx, ctx);
 	}
 	
-	//TODO
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
-		
+		setType(ctx, new Type.Array(Integer.parseInt(ctx.NUM(0).getText()), Integer.parseInt(ctx.NUM(1).getText()), getType(ctx.type())));
+		this.scope.put(ctx.newID().getText(), getType(ctx));
+		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
+		setEntry(ctx, ctx);
 	}
 
-	//TODO
 	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
-		
+		for(NewIDContext id : ctx.newID()){
+			setType(id, this.scope.type(ctx.target().getText()));
+			this.scope.put(id.getText(), getType(id));
+			setOffset(id, scope.offset(id.getText()));
+		}
+		setType(ctx, this.scope.type(ctx.target().getText()));
+		setEntry(ctx, ctx);
 	}
 	
-	//TODO
 	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
-		
+		for(ArrayExpressionContext array : ctx.arrayExpression()){
+			checkType(array, ((Type.Array)getType(ctx.target())).getElemType());
+		}
+		for(NewIDContext id : ctx.newID()){
+			setType(id, this.scope.type(ctx.target().getText()));
+			this.scope.put(id.getText(), getType(id));
+			setOffset(id, scope.offset(id.getText()));
+		}
+		setType(ctx, this.scope.type(ctx.target().getText()));
+		setEntry(ctx, ctx);
 	}
 	
 	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
@@ -122,15 +136,22 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
-		checkType(ctx.expression(0), Type.INT);
-		checkType(ctx.expression(1), getType(ctx.target()));
+		for(ExpressionContext expr : ctx.expression()){
+			if(expr.equals(ctx.getChild(ctx.getChildCount()-2)))
+				continue;
+			checkType(expr, Type.INT);
+		}
+		checkType(ctx.expression(ctx.expression().size()-1), ((Type.Array)getType(ctx.target())).getElemType());
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
 	}
 	
-	//TODO
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
-		
+		for(ArrayExpressionContext array : ctx.arrayExpression()){
+			checkType(array, ((Type.Array)getType(ctx.target())).getElemType());
+		}
+		setType(ctx, getType(ctx.target()));
+		setEntry(ctx, entry(ctx.target()));
 	}
 	
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
@@ -183,6 +204,10 @@ public class Checker extends EloquenceBaseListener {
 			setEntry(ctx.getChild(0), ctx);
 		}	
 		setType(ctx, this.scope.type(ctx.ID().getText()));
+	}
+	
+	@Override public void exitNewID(NewIDContext ctx) {
+		addSymbol(ctx);
 	}
 	
 	@Override public void exitExprComp(EloquenceParser.ExprCompContext ctx) {
@@ -248,9 +273,12 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, entry(ctx.expression(0)));
 	}
 	
-	//TODO
 	@Override public void exitExprArray(finalProject.grammar.EloquenceParser.ExprArrayContext ctx) {
-		
+		for(ExpressionContext expr : ctx.expression()){
+			checkType(expr, Type.INT);
+		}
+		setType(ctx, ((Type.Array)getType(ctx.target())).getElemType());
+		setEntry(ctx, ctx);
 	}
 	
 	@Override public void exitExprAdd(EloquenceParser.ExprAddContext ctx) {
@@ -290,14 +318,19 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, entry(ctx.expression()));
 	}
 	
-	//TODO
 	@Override public void exitArrayMulExpr(finalProject.grammar.EloquenceParser.ArrayMulExprContext ctx) {
-		
+		Type type = getType(ctx.expression(0));
+		for(ExpressionContext expr : ctx.expression()){
+			if(expr.equals(ctx.expression(0)))
+				continue;
+			checkType(expr, type);
+		}
+		setType(ctx, type);
+		setEntry(ctx, ctx);
 	}
 	
-	//TODO
 	@Override public void exitArraySingleExpr(finalProject.grammar.EloquenceParser.ArraySingleExprContext ctx) {
-		
+		setType(ctx, getType(ctx.expression()));
 	}
 	
 	@Override public void exitTypeInt(EloquenceParser.TypeIntContext ctx) {
@@ -348,9 +381,9 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
-		this.scope.put(ctx.ID().getText(), getType(ctx.type()));
-		symbolTable.add(ctx.ID().getText());
-		setOffset(ctx.ID(), scope.offset(ctx.ID().getText()));
+		this.scope.put(ctx.newID().getText(), getType(ctx.type()));
+		addSymbol(ctx.newID());
+		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 	}
 	
 	

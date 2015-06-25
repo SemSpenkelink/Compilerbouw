@@ -239,6 +239,16 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitTargetId(EloquenceParser.TargetIdContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link EloquenceParser#newID}.
+	 * @param ctx the parse tree
+	 */
+	void enterNewID(EloquenceParser.NewIDContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EloquenceParser#newID}.
+	 * @param ctx the parse tree
+	 */
+	void exitNewID(EloquenceParser.NewIDContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link EloquenceParser#returnStat}.
 	 * @param ctx the parse tree
 	 */

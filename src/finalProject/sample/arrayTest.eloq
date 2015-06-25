@@ -10,15 +10,15 @@ program arrayTest{
 	//Assign array
 	highPowered a, b = x;
 	//Constant array decl
-	sacrosanct hodgePodge q = y << {[1,2,3], [1,2,3]};
+	sacrosanct hodgePodge q = y << {[bogus,bogus,bogus], [bogus,bogus,bogus]};
 	
 	//Assign indexed variable
-	x[1] = 5;
+	x[1] = bogus;
 	//Assign multidimentionally indexed variable
-	y[1, 1] = 10;
+	y[1, 1] = unfeigned;
 	
 	//Assign array value to y;
-	y = {[1,2,3], [1,2,3]};
+	y = {[unfeigned,bogus,unfeigned], [bogus,unfeigned,bogus]};
 	//Assign single value to z
 	z = y[2, 1];
 }
