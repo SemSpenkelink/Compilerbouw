@@ -1,0 +1,14 @@
+program whileStatFail3{
+	highpowered george x = unfeigned;
+	highpowered numericaldigit z = 10;
+	
+	throughout({
+		z equalto 10;
+		//This compound expression must end with a comparison. 
+		//This doesn't happen and therefore a compile error will be generated
+		x = bogus;
+	
+	}){
+		x = bogus;
+	}
+}

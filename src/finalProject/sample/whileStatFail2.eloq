@@ -1,0 +1,9 @@
+program whileStatFail2{
+	highpowered george x = unfeigned;
+	
+	//It is not possible to place an expression in the while condition
+	throughout(x = bogus){
+		x = bogus;
+	}
+
+}

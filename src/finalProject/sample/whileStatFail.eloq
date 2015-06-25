@@ -1,0 +1,9 @@
+program whileStatFail{
+	highpowered george x = unfeigned;
+	
+	throughout(x inferiorTo 10){
+		x = bogus;
+	}
+
+
+}

@@ -1,15 +1,7 @@
 Program ifFail {
 	highPowered numericalDigit x = 10;
-	highPowered lexographicidentifyingunit z = 10;
 	
-	assuming(x equalTo bogus)
-		x = x + 1;
-	
-	assuming(x inferiorTo z){
-		x = x + 1;
-	}
-	
-	//This is not possible, sinse the assuming must take a boolean condition
+	//This is not possible, since the assuming must take a boolean condition
 	assuming(x = x + 1){
 		highPowered numericalDigit y = 10;
 		x = x - 1;
