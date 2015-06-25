@@ -20,17 +20,17 @@ decl
 	;
 	
 variable
-	: type ID (COMMA ID)*
+	: type target (COMMA target)*
 	;
 	
 arrayDecl
-	: type ID LSQBRACKET expression RSQBRACKET															#arraySize
+	: type target LSQBRACKET expression RSQBRACKET															#arraySize
 	| minArrayDecl																						#arrayMinInput			
 	;
 	
 minArrayDecl
-	: type ID LSQBRACKET RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE					#arrayInput
-	| type ID LSQBRACKET expression RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE		#arraySizeInput
+	: type target LSQBRACKET RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE					#arrayInput
+	| type target LSQBRACKET expression RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE		#arraySizeInput
 	;
 	
 stat
@@ -38,9 +38,9 @@ stat
 	| WHILE LPAR expression RPAR stat									#statWhile
 	| target ASSIGN expression SEMI										#statAssign
 	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI 	#statAssignArray
-	| statBlockBody															#statBlock
+	| statBlockBody														#statBlock
 	| returnStat														#statReturn
-	| IN LPAR ID (COMMA ID)* RPAR SEMI									#statIn
+	| IN LPAR target (COMMA target)* RPAR SEMI							#statIn
 	| OUT LPAR expression (COMMA expression)* RPAR SEMI					#statOut
 	;
 	
@@ -65,9 +65,9 @@ expression
 	| expression compare expression				#exprComp
 	| expression and expression					#exprAnd
 	| expression or expression					#exprOr
-	| ID LSQBRACKET expression RSQBRACKET		#exprArray
+	| target LSQBRACKET expression RSQBRACKET	#exprArray
 	| LPAR expression RPAR						#exprPar
-	| ID										#exprId
+	| target									#exprId
 	| NUM										#exprNum
 	| TRUE										#exprTrue
 	| FALSE										#exprFalse
@@ -120,7 +120,7 @@ func
 	;
 	
 functionID
-	: ID LPAR (ID (COMMA ID)*)? RPAR
+	: ID LPAR (target (COMMA target)*)? RPAR
 	;
 	
 voidFunc
