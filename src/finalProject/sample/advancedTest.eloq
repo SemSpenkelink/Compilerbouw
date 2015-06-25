@@ -11,6 +11,7 @@ highpowered i = z;
 	numericaldigit myFunction1(numericaldigit param1, george param2){
 		b = param2;
 		a = param1;
+		relinquish a;
 	}
 	
 	godforsaken myFunction2(numericaldigit param1, george param2){
@@ -20,20 +21,10 @@ highpowered i = z;
 		a = param1;
 	}
 
-	assuming(a ={
-		numericaldigit myFunction3(george h){
-			assuming(h){
-				exude(h);
-			}
-			
-		relinquish 14;
-		}
-		highpowered numericaldigit y = myFunction3(unfeigned);
-	} > 10){
-		
-		
+	assuming({highpowered numericaldigit y = 5; y=y+1;} superiorTo 10){
+		y = 10;		
 	} contrariwise{
-	
+		y = 1;
 	}
 
 }

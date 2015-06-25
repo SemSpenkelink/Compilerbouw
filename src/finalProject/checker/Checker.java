@@ -382,7 +382,6 @@ public class Checker extends EloquenceBaseListener {
 	
 	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
 		this.scope.put(ctx.newID().getText(), getType(ctx.type()));
-		addSymbol(ctx.newID());
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 	}
 	

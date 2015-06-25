@@ -20,7 +20,6 @@ public class EloquenceCheckerTest {
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
 	
-	@Test
 	public void testBasic() throws IOException, ParseException {
 		ParseTree tree = parse("basic");
 		Result result = check(tree);
@@ -34,19 +33,23 @@ public class EloquenceCheckerTest {
 	}
 
 	@Test
-	public void testGCD() throws IOException, ParseException {
-		check(parse("gcd"));
+	public void testArray() throws IOException, ParseException {
+		check(parse("array"));
+	}
+	
+	//@Test
+	public void testArrayFail() throws IOException, ParseException {
+		check(parse("arrayFault"));
 	}
 
 	@Test
-	public void testPrime() throws IOException, ParseException {
-		check(parse("prime"));
+	public void testExpression() throws IOException, ParseException {
+		check(parse("expression"));
 	}
-
+	
 	@Test
-	public void testTypeErr() throws IOException {
-		checkFail("typeErr1");
-		checkFail("typeErr2");
+	public void testExpressionFail() throws IOException, ParseException {
+		check(parse("expressionFault"));
 	}
 
 	private void checkFail(String filename) throws IOException {
