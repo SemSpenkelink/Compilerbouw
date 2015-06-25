@@ -19,16 +19,16 @@ decl
 	;
 	
 variable
-	: type ID (COMMA ID)*
+	: type newID (COMMA newID)*
 	;
 
 arrayTypeDecl
-	: ARRAY ID ASSIGN type LSQBRACKET NUM DOT DOT NUM (COMMA NUM DOT DOT NUM)* RSQBRACKET SEMI
+	: ARRAY newID ASSIGN type LSQBRACKET NUM DOT DOT NUM (COMMA NUM DOT DOT NUM)* RSQBRACKET SEMI
 	;
 	
 arrayDecl
-	: VAR ID (COMMA ID)* ASSIGN target												#varArrayDecl
-	| CONST ID (COMMA ID)* ASSIGN target SETARRAY LBRACE arrayExpression RBRACE		#constArrayDecl
+	: VAR newID (COMMA newID)* ASSIGN target												#varArrayDecl
+	| CONST newID (COMMA newID)* ASSIGN target SETARRAY LBRACE arrayExpression RBRACE		#constArrayDecl
 	;	
 
 	
@@ -52,6 +52,9 @@ target
 	: ID																		#targetId
 	;
 	
+newID
+	: ID
+	;	
 returnStat
 	: RETURN (expression)? SEMI					
 	;
