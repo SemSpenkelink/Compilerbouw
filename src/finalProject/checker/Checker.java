@@ -16,6 +16,7 @@ import finalProject.grammar.EloquenceBaseListener;
 import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.StatOutContext;
+import finalProject.grammar.EloquenceParser.CompareContext;
 /** Class to type check and calculate flow entries and variable offsets. */
 public class Checker extends EloquenceBaseListener {
 	/** Result of the latest call of {@link #check}. */
@@ -41,6 +42,9 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	
+	@Override public void exitBody(finalProject.grammar.EloquenceParser.BodyContext ctx) {
+		setType(ctx, getType(ctx.getChild(ctx.getChildCount()-1)));
+	}
 	
 	@Override public void exitDeclVar(EloquenceParser.DeclVarContext ctx) {
 		setEntry(ctx, entry(ctx.variable()));
@@ -117,8 +121,6 @@ public class Checker extends EloquenceBaseListener {
 	
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
-		if(ctx.ELSE() != null)
-			System.out.println("Testing types " + ctx.stat(0) + " and " + ctx.stat(1));
 		if(ctx.ELSE() != null && getType(ctx.stat(0)).equals(getType(ctx.stat(1))))
 			setType(ctx, getType(ctx.stat(0)));
 		else
@@ -133,9 +135,8 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
 		checkType(ctx.target(), getType(ctx.expression()));
 		setType(ctx, this.scope.type(ctx.target().getText()));
-		System.out.println("Setting type[" + ctx + "]: " + this.scope.type(ctx.target().getText()));
-		setEntry(ctx, entry(ctx.expression()));
-		setOffset(ctx.target(), scope.offset(ctx.target().getText()));
+		//setEntry(ctx, entry(ctx.expression()));
+		setOffset(ctx, scope.offset(ctx.target().getText()));
 	}
 	
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
@@ -188,8 +189,12 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitExprComp(EloquenceParser.ExprCompContext ctx) {
-		checkType(ctx.expression(0), Type.INT);
-		checkType(ctx.expression(1), Type.INT);
+		if(ctx.compare().LT() != null || ctx.compare().LE() != null || ctx.compare().GE() != null || ctx.compare().GT() != null){
+			checkType(ctx.expression(0), Type.INT);
+			checkType(ctx.expression(1), Type.INT);
+		}else{
+			checkType(ctx.expression(0), getType(ctx.expression(1)));
+		}		
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, entry(ctx.expression(0)));
 	}
