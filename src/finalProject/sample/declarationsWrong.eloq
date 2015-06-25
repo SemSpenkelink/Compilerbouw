@@ -1,0 +1,22 @@
+program declarationsWrong{
+
+	//Assigning a character to an int
+	highpowered numericaldigit a = 'a';
+	
+	//Assigning an int to a char
+	highpowered lexographicidentifyingunit b = 10;
+	
+	//Assigning an int to a george
+	highpowered george c= 10;
+	
+	//Assigning a char to a george
+	highpowered george d = 'a';
+	
+	//Assigning a george to a char
+	highpowered lexographicidentifyingunit e = bogus;
+	
+	//Assigning a george to an int
+	highpowered numericaldigit f = unfeigned;
+	
+	
+}
