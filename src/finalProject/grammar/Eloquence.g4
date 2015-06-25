@@ -120,15 +120,15 @@ functionID
 	;
 	
 voidFunc
-	: VOID ID LPAR parameters RPAR LBRACE body RBRACE
+	: VOID ID LPAR (parameters (COMMA parameters)*)? RPAR LBRACE body RBRACE
 	;
 	
 returnFunc
-	: type ID LPAR parameters RPAR LBRACE body returnStat RBRACE
+	: type ID LPAR (parameters (COMMA parameters)*)? RPAR LBRACE body returnStat RBRACE
 	;
 
 parameters
-	: (type ID (COMMA type ID)*)?
+	: type ID
 	;
 
 
