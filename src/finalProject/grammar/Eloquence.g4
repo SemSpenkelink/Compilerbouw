@@ -9,7 +9,7 @@ program
 
 /**  */
 body
-	: (decl | stat | func)*
+	: (arrayTypeDecl | decl | stat | func)*
 	;
 	
 decl

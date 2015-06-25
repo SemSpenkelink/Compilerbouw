@@ -1,8 +1,20 @@
 program arrayTest{
-	 highPowered numericalDigit x[] = {1,2};
-	 highPowered numericalDigit y[3];
-	 y[0] = 0;
-	 y[1] = 1;
-	 y[2] = 2;
+	//1D array declaration
+//	array x = George [0..2];
+	//2D array declaration
+//	array y = George [0..2, 0..1];
+	
+	//Assign array
+//	highPowered a, b = x;
+	//Assign array
+//	sacrosanct c = y;
+	
+	//Assign indexed variable
+//	x[1] = 5;
+	//Assign multidimentionally indexed variable
+//	y[1, 1] = 10;
+	
+//	y = y[5, 5, 3, 2];
 
+	x = {[1,2,3], [1,2,3]};
 }
