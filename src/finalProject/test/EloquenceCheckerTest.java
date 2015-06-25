@@ -16,7 +16,7 @@ import finalProject.checker.Type;
 
 @SuppressWarnings("javadoc")
 public class EloquenceCheckerTest {
-	private final static String BASE_DIR = "src/finalProject/sample";
+	private final static String BASE_DIR = "src/finalProject/typeCheckingTestFiles";
 	private final static String EXT = ".eloq";
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
@@ -35,24 +35,82 @@ public class EloquenceCheckerTest {
 
 	@Test
 	public void testArray() throws IOException, ParseException {
-		check(parse("array"));
+		check(parse("testCorrectArray"));
 	}
 	
 	@Test
 	public void testArrayFail() throws IOException, ParseException {
-		checkFail("arrayFail");
+		checkFail("testFailArray");
+		checkFail("testFailArray2");
+		checkFail("testFailArray3");
 	}
 
 	@Test
-	public void testExpression() throws IOException, ParseException {
-		check(parse("expression"));
+	public void testArithmeticExpression() throws IOException, ParseException {
+		check(parse("testCorrectArithmeticExpr"));
 	}
 	
 	@Test
-	public void testExpressionFail() throws IOException, ParseException {
-		checkFail("expressionFail");
+	public void testArithmethicExpressionFail() throws IOException, ParseException {
+		checkFail("testFailArithmeticExpr");
 	}
-
+	
+	@Test
+	public void testDeclarations() throws IOException, ParseException{
+		check(parse("testCorrectDeclarations"));
+	}
+	
+	@Test
+	public void testDeclarationsFail() throws IOException, ParseException{
+		checkFail("testFailDeclarations");
+		checkFail("testFailDeclarations2");
+	}
+	
+	@Test
+	public void testFunction() throws IOException, ParseException{
+		check(parse("testCorrectFunction"));
+	}
+	
+	@Test
+	public void testFunctionFail() throws IOException, ParseException{
+		checkFail("testFailFunc");
+		checkFail("testFailFunc2");
+		checkFail("testFailFunc3");
+	}
+	
+	@Test
+	public void testWhile() throws IOException, ParseException{
+		check(parse("testCorrectWhileStat"));
+	}
+	
+	@Test
+	public void testWhileFail() throws IOException, ParseException{
+		checkFail("testFailWhileStat");
+		checkFail("testFailWhileStat2");
+		checkFail("testFailWhileStat3");
+	}
+	
+	@Test
+	public void testIf() throws IOException, ParseException{
+		check(parse("testCorrectIf"));
+	}
+	
+	@Test
+	public void testIfFail() throws IOException, ParseException{
+		checkFail("testFailIf");
+		checkFail("testFailIf2");
+	}
+	
+	@Test
+	public void testScope() throws IOException, ParseException{
+		check(parse("testCorrectScope"));
+	}
+	
+	@Test
+	public void testScopeFail() throws IOException, ParseException{
+		checkFail("testFailScope");
+	}
+	
 	private void checkFail(String filename) throws IOException {
 		Checker checker = new Checker();
 		try {
