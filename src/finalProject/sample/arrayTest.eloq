@@ -1,20 +1,26 @@
 program arrayTest{
+	//Temporary variable needed for further assignment
+	highPowered George z;
+	
 	//1D array declaration
-//	array x = George [0..2];
+	hodgePodge x = George [0..2];
 	//2D array declaration
-//	array y = George [0..2, 0..1];
+	hodgePodge y = George [0..2, 0..1];
 	
 	//Assign array
-//	highPowered a, b = x;
+	highPowered a, b = x;
 	//Assign array
-//	sacrosanct c = y;
+	sacrosanct c = y;
+	//Constant array decl
+	sacrosanct q = y << {[1,2,3], [1,2,3]};
 	
 	//Assign indexed variable
-//	x[1] = 5;
+	x[1] = 5;
 	//Assign multidimentionally indexed variable
-//	y[1, 1] = 10;
+	y[1, 1] = 10;
 	
-//	y = y[5, 5, 3, 2];
-
-	x = {[1,2,3], [1,2,3]};
+	//Assign array value to y;
+	y = {[1,2,3], [1,2,3]};
+	//Assign single value to z
+	z = y[2, 1];
 }

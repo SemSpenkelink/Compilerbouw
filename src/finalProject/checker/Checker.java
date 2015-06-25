@@ -61,57 +61,27 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, ctx);
 	}
 	
+	//TODO
+	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
+		
+	}
+
+	//TODO
+	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
+		
+	}
+	
+	//TODO
+	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
+		
+	}
+	
 	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
 		setEntry(ctx, entry(ctx.variable()));
 	}
 	
 	@Override public void exitDeclArray(EloquenceParser.DeclArrayContext ctx) {
 		setType(ctx, getType(ctx.arrayDecl()));
-	}
-	
-	@Override public void exitDeclConstArray(EloquenceParser.DeclConstArrayContext ctx) {
-		setType(ctx, getType(ctx.minArrayDecl()));
-	}
-	
-	@Override public void exitArraySize(finalProject.grammar.EloquenceParser.ArraySizeContext ctx) {
-		checkType(ctx.expression(), Type.INT);
-		if(getType(ctx.type()).equals(Type.INT))
-			setType(ctx, Type.ARRAY_INT);
-		else if(getType(ctx.type()).equals(Type.BOOL))
-			setType(ctx, Type.ARRAY_BOOL);			
-		else
-			setType(ctx, Type.ARRAY_CHAR);
-	}
-	
-	@Override public void exitArrayMinInput(finalProject.grammar.EloquenceParser.ArrayMinInputContext ctx) {
-		setType(ctx, getType(ctx.minArrayDecl()));
-	}
-	
-	@Override public void exitArrayInput(finalProject.grammar.EloquenceParser.ArrayInputContext ctx) {
-		for(ExpressionContext expr : ctx.expression()){
-			checkType(expr, getType(ctx.type()));
-		}
-		if(getType(ctx.type()).equals(Type.INT))
-			setType(ctx, Type.ARRAY_INT);
-		else if(getType(ctx.type()).equals(Type.BOOL))
-			setType(ctx, Type.ARRAY_BOOL);			
-		else
-			setType(ctx, Type.ARRAY_CHAR);
-	}
-	
-	@Override public void exitArraySizeInput(finalProject.grammar.EloquenceParser.ArraySizeInputContext ctx) {
-		checkType(ctx.expression(0), Type.INT);
-		for(ExpressionContext expr : ctx.expression()){
-			if(expr.equals(ctx.expression(0)))
-				continue;
-			checkType(expr, getType(ctx.type()));
-		}
-		if(getType(ctx.type()).equals(Type.INT))
-			setType(ctx, Type.ARRAY_INT);
-		else if(getType(ctx.type()).equals(Type.BOOL))
-			setType(ctx, Type.ARRAY_BOOL);			
-		else
-			setType(ctx, Type.ARRAY_CHAR);
 	}
 	
 	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) {
@@ -155,6 +125,11 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(1), getType(ctx.target()));
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
+	}
+	
+	//TODO
+	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
+		
 	}
 	
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
@@ -272,6 +247,11 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, entry(ctx.expression(0)));
 	}
 	
+	//TODO
+	@Override public void exitExprArray(finalProject.grammar.EloquenceParser.ExprArrayContext ctx) {
+		
+	}
+	
 	@Override public void exitExprAdd(EloquenceParser.ExprAddContext ctx) {
 		checkType(ctx.expression(0), Type.INT);
 		checkType(ctx.expression(1), Type.INT);
@@ -304,14 +284,19 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, ctx);
 	}
 	
-	@Override public void exitExprArray(EloquenceParser.ExprArrayContext ctx) {
-		checkType(ctx.expression(), Type.INT);
-		setEntry(ctx, entry(ctx.expression()));
-	}
-	
 	@Override public void exitExprPar(finalProject.grammar.EloquenceParser.ExprParContext ctx) {
 		setType(ctx, getType(ctx.expression()));
 		setEntry(ctx, entry(ctx.expression()));
+	}
+	
+	//TODO
+	@Override public void exitArrayMulExpr(finalProject.grammar.EloquenceParser.ArrayMulExprContext ctx) {
+		
+	}
+	
+	//TODO
+	@Override public void exitArraySingleExpr(finalProject.grammar.EloquenceParser.ArraySingleExprContext ctx) {
+		
 	}
 	
 	@Override public void exitTypeInt(EloquenceParser.TypeIntContext ctx) {

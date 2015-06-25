@@ -77,18 +77,6 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclConstArray(EloquenceParser.DeclConstArrayContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDeclConstArray(EloquenceParser.DeclConstArrayContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterVariable(EloquenceParser.VariableContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -101,49 +89,37 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArraySize(EloquenceParser.ArraySizeContext ctx) { }
+	@Override public void enterArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArraySize(EloquenceParser.ArraySizeContext ctx) { }
+	@Override public void exitArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArrayMinInput(EloquenceParser.ArrayMinInputContext ctx) { }
+	@Override public void enterVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArrayMinInput(EloquenceParser.ArrayMinInputContext ctx) { }
+	@Override public void exitVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArrayInput(EloquenceParser.ArrayInputContext ctx) { }
+	@Override public void enterConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArrayInput(EloquenceParser.ArrayInputContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterArraySizeInput(EloquenceParser.ArraySizeInputContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitArraySizeInput(EloquenceParser.ArraySizeInputContext ctx) { }
+	@Override public void exitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -192,6 +168,18 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -456,6 +444,30 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExprArray(EloquenceParser.ExprArrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

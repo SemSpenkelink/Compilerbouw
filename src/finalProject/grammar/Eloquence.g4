@@ -23,12 +23,12 @@ variable
 	;
 
 arrayTypeDecl
-	: ARRAY ID ASSIGN type LSQBRACKET expression DOT DOT expression (COMMA expression DOT DOT expression)* RSQBRACKET SEMI
+	: ARRAY ID ASSIGN type LSQBRACKET NUM DOT DOT NUM (COMMA NUM DOT DOT NUM)* RSQBRACKET SEMI
 	;
 	
 arrayDecl
-	: VAR ID (COMMA ID)* ASSIGN target					#varArrayDecl
-	| CONST ID (COMMA ID)* ASSIGN target				#constArrayDecl
+	: VAR ID (COMMA ID)* ASSIGN target												#varArrayDecl
+	| CONST ID (COMMA ID)* ASSIGN target SETARRAY LBRACE arrayExpression RBRACE		#constArrayDecl
 	;	
 
 	
@@ -186,6 +186,7 @@ RBRACE: 	'}';
 RPAR:		')';
 RSQBRACKET: ']';
 SEMI:		';';
+SETARRAY:	'<<';
 
 
 // Content-bearing token types

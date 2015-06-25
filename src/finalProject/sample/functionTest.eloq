@@ -6,8 +6,7 @@ program funcTest{
 		relinquish;
 	}
 	
-	//int function
-	
+	//int function	
 	numericaldigit func2(numericalDigit one){
 		relinquish one*2;
 	}

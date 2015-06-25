@@ -65,18 +65,6 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitDeclArray(EloquenceParser.DeclArrayContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code declConstArray}
-	 * labeled alternative in {@link EloquenceParser#decl}.
-	 * @param ctx the parse tree
-	 */
-	void enterDeclConstArray(EloquenceParser.DeclConstArrayContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code declConstArray}
-	 * labeled alternative in {@link EloquenceParser#decl}.
-	 * @param ctx the parse tree
-	 */
-	void exitDeclConstArray(EloquenceParser.DeclConstArrayContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link EloquenceParser#variable}.
 	 * @param ctx the parse tree
 	 */
@@ -87,53 +75,39 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitVariable(EloquenceParser.VariableContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code arraySize}
+	 * Enter a parse tree produced by {@link EloquenceParser#arrayTypeDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EloquenceParser#arrayTypeDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code varArrayDecl}
 	 * labeled alternative in {@link EloquenceParser#arrayDecl}.
 	 * @param ctx the parse tree
 	 */
-	void enterArraySize(EloquenceParser.ArraySizeContext ctx);
+	void enterVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code arraySize}
+	 * Exit a parse tree produced by the {@code varArrayDecl}
 	 * labeled alternative in {@link EloquenceParser#arrayDecl}.
 	 * @param ctx the parse tree
 	 */
-	void exitArraySize(EloquenceParser.ArraySizeContext ctx);
+	void exitVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code arrayMinInput}
+	 * Enter a parse tree produced by the {@code constArrayDecl}
 	 * labeled alternative in {@link EloquenceParser#arrayDecl}.
 	 * @param ctx the parse tree
 	 */
-	void enterArrayMinInput(EloquenceParser.ArrayMinInputContext ctx);
+	void enterConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code arrayMinInput}
+	 * Exit a parse tree produced by the {@code constArrayDecl}
 	 * labeled alternative in {@link EloquenceParser#arrayDecl}.
 	 * @param ctx the parse tree
 	 */
-	void exitArrayMinInput(EloquenceParser.ArrayMinInputContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code arrayInput}
-	 * labeled alternative in {@link EloquenceParser#minArrayDecl}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayInput(EloquenceParser.ArrayInputContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code arrayInput}
-	 * labeled alternative in {@link EloquenceParser#minArrayDecl}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayInput(EloquenceParser.ArrayInputContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code arraySizeInput}
-	 * labeled alternative in {@link EloquenceParser#minArrayDecl}.
-	 * @param ctx the parse tree
-	 */
-	void enterArraySizeInput(EloquenceParser.ArraySizeInputContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code arraySizeInput}
-	 * labeled alternative in {@link EloquenceParser#minArrayDecl}.
-	 * @param ctx the parse tree
-	 */
-	void exitArraySizeInput(EloquenceParser.ArraySizeInputContext ctx);
+	void exitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code statIf}
 	 * labeled alternative in {@link EloquenceParser#stat}.
@@ -182,6 +156,18 @@ public interface EloquenceListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code statAssignArrayMult}
+	 * labeled alternative in {@link EloquenceParser#stat}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code statAssignArrayMult}
+	 * labeled alternative in {@link EloquenceParser#stat}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code statBlock}
 	 * labeled alternative in {@link EloquenceParser#stat}.
@@ -442,6 +428,30 @@ public interface EloquenceListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExprArray(EloquenceParser.ExprArrayContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code arrayMulExpr}
+	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code arrayMulExpr}
+	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code arraySingleExpr}
+	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code arraySingleExpr}
+	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link EloquenceParser#unary}.
 	 * @param ctx the parse tree
