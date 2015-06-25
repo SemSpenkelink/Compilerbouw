@@ -37,6 +37,7 @@ stat
 	| WHILE LPAR expression RPAR stat									#statWhile
 	| target ASSIGN expression SEMI										#statAssign
 	| target LSQBRACKET expression (COMMA expression)* RSQBRACKET ASSIGN expression SEMI 	#statAssignArray
+	| target ASSIGN LBRACE arrayExpression (COMMA arrayExpression)* RBRACE SEMI #statAssignArrayMult
 	| statBlockBody														#statBlock
 	| returnStat														#statReturn
 	| IN LPAR target (COMMA target)* RPAR SEMI							#statIn
