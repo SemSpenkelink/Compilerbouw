@@ -1,5 +1,30 @@
 program declarationsCorrect{
 
+	//Variable declarations - highpowered
 	
+	//Integer = numericaldigit
+	highpowered numericaldigit a;
+	highpowered numericaldigit b = 10;
+	
+	//Booleans - george
+	highpowered george c;
+	highpowered george d = bogus; //True
+	highpowered george e = unfeigned;	//False
+	
+	//Characters - lexographicidentifyingunit
+	highpowered lexographicidentifyingunit f;
+	highpowered lexographicidentifyingunit g = 'a';
+	
+	//Constant declarations - sacrosanct
+	
+	//Integer = numericaldigit
+	sacrosanct numericaldigit i = 10;
+	
+	//Booleans - george
+	sacrosanct george k = bogus; //True
+	sacrosanct george l = unfeigned;	//False
+	
+	//Characters - lexographicidentifyingunit
+	sacrosanct lexographicidentifyingunit n = 'a';
 
 }
