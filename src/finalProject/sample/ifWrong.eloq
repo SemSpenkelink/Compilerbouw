@@ -1,6 +1,6 @@
 Program ifWrong {
 	highPowered numericalDigit x = 10;
-	highPowered lexographicidentifyingunit z = 'c';
+	highPowered lexographicidentifyingunit z = 10;
 	
 	assuming(x equalTo bogus)
 		x = x + 1;

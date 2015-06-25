@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 
+import finalProject.checker.Checker;
 import finalProject.checker.ParseException;
 import finalProject.checker.Result;
 import finalProject.checker.Type;
@@ -37,9 +38,9 @@ public class EloquenceCheckerTest {
 		check(parse("array"));
 	}
 	
-	//@Test
+	@Test
 	public void testArrayFail() throws IOException, ParseException {
-		check(parse("arrayFault"));
+		checkFail("arrayFail");
 	}
 
 	@Test
@@ -49,13 +50,16 @@ public class EloquenceCheckerTest {
 	
 	@Test
 	public void testExpressionFail() throws IOException, ParseException {
-		check(parse("expressionFault"));
+		checkFail("expressionFail");
 	}
 
 	private void checkFail(String filename) throws IOException {
+		Checker checker = new Checker();
 		try {
 			this.compiler.check(parse(filename));
-			fail(filename + " shouldn't check but did");
+			checker.check(parse(filename));
+			if(!checker.hasErrors())
+				fail(filename + " shouldn't check but did");
 		} catch (ParseException exc) {
 			// this is the expected behaviour
 		}

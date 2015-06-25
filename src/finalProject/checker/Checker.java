@@ -48,8 +48,9 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitDeclVar(EloquenceParser.DeclVarContext ctx) {
-		if(ctx.expression() != null)
+		if(ctx.expression() != null){
 			checkType(ctx.variable(), getType(ctx.expression()));
+		}
 		setEntry(ctx, entry(ctx.variable()));
 	}
 	
