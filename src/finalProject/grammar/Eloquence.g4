@@ -27,21 +27,21 @@ arrayTypeDecl
 	;
 	
 arrayDecl
-	: VAR ID (COMMA ID)* ASSIGN target
-	| CONST ID (COMMA ID)* ASSIGN target
+	: VAR ID (COMMA ID)* ASSIGN target					#varArrayDecl
+	| CONST ID (COMMA ID)* ASSIGN target				#constArrayDecl
 	;	
 
 	
 stat
-	: IF LPAR expression RPAR stat (ELSE stat)?							#statIf
-	| WHILE LPAR expression RPAR stat									#statWhile
-	| target ASSIGN expression SEMI										#statAssign
-	| target LSQBRACKET expression (COMMA expression)* RSQBRACKET ASSIGN expression SEMI 	#statAssignArray
-	| target ASSIGN LBRACE arrayExpression (COMMA arrayExpression)* RBRACE SEMI #statAssignArrayMult
-	| statBlockBody														#statBlock
-	| returnStat														#statReturn
-	| IN LPAR target (COMMA target)* RPAR SEMI							#statIn
-	| OUT LPAR expression (COMMA expression)* RPAR SEMI					#statOut
+	: IF LPAR expression RPAR stat (ELSE stat)?												#statIf
+	| WHILE LPAR expression RPAR stat														#statWhile
+	| target ASSIGN expression SEMI															#statAssign
+	| target LSQBRACKET expression (COMMA expression)* RSQBRACKET ASSIGN expression SEMI 	#statAssignArray	//Assign a single expression to an array
+	| target ASSIGN LBRACE arrayExpression (COMMA arrayExpression)* RBRACE SEMI 			#statAssignArrayMult	//Assign multiple values to a n-dimensional array
+	| statBlockBody																			#statBlock
+	| returnStat																			#statReturn
+	| IN LPAR target (COMMA target)* RPAR SEMI												#statIn
+	| OUT LPAR expression (COMMA expression)* RPAR SEMI										#statOut
 	;
 	
 statBlockBody
@@ -49,7 +49,7 @@ statBlockBody
 	;	
 
 target
-	: ID										#targetId
+	: ID																		#targetId
 	;
 	
 returnStat
@@ -57,27 +57,26 @@ returnStat
 	;
 	
 expression
-	: functionID								#exprFunc
-	| LBRACE body expression SEMI RBRACE		#exprCompound
-	| unary expression							#exprUnary		
-	| expression multiply expression			#exprMult
-	| expression addition expression			#exprAdd
-	| expression compare expression				#exprComp
-	| expression and expression					#exprAnd
-	| expression or expression					#exprOr
-	| target LSQBRACKET expression RSQBRACKET	#exprArray
-	| LPAR expression RPAR						#exprPar
-	| target									#exprId
-	| NUM										#exprNum
-	| TRUE										#exprTrue
-	| FALSE										#exprFalse
-	| CHARACTER									#exprChar
-	| target LSQBRACKET arrayExpression (COMMA arrayExpression)* RSQBRACKET 	#arrayExpr
+	: functionID																#exprFunc
+	| LBRACE body expression SEMI RBRACE										#exprCompound
+	| unary expression															#exprUnary		
+	| expression multiply expression											#exprMult
+	| expression addition expression											#exprAdd
+	| expression compare expression												#exprComp
+	| expression and expression													#exprAnd
+	| expression or expression													#exprOr
+	|  target LSQBRACKET arrayExpression (COMMA arrayExpression)* RSQBRACKET 	#exprArray
+	| LPAR expression RPAR														#exprPar
+	| target																	#exprId
+	| NUM																		#exprNum
+	| TRUE																		#exprTrue
+	| FALSE																		#exprFalse
+	| CHARACTER																	#exprChar
 	;
 	
 arrayExpression
-	: LSQBRACKET expression (COMMA expression)* RSQBRACKET
-	| expression
+	: LSQBRACKET expression (COMMA expression)* RSQBRACKET						#arrayMulExpr
+	| expression																#arraySingleExpr
 	;
 	
 unary
@@ -146,7 +145,7 @@ parameters
 
 
 AND:		A N D;
-ARRAY:		A R R A Y;
+ARRAY:		H O D G E P O D G E;
 BOOLEAN:	G E O R G E;
 CHAR:		L E X O G R A P H I C I D E N T I F Y I N G U N I T;
 CONST:		S A C R O S A N C T;
