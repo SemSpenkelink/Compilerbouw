@@ -1,0 +1,34 @@
+program scopeTestCorrect{
+
+	highpowered george a = unfeigned;
+	
+	//Scope 1a
+	{
+		highpowered george b = bogus;
+		//In this scope it is possible to use a
+		a = bogus;
+		//It is also possible to use b
+		b = unfeigned;
+	}
+	
+	//In this scope it is also possible to use a
+	a = unfeigned;
+	
+	//It is not possible to use b
+	
+	{ //Scope 1b
+	highpowered george c = bogus;
+		
+		{ //Scope 2
+			
+			highpowered george d = bogus;
+				
+				{ //Scope 3
+				 	c = not d; //c and d are from upper scopes
+				 	a = not d; //a is from the upper scope	
+				}//Close scope 3
+			d = not a;
+		//It is not possible to use d	
+		} //Close scope 2
+	} //Close scope 1
+}

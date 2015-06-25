@@ -1,0 +1,10 @@
+//Test program which will generate compilation errors.
+
+program testFailFunc2{
+	
+	
+	//A void function which returns a value
+	godforsaken myFunction(){
+		relinquish 5;
+	}
+}

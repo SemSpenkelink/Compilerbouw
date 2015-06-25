@@ -1,0 +1,9 @@
+//Test program which will generate compilation errors. This program has an incorrect function declaration.
+program testFailFunc{
+
+	//Function without a function declaration. 
+	function(){
+	
+	}
+
+}

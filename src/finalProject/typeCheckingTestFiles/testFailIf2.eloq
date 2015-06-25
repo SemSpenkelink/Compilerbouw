@@ -1,0 +1,14 @@
+program ifFail2{
+//declaring a character to use in the if conditions
+highPowered lexographicidentifyingunit z = 10;
+	
+	//This should not be possible, since x is a character, and this cannot be compared to a boolean
+	assuming(x equalTo bogus)
+		x = x + 1;
+	
+	//This should not be possible, since x is a character and it cannot be less than an integer
+	assuming(x inferiorTo z){
+		x = x + 1;
+	}
+
+}

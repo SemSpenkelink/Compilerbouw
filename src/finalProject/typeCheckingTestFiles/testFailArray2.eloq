@@ -1,0 +1,9 @@
+program testArrayFail2{
+	
+	//1D array declaration of type george (type boolean)
+	hodgePodge x = George [0..2];
+	
+	//Trying to assign an int value to this array
+	x[1] = 3;
+	
+}

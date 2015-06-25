@@ -1,0 +1,9 @@
+//Test program which will generate compilation errors.
+program testFailFunc3{
+
+	//This program should return an int (numericalDigit) value;
+	numericalDigit myfunction(){
+		highpowered george x = 10;
+	}
+
+}

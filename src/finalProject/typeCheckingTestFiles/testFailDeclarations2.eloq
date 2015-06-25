@@ -1,0 +1,13 @@
+program declarationFail2{
+	//It is not possible to use a constant which has not yet been declared.
+	
+	highpowered george foo = unfeigned;
+	
+	//This will not work
+	fooo = bogus; 
+	
+	//This will work
+	foo = bogus;
+	
+
+}

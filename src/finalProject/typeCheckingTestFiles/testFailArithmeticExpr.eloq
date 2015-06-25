@@ -1,4 +1,4 @@
-Program expressionFault {
+Program testFailArithmeticExpr {
 	highPowered numericalDigit x = 10;
 	highPowered George bool = bogus;
 	

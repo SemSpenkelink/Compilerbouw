@@ -1,0 +1,8 @@
+program testArrayFail3{
+	//This program will try to compute the length of the array with the help of a variable
+	
+	highpowered numericalDigit i = 2;
+	//1D array declaration with variable i. This is not possible
+	hodgePodge x = George [0..i];
+
+}

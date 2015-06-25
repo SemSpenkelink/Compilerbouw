@@ -1,0 +1,12 @@
+program failScopeTest{
+
+	highpowered george a;
+	
+	{ //Scope 1
+		highpowered george b = bogus; //A variable in scope 1
+	 	a = unfeigned;
+	} //Close scope 1
+	
+	//It is not possible anymore to use b, since it is declared in a scope which is already closed.
+	b = a;
+}

@@ -2,6 +2,7 @@ Program expression {
 	highPowered numericalDigit x = 10;
 	highPowered George bool = bogus;
 	
+	//Correct arithmetic expressions with parentheses
 	x = x+5/3-(2*(3+4));
 	bool = bool or x inferiorTo 2*x;
 }
