@@ -27,8 +27,8 @@ arrayTypeDecl
 	;
 	
 arrayDecl
-	: VAR newID (COMMA newID)* ASSIGN target												#varArrayDecl
-	| CONST newID (COMMA newID)* ASSIGN target SETARRAY LBRACE arrayExpression RBRACE		#constArrayDecl
+	: VAR newID (COMMA newID)* ASSIGN target																			#varArrayDecl
+	| CONST ARRAY newID (COMMA newID)* ASSIGN target SETARRAY LBRACE arrayExpression (COMMA arrayExpression)* RBRACE		#constArrayDecl
 	;	
 
 	
