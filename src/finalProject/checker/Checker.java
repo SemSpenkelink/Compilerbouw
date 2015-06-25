@@ -7,7 +7,6 @@ import jdk.nashorn.internal.ir.SetSplitState;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -15,8 +14,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import finalProject.grammar.EloquenceBaseListener;
 import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
-import finalProject.grammar.EloquenceParser.StatOutContext;
-import finalProject.grammar.EloquenceParser.CompareContext;
 /** Class to type check and calculate flow entries and variable offsets. */
 public class Checker extends EloquenceBaseListener {
 	/** Result of the latest call of {@link #check}. */
@@ -57,6 +54,7 @@ public class Checker extends EloquenceBaseListener {
 		for(TerminalNode id : ctx.ID()){
 			setType(id, getType(ctx.type()));
 			this.scope.put(id.getText(), getType(ctx.type()));
+			symbolTable.add(id.getText());
 			setOffset(id, scope.offset(id.getText()));
 		}
 		setType(ctx, getType(ctx.type()));
@@ -122,17 +120,27 @@ public class Checker extends EloquenceBaseListener {
 			setEntry(ctx, ctx.returnStat());
 	}
 	
+	@Override public void enterStatIf(finalProject.grammar.EloquenceParser.StatIfContext ctx) {
+		symbolTable.openScope();
+	}
+	
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
 		if(ctx.ELSE() != null && getType(ctx.stat(0)).equals(getType(ctx.stat(1))))
 			setType(ctx, getType(ctx.stat(0)));
 		else
 			setType(ctx, null);
+		symbolTable.closeScope();
+	}
+	
+	@Override public void enterStatWhile(finalProject.grammar.EloquenceParser.StatWhileContext ctx) {
+		symbolTable.openScope();
 	}
 	
 	@Override public void exitStatWhile(EloquenceParser.StatWhileContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
 		setType(ctx, null);
+		symbolTable.closeScope();
 	}
 	
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
@@ -155,9 +163,9 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitStatIn(EloquenceParser.StatInContext ctx){
-		if(ctx.ID().size() == 1){
-			setType(ctx, this.scope.type(ctx.ID(0).getText()));
-			setEntry(ctx, entry(ctx.ID(0)));
+		if(ctx.target().size() == 1){
+			setType(ctx, this.scope.type(ctx.target(0).getText()));
+			setEntry(ctx, entry(ctx.target(0)));
 		}else{
 			setType(ctx, null);
 		}
@@ -279,14 +287,14 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitExprId(EloquenceParser.ExprIdContext ctx) {
-		String id = ctx.ID().getText();
+		String id = ctx.target().getText();
 		Type type = this.scope.type(id);
 		if (type == null) {
 			addError(ctx, "Variable '%s' not declared", id);
 		} else {
 			setType(ctx, type);
 			setOffset(ctx, this.scope.offset(id));
-			setOffset(ctx.ID(), this.scope.offset(id));
+			setOffset(ctx.target(), this.scope.offset(id));
 			setEntry(ctx, ctx);
 		}
 	}
@@ -329,25 +337,34 @@ public class Checker extends EloquenceBaseListener {
 
 	//TODO maybe set entry?
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
-		setType(ctx, this.scope.type(ctx.ID(0).getText()));
+		setType(ctx, this.scope.type(ctx.ID().getText()));
+	}
+	
+	@Override public void enterVoidFunc(finalProject.grammar.EloquenceParser.VoidFuncContext ctx) {
+		symbolTable.openScope();
 	}
 	
 	//TODO
 	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
 		setType(ctx, null);
+		symbolTable.closeScope();
 	}
 
+	@Override public void enterReturnFunc(finalProject.grammar.EloquenceParser.ReturnFuncContext ctx) {
+		symbolTable.openScope();
+	}
+	
 	//TODO
 	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
 		setType(ctx, getType(ctx.type()));
 		setEntry(ctx, entry(ctx.returnStat()));
+		symbolTable.closeScope();
 	}
 	
 	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
-		for(int index = 4; index < ctx.getChildCount()-4; index++){
-			this.scope.put(ctx.getChild(index).getText(), getType(ctx.getChild(index-1)));
-			setOffset(ctx.getChild(index), scope.offset(ctx.getChild(index).getText()));
-		}			
+		this.scope.put(ctx.ID().getText(), getType(ctx.type()));
+		symbolTable.add(ctx.ID().getText());
+		setOffset(ctx.ID(), scope.offset(ctx.ID().getText()));
 	}
 	
 	

@@ -20,17 +20,17 @@ decl
 	;
 	
 variable
-	: type target (COMMA target)*
+	: type ID (COMMA ID)*
 	;
 	
 arrayDecl
-	: type target LSQBRACKET expression RSQBRACKET															#arraySize
+	: type ID LSQBRACKET expression RSQBRACKET															#arraySize
 	| minArrayDecl																						#arrayMinInput			
 	;
 	
 minArrayDecl
-	: type target LSQBRACKET RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE					#arrayInput
-	| type target LSQBRACKET expression RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE		#arraySizeInput
+	: type ID LSQBRACKET RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE					#arrayInput
+	| type ID LSQBRACKET expression RSQBRACKET ASSIGN LBRACE expression (COMMA expression)* RBRACE		#arraySizeInput
 	;
 	
 stat

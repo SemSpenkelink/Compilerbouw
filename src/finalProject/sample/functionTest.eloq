@@ -8,9 +8,9 @@ program funcTest{
 	
 	//int function
 	
-//	numericaldigit func2(numericalDigit one){
-//		relinquish one*2;
-//	}
+	numericaldigit func2(numericalDigit one){
+		relinquish one*2;
+	}
 	
 
 }
