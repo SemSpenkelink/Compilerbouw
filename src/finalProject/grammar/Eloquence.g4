@@ -68,7 +68,7 @@ expression
 	| expression compare expression												#exprComp
 	| expression and expression													#exprAnd
 	| expression or expression													#exprOr
-	|  target LSQBRACKET arrayExpression (COMMA arrayExpression)* RSQBRACKET 	#exprArray
+	| target LSQBRACKET expression (COMMA expression)* RSQBRACKET 				#exprArray
 	| LPAR expression RPAR														#exprPar
 	| target																	#exprId
 	| NUM																		#exprNum
