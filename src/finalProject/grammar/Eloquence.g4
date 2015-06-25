@@ -140,7 +140,7 @@ returnFunc
 	;
 
 parameters
-	: type ID
+	: type newID
 	;
 
 
