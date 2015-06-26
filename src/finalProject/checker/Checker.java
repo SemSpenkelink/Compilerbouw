@@ -132,23 +132,29 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
-		checkMutable(ctx.target());
-		checkType(ctx.target(), getType(ctx.expression()));
+		if(checkScope(ctx.target())){
+			checkType(ctx.target(), getType(ctx.expression()));
+			checkMutable(ctx.target());
+		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setOffset(ctx, scope.offset(ctx.target().getText()));
 	}
 
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
-		checkMutable(ctx.target());
-		checkType(ctx.expression(0), Type.INT);
-		checkType(ctx.expression(1), ((Type.Array)getType(ctx.target())).getElemType());
+		if(checkScope(ctx.target())){
+			checkType(ctx.expression(0), Type.INT);
+			checkType(ctx.expression(1), ((Type.Array)getType(ctx.target())).getElemType());
+			checkMutable(ctx.target());
+		}
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
 	}
 
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
-		checkMutable(ctx.target());
-		checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
+		if(checkScope(ctx.target())){
+			checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
+			checkMutable(ctx.target());
+		}
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
 	}
@@ -160,7 +166,8 @@ public class Checker extends EloquenceBaseListener {
 	
 	@Override public void exitStatIn(EloquenceParser.StatInContext ctx){
 		for(TargetContext target : ctx.target())
-			checkMutable(target);
+			if(checkScope(target))
+				checkMutable(target);
 		if(ctx.target().size() == 1){
 			setType(ctx, this.scope.type(ctx.target(0).getText()));
 			setEntry(ctx, entry(ctx.target(0)));
