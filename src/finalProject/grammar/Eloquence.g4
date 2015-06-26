@@ -23,7 +23,11 @@ variable
 	;
 
 arrayTypeDecl
-	: ARRAY newID ASSIGN type LSQBRACKET NUM DOT DOT NUM (COMMA NUM DOT DOT NUM)* RSQBRACKET SEMI
+	: ARRAY newID ASSIGN type LSQBRACKET arrayElem (COMMA arrayElem)* RSQBRACKET SEMI
+	;
+	
+arrayElem
+	: NUM DOT DOT NUM
 	;
 	
 arrayDecl
