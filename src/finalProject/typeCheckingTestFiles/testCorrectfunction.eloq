@@ -8,7 +8,6 @@ program funcTest{
 	//void function
 	godforsaken func1(numericalDigit one){
 		x = one;
-		relinquish;
 	}
 	
 	//int function	

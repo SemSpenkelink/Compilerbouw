@@ -15,8 +15,8 @@ program arrayTest{
 	//Assign indexed variable
 	x[1] = bogus;
 	
-	a = {bogus,bogus,bogus};
+	a = {[bogus,bogus,bogus]};
 	
 	//const array
-	const hodgepodge y = x << {bogus,bogus,bogus};
+	sacrosanct hodgepodge y = x << {[bogus,bogus,bogus]};
 }

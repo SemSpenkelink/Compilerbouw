@@ -1,5 +1,6 @@
 // Generated from Eloquence.g4 by ANTLR 4.5
 package finalProject.grammar;
+package pp.block5.cc.pascal;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;

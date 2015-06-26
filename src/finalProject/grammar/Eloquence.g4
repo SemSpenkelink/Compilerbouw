@@ -23,7 +23,7 @@ variable
 	;
 
 arrayTypeDecl
-	: ARRAY newID ASSIGN type LSQBRACKET arrayElem (COMMA arrayElem)? RSQBRACKET SEMI
+	: ARRAY newID ASSIGN type LSQBRACKET arrayElem RSQBRACKET SEMI
 	;
 	
 arrayElem
@@ -31,21 +31,21 @@ arrayElem
 	;
 	
 arrayDecl
-	: VAR newID (COMMA newID)* ASSIGN target																			#varArrayDecl
-	| CONST ARRAY newID (COMMA newID)* ASSIGN target SETARRAY LBRACE arrayExpression (COMMA arrayExpression)? RBRACE	#constArrayDecl
+	: VAR newID (COMMA newID)* ASSIGN target												#varArrayDecl
+	| CONST ARRAY newID (COMMA newID)* ASSIGN target SETARRAY LBRACE arrayExpression RBRACE	#constArrayDecl
 	;	
 
 	
 stat
-	: IF LPAR expression RPAR stat (ELSE stat)?												#statIf
-	| WHILE LPAR expression RPAR stat														#statWhile
-	| target ASSIGN expression SEMI															#statAssign
-	| target LSQBRACKET expression (COMMA expression)? RSQBRACKET ASSIGN expression SEMI 	#statAssignArray		//Assign a single expression to an array
-	| target ASSIGN LBRACE arrayExpression (COMMA arrayExpression)? RBRACE SEMI 			#statAssignArrayMult	//Assign multiple values to a n-dimensional array
-	| statBlockBody																			#statBlock
-	| returnStat																			#statReturn
-	| IN LPAR target (COMMA target)* RPAR SEMI												#statIn
-	| OUT LPAR expression (COMMA expression)* RPAR SEMI										#statOut
+	: IF LPAR expression RPAR stat (ELSE stat)?							#statIf
+	| WHILE LPAR expression RPAR stat									#statWhile
+	| target ASSIGN expression SEMI										#statAssign
+	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI 	#statAssignArray		//Assign a single expression to an array
+	| target ASSIGN LBRACE arrayExpression RBRACE SEMI 					#statAssignArrayMult	//Assign multiple values to a n-dimensional array
+	| statBlockBody														#statBlock
+	| returnStat														#statReturn
+	| IN LPAR target (COMMA target)* RPAR SEMI							#statIn
+	| OUT LPAR expression (COMMA expression)* RPAR SEMI					#statOut
 	;
 	
 statBlockBody
@@ -64,21 +64,21 @@ returnStat
 	;
 	
 expression
-	: functionID																#exprFunc
-	| LBRACE body expression SEMI RBRACE										#exprCompound
-	| unary expression															#exprUnary		
-	| expression multiply expression											#exprMult
-	| expression addition expression											#exprAdd
-	| expression compare expression												#exprComp
-	| expression and expression													#exprAnd
-	| expression or expression													#exprOr
-	| target LSQBRACKET expression (COMMA expression)? RSQBRACKET 				#exprArray
-	| LPAR expression RPAR														#exprPar
-	| target																	#exprId
-	| NUM																		#exprNum
-	| TRUE																		#exprTrue
-	| FALSE																		#exprFalse
-	| CHARACTER																	#exprChar
+	: functionID									#exprFunc
+	| LBRACE body expression SEMI RBRACE			#exprCompound
+	| unary expression								#exprUnary		
+	| expression multiply expression				#exprMult
+	| expression addition expression				#exprAdd
+	| expression compare expression					#exprComp
+	| expression and expression						#exprAnd
+	| expression or expression						#exprOr
+	| target LSQBRACKET expression RSQBRACKET 		#exprArray
+	| LPAR expression RPAR							#exprPar
+	| target										#exprId
+	| NUM											#exprNum
+	| TRUE											#exprTrue
+	| FALSE											#exprFalse
+	| CHARACTER										#exprChar
 	;
 	
 arrayExpression
