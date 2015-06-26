@@ -76,6 +76,17 @@ public class EloquenceCheckerTest {
 		checkFail("testFailFunc");
 		checkFail("testFailFunc2");
 		checkFail("testFailFunc3");
+		checkFail("testFailFunc4");
+	}
+	
+	@Test
+	public void testMutable() throws IOException, ParseException{
+		check(parse("testCorrectMutable"));		
+	}
+	
+	@Test
+	public void testMutableFail() throws IOException, ParseException{
+		checkFail("testFailMutable");		
 	}
 	
 	@Test

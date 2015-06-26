@@ -16,6 +16,7 @@ import finalProject.grammar.EloquenceParser.ArrayExpressionContext;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
 import finalProject.grammar.EloquenceParser.StatContext;
+import finalProject.grammar.EloquenceParser.TargetContext;
 /** Class to type check and calculate flow entries and variable offsets. */
 public class Checker extends EloquenceBaseListener {
 	/** Result of the latest call of {@link #check}. */
@@ -58,7 +59,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitVariable(EloquenceParser.VariableContext ctx){
 		for(NewIDContext id : ctx.newID()){
 			setType(id, getType(ctx.type()));
-			this.scope.put(id.getText(), getType(ctx.type()));
+			this.scope.put(id.getText(), getType(ctx.type()), ctx.getParent().getChild(0).getText().toLowerCase().equals("highpowered"));
 			setOffset(id, scope.offset(id.getText()));
 		}
 		setType(ctx, getType(ctx.type()));
@@ -67,7 +68,7 @@ public class Checker extends EloquenceBaseListener {
 	
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem().NUM(0).getText()), Integer.parseInt(ctx.arrayElem().NUM(1).getText()), getType(ctx.type())));
-		this.scope.put(ctx.newID().getText(), getType(ctx));
+		this.scope.put(ctx.newID().getText(), getType(ctx), false);
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 		setEntry(ctx, ctx);
 	}
@@ -75,7 +76,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
 		for(NewIDContext id : ctx.newID()){
 			setType(id, this.scope.type(ctx.target().getText()));
-			this.scope.put(id.getText(), getType(id));
+			this.scope.put(id.getText(), getType(id), true);
 			setOffset(id, scope.offset(id.getText()));
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
@@ -86,7 +87,7 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
 		for(NewIDContext id : ctx.newID()){
 			setType(id, this.scope.type(ctx.target().getText()));
-			this.scope.put(id.getText(), getType(id));
+			this.scope.put(id.getText(), getType(id), false);
 			setOffset(id, scope.offset(id.getText()));
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
@@ -131,12 +132,14 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
+		checkMutable(ctx.target());
 		checkType(ctx.target(), getType(ctx.expression()));
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setOffset(ctx, scope.offset(ctx.target().getText()));
 	}
 
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
+		checkMutable(ctx.target());
 		checkType(ctx.expression(0), Type.INT);
 		checkType(ctx.expression(1), ((Type.Array)getType(ctx.target())).getElemType());
 		setType(ctx, getType(ctx.target()));
@@ -144,6 +147,7 @@ public class Checker extends EloquenceBaseListener {
 	}
 
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
+		checkMutable(ctx.target());
 		checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
@@ -155,6 +159,8 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitStatIn(EloquenceParser.StatInContext ctx){
+		for(TargetContext target : ctx.target())
+			checkMutable(target);
 		if(ctx.target().size() == 1){
 			setType(ctx, this.scope.type(ctx.target(0).getText()));
 			setEntry(ctx, entry(ctx.target(0)));
@@ -374,7 +380,7 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
-		this.scope.put(ctx.newID().getText(), getType(ctx.type()));
+		this.scope.put(ctx.newID().getText(), getType(ctx.type()), true);
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 	}
 	
@@ -398,6 +404,11 @@ public class Checker extends EloquenceBaseListener {
 	/** Returns the list of errors collected in this tree listener. */
 	public List<String> getErrors() {
 		return this.errors;
+	}
+	
+	private void checkMutable(ParserRuleContext node){
+		if(!scope.mutable(node.getText()))
+			addError(node, "Variable '%s' is immutable.", node.getText());
 	}
 
 	private boolean checkScope(ParserRuleContext node){

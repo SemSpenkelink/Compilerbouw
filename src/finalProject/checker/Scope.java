@@ -13,11 +13,14 @@ public class Scope {
 	/** Map from declared variables to their offset within the allocation
 	 * record of this scope. */
 	private final Map<String, Integer> offsets;
+	/** Map from mutable objects. */
+	private final Map<String, Boolean> mutable;
 
 	/** Constructs a fresh, initially empty scope. */
 	public Scope() {
 		this.types = new LinkedHashMap<>();
 		this.offsets = new LinkedHashMap<>();
+		this.mutable = new LinkedHashMap<>();
 	}
 
 	/** Tests if a given identifier is declared in this scope. */
@@ -30,11 +33,12 @@ public class Scope {
 	 * @return <code>true</code> if the identifier was added;
 	 * <code>false</code> if it was already declared.
 	 */
-	public boolean put(String id, Type type) {
+	public boolean put(String id, Type type, boolean mutable) {
 		boolean result = !this.types.containsKey(id);
 		if (result) {
 			this.types.put(id, type);
 			this.offsets.put(id, this.size);
+			this.mutable.put(id, mutable);
 			this.size += type.size();
 		}
 		return result;
@@ -52,5 +56,10 @@ public class Scope {
 	  */
 	public Integer offset(String id) {
 		return this.offsets.get(id);
+	}
+	
+	/** Returns whether a given (presumably declared) identifier is mutable.*/
+	public Boolean mutable(String id) {
+		return this.mutable.get(id);
 	}
 }
