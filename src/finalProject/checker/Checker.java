@@ -65,6 +65,10 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
+		int arrayElements = ctx.arrayElem().size();
+		
+		
+		
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.NUM(0).getText()), Integer.parseInt(ctx.NUM(1).getText()), getType(ctx.type())));
 		this.scope.put(ctx.newID().getText(), getType(ctx));
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
@@ -134,7 +138,6 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
 		checkType(ctx.target(), getType(ctx.expression()));
 		setType(ctx, this.scope.type(ctx.target().getText()));
-		//setEntry(ctx, entry(ctx.expression()));
 		setOffset(ctx, scope.offset(ctx.target().getText()));
 	}
 	
@@ -199,14 +202,13 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitTargetId(finalProject.grammar.EloquenceParser.TargetIdContext ctx) {
-		checkScope(ctx);
-		if(scope.contains(ctx.getText())){
+		if(checkScope(ctx)){
 			setOffset(ctx, this.scope.offset(ctx.getText()));
 			setOffset(ctx.getChild(0), this.scope.offset(ctx.getText()));
 			setEntry(ctx, ctx);
 			setEntry(ctx.getChild(0), ctx);
-		}	
-		setType(ctx, this.scope.type(ctx.ID().getText()));
+			setType(ctx, this.scope.type(ctx.ID().getText()));
+		}
 	}
 	
 	@Override public void exitNewID(NewIDContext ctx) {
@@ -410,9 +412,12 @@ public class Checker extends EloquenceBaseListener {
 		return this.errors;
 	}
 
-	private void checkScope(ParserRuleContext node){
-		if(!symbolTable.contains(node.getText()))
+	private boolean checkScope(ParserRuleContext node){
+		if(!symbolTable.contains(node.getText())){
 			addError(node, "'%s' not defined in scope", node.getText());
+			return false;
+		}
+		return true;
 	}
 	
 	private void addSymbol(ParserRuleContext node){
@@ -426,6 +431,7 @@ public class Checker extends EloquenceBaseListener {
 	private void checkType(ParserRuleContext node, Type expected) {
 		Type actual = getType(node);
 		if (actual == null) {
+			System.out.println(errors);
 			throw new IllegalArgumentException("Missing inferred type of "
 					+ node.getText());
 		}

@@ -1,5 +1,6 @@
 // Generated from Eloquence.g4 by ANTLR 4.5
 package finalProject.grammar;
+package finalProject.grammar;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -84,6 +85,16 @@ public interface EloquenceListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EloquenceParser#arrayElem}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayElem(EloquenceParser.ArrayElemContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EloquenceParser#arrayElem}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayElem(EloquenceParser.ArrayElemContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code varArrayDecl}
 	 * labeled alternative in {@link EloquenceParser#arrayDecl}.

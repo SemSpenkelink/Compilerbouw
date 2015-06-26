@@ -1,5 +1,6 @@
 // Generated from Eloquence.g4 by ANTLR 4.5
 package finalProject.grammar;
+package finalProject.grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -96,6 +97,18 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArrayElem(EloquenceParser.ArrayElemContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayElem(EloquenceParser.ArrayElemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

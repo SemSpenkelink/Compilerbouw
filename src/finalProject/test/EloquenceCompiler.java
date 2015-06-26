@@ -32,7 +32,7 @@ public class EloquenceCompiler {
 	}
 
 	/** Compiles and runs the program named in the argument. */
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
 		if (args.length != 1) {
 			System.err.println("Usage: filename");
 			return;
