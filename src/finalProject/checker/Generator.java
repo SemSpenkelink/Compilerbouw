@@ -4,9 +4,11 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
+import finalProject.grammar.EloquenceParser.NewIDContext;
 import pp.block5.cc.simple.Result;
 import pp.iloc.*;
 import pp.iloc.eval.*;
@@ -31,6 +33,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	private int regCount;
 	/** Association of expression and target nodes to registers. */
 	private ParseTreeProperty<Reg> regs;
+	/** Several registers. */
+	
+	private final Reg reg1 = new Reg("r1");
+	private final Reg reg2 = new Reg("r2");
+	private final Reg reg3 = new Reg("r3");
+	private final Reg reg4 = new Reg("r4");
 
 	public Program generate(ParseTree tree, Result checkResult) {
 		this.prog = new Program();
@@ -110,13 +118,39 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitBody(EloquenceParser.BodyContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitDeclVar(EloquenceParser.DeclVarContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitDeclVar(EloquenceParser.DeclVarContext ctx) { 
+		visitChildren(ctx);
+		for(NewIDContext newId : ctx.variable().newID()){
+				if(ctx.expression() != null){
+					emit(OpCode.i2i, reg(ctx.expression()),reg1);
+				} else{
+					emit(OpCode.loadI, new Num(0), reg1);
+				}
+				emit(OpCode.storeAI,arp,offset(newId.ID()),reg1);
+		}
+		
+		return visitChildren(ctx); 
 	
-	@Override public Op visitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) { return visitChildren(ctx); }
+	}
+	
+	@Override public Op visitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
+		visitChildren(ctx);
+		for(NewIDContext newId : ctx.variable().newID()){
+				if(ctx.expression() != null){
+					emit(OpCode.i2i, reg(ctx.expression()),reg1);
+				} else{
+					emit(OpCode.loadI, new Num(0), reg1);
+				}
+				emit(OpCode.storeAI,arp,offset(newId.ID()),reg1);
+		}
+		
+		return visitChildren(ctx);  }
 	
 	@Override public Op visitDeclArray(EloquenceParser.DeclArrayContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitVariable(EloquenceParser.VariableContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitVariable(EloquenceParser.VariableContext ctx) {
+		
+		return visitChildren(ctx); }
 	
 	@Override public Op visitArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx) { return visitChildren(ctx); }
 	
@@ -146,39 +180,129 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) {
+		
+			emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx.ID()));
+		
+		return visitChildren(ctx); }
 	
 	@Override public Op visitNewID(EloquenceParser.NewIDContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitReturnStat(EloquenceParser.ReturnStatContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitExprComp(EloquenceParser.ExprCompContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprComp(EloquenceParser.ExprCompContext ctx) { 
+		visitChildren(ctx);
+		if(ctx.compare().LT() != null){
+			emit(OpCode.cmp_LT, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+		} else if(ctx.compare().LE() != null){
+			emit(OpCode.cmp_LE, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+		} else if(ctx.compare().GE() != null){
+			emit(OpCode.cmp_GE, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+		} else if(ctx.compare().GT() != null){
+			emit(OpCode.cmp_GT, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+		} else if(ctx.compare().EQ() != null){
+			emit(OpCode.cmp_EQ, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+		} else if(ctx.compare().NE() != null){
+			emit(OpCode.cmp_NE, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+		} 
+		
+		return visitChildren(ctx); }
 	
-	@Override public Op visitExprCompound(EloquenceParser.ExprCompoundContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprCompound(EloquenceParser.ExprCompoundContext ctx) { 
+		visitChildren(ctx);
+		
+		if(checkResult.getType(ctx.expression()).equals(Type.CHAR))
+			emit(OpCode.c2c, reg(ctx.expression()),reg(ctx));
+		else 
+			emit(OpCode.i2i, reg(ctx.expression()),reg(ctx));
+		
+		return visitChildren(ctx); 
+		
+	}
 	
-	@Override public Op visitExprMult(EloquenceParser.ExprMultContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprMult(EloquenceParser.ExprMultContext ctx) { 
+		visitChildren(ctx);
+		
+		if(ctx.multiply().MULTIPLY() != null){
+			emit(OpCode.mult, reg(ctx.expression(0)),reg(ctx.expression(1)),reg(ctx));
+		} else if(ctx.multiply().DIVIDE() != null){
+			emit(OpCode.div, reg(ctx.expression(0)),reg(ctx.expression(1)),reg(ctx));
+		} else if(ctx.multiply().MODULO() != null){
+			emit(OpCode.div, reg(ctx.expression(0)),reg(ctx.expression(1)),reg1);
+			emit(OpCode.mult, reg1,reg(ctx.expression(1)),reg1);
+			emit(OpCode.sub, reg(ctx.expression(0)),reg1,reg(ctx));
+		}
+		
+		return visitChildren(ctx); }
 	
-	@Override public Op visitExprUnary(EloquenceParser.ExprUnaryContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprUnary(EloquenceParser.ExprUnaryContext ctx) { 
+		
+		visitChildren(ctx);
+		if(ctx.unary().PLUS() != null){
+			emit(OpCode.i2i, reg(ctx.expression()), reg(ctx));
+		} else if(ctx.unary().MINUS() != null){
+			emit(OpCode.rsubI, reg(ctx.expression()) ,new Num(0), reg(ctx));
+		} else if(ctx.unary().NOT() != null){
+			emit(OpCode.xorI, reg(ctx.expression()), new Num(1),reg(ctx));
+		}
+		
+		return visitChildren(ctx); }
 	
-	@Override public Op visitExprNum(EloquenceParser.ExprNumContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprNum(EloquenceParser.ExprNumContext ctx) { 
+		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.getText())), reg(ctx));
+		return visitChildren(ctx); }
 	
-	@Override public Op visitExprTrue(EloquenceParser.ExprTrueContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprTrue(EloquenceParser.ExprTrueContext ctx) { 
+		emit(OpCode.loadI, new Num(1), reg(ctx));
+		return visitChildren(ctx); }
 	
-	@Override public Op visitExprChar(EloquenceParser.ExprCharContext ctx) { return visitChildren(ctx); }
+	//TODO check whether this is correct
+	@Override public Op visitExprChar(EloquenceParser.ExprCharContext ctx) { 
+		emit(OpCode.loadI, new Num((int)ctx.getText().charAt(1)), reg1);
+		emit(OpCode.i2c, reg1, reg(ctx));
+		return visitChildren(ctx); }
 	
 	@Override public Op visitExprFunc(EloquenceParser.ExprFuncContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitExprOr(EloquenceParser.ExprOrContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprOr(EloquenceParser.ExprOrContext ctx) {
+		visitChildren(ctx);
+		emit(OpCode.or, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+	return visitChildren(ctx);  }
 	
-	@Override public Op visitExprPar(EloquenceParser.ExprParContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprPar(EloquenceParser.ExprParContext ctx) { 
+		visitChildren(ctx);
+		
+		if(checkResult.getType(ctx.expression()).equals(Type.CHAR))
+			emit(OpCode.c2c, reg(ctx.expression()),reg(ctx));
+		else 
+			emit(OpCode.i2i, reg(ctx.expression()),reg(ctx));
+		
+		return visitChildren(ctx); }
 	
-	@Override public Op visitExprAdd(EloquenceParser.ExprAddContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprAdd(EloquenceParser.ExprAddContext ctx) {
+		visitChildren(ctx);
+		
+		if(ctx.addition().PLUS() != null){
+			emit(OpCode.add,reg(ctx.expression(0)), reg(ctx.expression(1)),reg(ctx));
+		} else if(ctx.addition().MINUS() != null){
+			emit(OpCode.sub,reg(ctx.expression(0)), reg(ctx.expression(1)),reg(ctx));
+		}
+		
+		return visitChildren(ctx); }
 	
-	@Override public Op visitExprAnd(EloquenceParser.ExprAndContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprAnd(EloquenceParser.ExprAndContext ctx) {
+		visitChildren(ctx);
+			emit(OpCode.and, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+		return visitChildren(ctx); }
 	
-	@Override public Op visitExprId(EloquenceParser.ExprIdContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprId(EloquenceParser.ExprIdContext ctx) { 
+		
+		
+		return visitChildren(ctx); }
 	
-	@Override public Op visitExprFalse(EloquenceParser.ExprFalseContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprFalse(EloquenceParser.ExprFalseContext ctx) {
+		emit(OpCode.loadI, new Num(0), reg(ctx));
+		return visitChildren(ctx); }
 	
 	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) { return visitChildren(ctx); }
 	
