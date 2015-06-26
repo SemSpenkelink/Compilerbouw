@@ -1,6 +1,5 @@
 // Generated from Eloquence.g4 by ANTLR 4.5
 package finalProject.grammar;
-package finalProject.grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;

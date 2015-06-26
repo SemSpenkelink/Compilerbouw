@@ -23,7 +23,7 @@ variable
 	;
 
 arrayTypeDecl
-	: ARRAY newID ASSIGN type LSQBRACKET arrayElem (COMMA arrayElem)* RSQBRACKET SEMI
+	: ARRAY newID ASSIGN type LSQBRACKET arrayElem (COMMA arrayElem)? RSQBRACKET SEMI
 	;
 	
 arrayElem
@@ -32,7 +32,7 @@ arrayElem
 	
 arrayDecl
 	: VAR newID (COMMA newID)* ASSIGN target																			#varArrayDecl
-	| CONST ARRAY newID (COMMA newID)* ASSIGN target SETARRAY LBRACE arrayExpression (COMMA arrayExpression)* RBRACE		#constArrayDecl
+	| CONST ARRAY newID (COMMA newID)* ASSIGN target SETARRAY LBRACE arrayExpression (COMMA arrayExpression)? RBRACE	#constArrayDecl
 	;	
 
 	
@@ -40,8 +40,8 @@ stat
 	: IF LPAR expression RPAR stat (ELSE stat)?												#statIf
 	| WHILE LPAR expression RPAR stat														#statWhile
 	| target ASSIGN expression SEMI															#statAssign
-	| target LSQBRACKET expression (COMMA expression)* RSQBRACKET ASSIGN expression SEMI 	#statAssignArray	//Assign a single expression to an array
-	| target ASSIGN LBRACE arrayExpression (COMMA arrayExpression)* RBRACE SEMI 			#statAssignArrayMult	//Assign multiple values to a n-dimensional array
+	| target LSQBRACKET expression (COMMA expression)? RSQBRACKET ASSIGN expression SEMI 	#statAssignArray		//Assign a single expression to an array
+	| target ASSIGN LBRACE arrayExpression (COMMA arrayExpression)? RBRACE SEMI 			#statAssignArrayMult	//Assign multiple values to a n-dimensional array
 	| statBlockBody																			#statBlock
 	| returnStat																			#statReturn
 	| IN LPAR target (COMMA target)* RPAR SEMI												#statIn
@@ -72,7 +72,7 @@ expression
 	| expression compare expression												#exprComp
 	| expression and expression													#exprAnd
 	| expression or expression													#exprOr
-	| target LSQBRACKET expression (COMMA expression)* RSQBRACKET 				#exprArray
+	| target LSQBRACKET expression (COMMA expression)? RSQBRACKET 				#exprArray
 	| LPAR expression RPAR														#exprPar
 	| target																	#exprId
 	| NUM																		#exprNum

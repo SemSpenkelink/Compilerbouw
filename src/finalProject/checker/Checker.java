@@ -64,12 +64,19 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, ctx);
 	}
 	
+	//TODO n-dimensional
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
 		int arrayElements = ctx.arrayElem().size();
-		
-		
-		
-		setType(ctx, new Type.Array(Integer.parseInt(ctx.NUM(0).getText()), Integer.parseInt(ctx.NUM(1).getText()), getType(ctx.type())));
+		switch(arrayElements){
+			case 1: 
+				setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem(0).NUM(0).getText()), Integer.parseInt(ctx.arrayElem(0).NUM(1).getText()), getType(ctx.type())));
+				break;
+			case 2: 
+				setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem(0).NUM(0).getText()), Integer.parseInt(ctx.arrayElem(0).NUM(1).getText()), 
+						new Type.Array(Integer.parseInt(ctx.arrayElem(1).NUM(0).getText()), Integer.parseInt(ctx.arrayElem(1).NUM(1).getText()), getType(ctx.type()))));
+				break;
+			default: break;
+		}
 		this.scope.put(ctx.newID().getText(), getType(ctx));
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 		setEntry(ctx, ctx);
@@ -84,7 +91,8 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setEntry(ctx, ctx);
 	}
-	
+
+	//TODO n-dimensional
 	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
 		for(ArrayExpressionContext array : ctx.arrayExpression()){
 			checkType(array, ((Type.Array)getType(ctx.target())).getElemType());
@@ -140,21 +148,58 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setOffset(ctx, scope.offset(ctx.target().getText()));
 	}
-	
+
+	//TODO
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
 		for(ExpressionContext expr : ctx.expression()){
 			if(expr.equals(ctx.getChild(ctx.getChildCount()-2)))
 				continue;
 			checkType(expr, Type.INT);
 		}
-		checkType(ctx.expression(ctx.expression().size()-1), ((Type.Array)getType(ctx.target())).getElemType());
+		
+		int numberOfExpressions = ctx.expression().size();
+		int sizeTarget = (((Type.Array)getType(ctx.target())).getElemType().equals(Type.INT)
+				|| ((Type.Array)getType(ctx.target())).getElemType().equals(Type.CHAR)
+				|| ((Type.Array)getType(ctx.target())).getElemType().equals(Type.BOOL)) ? 1 : 2;
+		if(numberOfExpressions != sizeTarget)
+			addError(ctx, "Array dimensions are not equal.");
+		
+		if(sizeTarget == 1)
+			checkType(ctx.expression(ctx.expression().size()-1), ((Type.Array)getType(ctx.target())).getElemType());
+		else
+			checkType(ctx.expression(ctx.expression().size()-1), ((Type.Array)((Type.Array)getType(ctx.target())).getElemType()).getElemType());
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
 	}
-	
+
+	//TODO
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
-		for(ArrayExpressionContext array : ctx.arrayExpression()){
-			checkType(array, ((Type.Array)getType(ctx.target())).getElemType());
+		int numberOfExpressions = ctx.arrayExpression().size();
+		int sizeTarget = (((Type.Array)getType(ctx.target())).getElemType().equals(Type.INT)
+				|| ((Type.Array)getType(ctx.target())).getElemType().equals(Type.CHAR)
+				|| ((Type.Array)getType(ctx.target())).getElemType().equals(Type.BOOL)) ? 1 : 2;
+		if(numberOfExpressions != sizeTarget)
+			addError(ctx, "Array dimensions are not equal.");
+		
+		int arraySizeTarget = ((Type.Array)getType(ctx.target())).size();
+		int arraySizeExpression = (ctx.arrayExpression(0).getChildCount() == 1) ? 1 : (ctx.arrayExpression(0).getChildCount()-2)*2/3;
+		if(arraySizeTarget != arraySizeExpression)
+			addError(ctx, "Array dimensions do not correspond.");
+		if(sizeTarget == 2){
+			arraySizeTarget = ((Type.Array)getType(ctx.target())).getElemType().size();
+			arraySizeExpression = (ctx.arrayExpression(1).getChildCount() == 1) ? 1 : (ctx.arrayExpression(1).getChildCount()-2)*2/3;
+			if(arraySizeTarget != arraySizeExpression)
+				addError(ctx, "Array dimensions do not correspond.");
+		}
+		
+		if(sizeTarget == 1)
+			for(ArrayExpressionContext array : ctx.arrayExpression()){
+				checkType(array, ((Type.Array)getType(ctx.target())).getElemType());
+			}
+		else{
+			for(ArrayExpressionContext array : ctx.arrayExpression()){
+				checkType(array, ((Type.Array)((Type.Array)getType(ctx.target())).getElemType()).getElemType());
+			}
 		}
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
@@ -277,12 +322,24 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, entry(ctx.expression(0)));
 	}
-	
+
+	//TODO n-dimensional
 	@Override public void exitExprArray(finalProject.grammar.EloquenceParser.ExprArrayContext ctx) {
+		int numberOfExpressions = ctx.expression().size();
+		int sizeTarget = (((Type.Array)getType(ctx.target())).getElemType().equals(Type.INT)
+				|| ((Type.Array)getType(ctx.target())).getElemType().equals(Type.CHAR)
+				|| ((Type.Array)getType(ctx.target())).getElemType().equals(Type.BOOL)) ? 1 : 2;
+		if(numberOfExpressions != sizeTarget)
+			addError(ctx, "Array dimensions are not equal.");
+		
 		for(ExpressionContext expr : ctx.expression()){
 			checkType(expr, Type.INT);
 		}
-		setType(ctx, ((Type.Array)getType(ctx.target())).getElemType());
+
+		if(sizeTarget == 1)
+			setType(ctx, ((Type.Array)getType(ctx.target())).getElemType());
+		else
+			setType(ctx, ((Type.Array)((Type.Array)getType(ctx.target())).getElemType()).getElemType());
 		setEntry(ctx, ctx);
 	}
 	
@@ -322,8 +379,8 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, getType(ctx.expression()));
 		setEntry(ctx, entry(ctx.expression()));
 	}
-	
-	@Override public void exitArrayMulExpr(finalProject.grammar.EloquenceParser.ArrayMulExprContext ctx) {
+
+	@Override public void exitArrayMulExpr(finalProject.grammar.EloquenceParser.ArrayMulExprContext ctx) {		
 		Type type = getType(ctx.expression(0));
 		for(ExpressionContext expr : ctx.expression()){
 			if(expr.equals(ctx.expression(0)))
@@ -359,7 +416,6 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, entry(ctx.returnFunc()));
 	}
 
-	//TODO maybe set entry?
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
 		setType(ctx, this.scope.type(ctx.ID().getText()));
 	}
@@ -368,7 +424,6 @@ public class Checker extends EloquenceBaseListener {
 		symbolTable.openScope();
 	}
 	
-	//TODO
 	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
 		setType(ctx, null);
 		symbolTable.closeScope();
@@ -378,7 +433,6 @@ public class Checker extends EloquenceBaseListener {
 		symbolTable.openScope();
 	}
 	
-	//TODO
 	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
 		setType(ctx, getType(ctx.type()));
 		setEntry(ctx, entry(ctx.returnStat()));
