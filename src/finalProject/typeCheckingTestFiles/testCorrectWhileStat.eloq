@@ -1,3 +1,7 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//A program containing a correctly implemented while loop
+
 program whileLoop{
 	highPowered numericalDigit x = 10;
 	throughout(x inferiorTo 10){

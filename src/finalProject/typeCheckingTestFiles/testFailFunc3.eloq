@@ -1,4 +1,5 @@
-//Test program which will generate compilation errors.
+//The program has an int function which should have a return value, this is however not the case.
+
 program testFailFunc3{
 
 	//This program should return an int (numericalDigit) value;

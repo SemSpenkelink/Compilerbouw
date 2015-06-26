@@ -1,3 +1,7 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//A program which correctly makes use of scopes
+
 program scopeTestCorrect{
 
 	highpowered george a = unfeigned;

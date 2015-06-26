@@ -1,3 +1,7 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//This program uses variables declared in a closed scope
+
 program failScopeTest{
 
 	highpowered george a;

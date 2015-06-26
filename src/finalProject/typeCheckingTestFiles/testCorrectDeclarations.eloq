@@ -1,3 +1,7 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//This program contains correct declarations 
+
 program declarationsCorrect{
 
 	//Variable declarations - highpowered

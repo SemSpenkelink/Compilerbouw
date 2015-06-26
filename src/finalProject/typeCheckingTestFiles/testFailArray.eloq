@@ -1,3 +1,7 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//A program which tries to assign a multidimensional value to a 1D Array.
+
 program testArrayFail{
 	
 	//1D array declaration

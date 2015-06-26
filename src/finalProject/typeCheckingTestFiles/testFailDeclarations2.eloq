@@ -1,3 +1,7 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//This program tries to use a variable which does not exist.
+
 program declarationFail2{
 	//It is not possible to use a constant which has not yet been declared.
 	

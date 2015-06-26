@@ -1,3 +1,8 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//This program has a function which is correctly implemented.
+
+
 program funcTest{
 	highpowered numericaldigit x;
 	//void function

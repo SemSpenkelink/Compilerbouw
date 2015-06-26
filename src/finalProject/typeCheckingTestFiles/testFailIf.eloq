@@ -1,3 +1,7 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//This program has an incorrect if condition
+
 Program ifFail {
 	highPowered numericalDigit x = 10;
 	
