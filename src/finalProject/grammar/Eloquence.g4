@@ -132,15 +132,15 @@ func
 	;
 	
 functionID
-	: ID LPAR (target (COMMA target)*)? RPAR
+	: target LPAR (target (COMMA target)*)? RPAR
 	;
 	
 voidFunc
-	: VOID ID LPAR (parameters (COMMA parameters)*)? RPAR statBlockBody
+	: VOID newID LPAR (parameters (COMMA parameters)*)? RPAR statBlockBody
 	;
 	
 returnFunc
-	: type ID LPAR (parameters (COMMA parameters)*)? RPAR LBRACE body returnStat RBRACE
+	: type newID LPAR (parameters (COMMA parameters)*)? RPAR LBRACE body returnStat RBRACE
 	;
 
 parameters

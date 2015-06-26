@@ -257,8 +257,9 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
+		checkNotNull(ctx.functionID());
 		setType(ctx, getType(ctx.functionID()));
-		setEntry(ctx, entry(ctx.functionID()));
+		//setEntry(ctx, entry(ctx.functionID()));
 	}
 	
 	@Override public void exitExprCompound(finalProject.grammar.EloquenceParser.ExprCompoundContext ctx) {
@@ -353,7 +354,8 @@ public class Checker extends EloquenceBaseListener {
 	}
 
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
-		setType(ctx, this.scope.type(ctx.ID().getText()));
+		checkScope(ctx.target(0));
+		setType(ctx, this.scope.type(ctx.target(0).getText()));
 	}
 	
 	@Override public void enterVoidFunc(finalProject.grammar.EloquenceParser.VoidFuncContext ctx) {
@@ -362,6 +364,9 @@ public class Checker extends EloquenceBaseListener {
 	
 	//TODO
 	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
+		setType(ctx.newID(), null);
+		this.scope.put(ctx.newID().getText(), null, ctx.getParent().getChild(0).getText().toLowerCase().equals("highpowered"));
+		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 		for(StatContext stat : ctx.statBlockBody().body().stat())
 			if(stat.getText().toLowerCase().contains("relinquish"))
 				addError(ctx, "No return statements are allowed.");
@@ -372,8 +377,9 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void enterReturnFunc(finalProject.grammar.EloquenceParser.ReturnFuncContext ctx) {
 		symbolTable.openScope();
 	}
-	
-	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
+
+	//TODO
+	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {	
 		setType(ctx, getType(ctx.type()));
 		setEntry(ctx, entry(ctx.returnStat()));
 		symbolTable.closeScope();
@@ -445,7 +451,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	private void checkNotNull(ParserRuleContext node){
 		Type actual = getType(node);
-		if(actual.equals(null))
+		if(actual == null)
 			addError(node, "Expected type not null but found '%s'", actual);
 	}
 

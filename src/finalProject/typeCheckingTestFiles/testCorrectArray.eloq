@@ -12,9 +12,6 @@ program arrayTest{
 	//Assign array
 	highPowered a, b = x;
 	
-	//Assign indexed variable
-	x[1] = bogus;
-	
 	a = {[bogus,bogus,bogus]};
 	
 	//const array

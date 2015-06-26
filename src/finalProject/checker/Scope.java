@@ -3,6 +3,8 @@ package finalProject.checker;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import pp.iloc.eval.Machine;
+
 /** Class combining the information of a single scope level. */
 public class Scope {
 	/** Current size of this scope (in bytes). 
@@ -39,7 +41,10 @@ public class Scope {
 			this.types.put(id, type);
 			this.offsets.put(id, this.size);
 			this.mutable.put(id, mutable);
-			this.size += type.size();
+			if(type != null)
+				this.size += type.size();
+			else
+				this.size += Machine.INT_SIZE;
 		}
 		return result;
 	}

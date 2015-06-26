@@ -2597,15 +2597,14 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class FunctionIDContext extends ParserRuleContext {
-		public TerminalNode ID() { return getToken(EloquenceParser.ID, 0); }
-		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public List<TargetContext> target() {
 			return getRuleContexts(TargetContext.class);
 		}
 		public TargetContext target(int i) {
 			return getRuleContext(TargetContext.class,i);
 		}
+		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
+		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(EloquenceParser.COMMA, i);
@@ -2637,7 +2636,7 @@ public class EloquenceParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(306);
-			match(ID);
+			target();
 			setState(307);
 			match(LPAR);
 			setState(316);
@@ -2682,7 +2681,9 @@ public class EloquenceParser extends Parser {
 
 	public static class VoidFuncContext extends ParserRuleContext {
 		public TerminalNode VOID() { return getToken(EloquenceParser.VOID, 0); }
-		public TerminalNode ID() { return getToken(EloquenceParser.ID, 0); }
+		public NewIDContext newID() {
+			return getRuleContext(NewIDContext.class,0);
+		}
 		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
 		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public StatBlockBodyContext statBlockBody() {
@@ -2727,7 +2728,7 @@ public class EloquenceParser extends Parser {
 			setState(320);
 			match(VOID);
 			setState(321);
-			match(ID);
+			newID();
 			setState(322);
 			match(LPAR);
 			setState(331);
@@ -2776,7 +2777,9 @@ public class EloquenceParser extends Parser {
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
-		public TerminalNode ID() { return getToken(EloquenceParser.ID, 0); }
+		public NewIDContext newID() {
+			return getRuleContext(NewIDContext.class,0);
+		}
 		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
 		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
@@ -2826,7 +2829,7 @@ public class EloquenceParser extends Parser {
 			setState(336);
 			type();
 			setState(337);
-			match(ID);
+			newID();
 			setState(338);
 			match(LPAR);
 			setState(347);
@@ -3057,17 +3060,17 @@ public class EloquenceParser extends Parser {
 		"\u012f\7\5\2\2\u012d\u012f\7\6\2\2\u012e\u012b\3\2\2\2\u012e\u012c\3\2"+
 		"\2\2\u012e\u012d\3\2\2\2\u012f+\3\2\2\2\u0130\u0133\5\60\31\2\u0131\u0133"+
 		"\5\62\32\2\u0132\u0130\3\2\2\2\u0132\u0131\3\2\2\2\u0133-\3\2\2\2\u0134"+
-		"\u0135\7-\2\2\u0135\u013e\7!\2\2\u0136\u013b\5\24\13\2\u0137\u0138\7\35"+
-		"\2\2\u0138\u013a\5\24\13\2\u0139\u0137\3\2\2\2\u013a\u013d\3\2\2\2\u013b"+
-		"\u0139\3\2\2\2\u013b\u013c\3\2\2\2\u013c\u013f\3\2\2\2\u013d\u013b\3\2"+
-		"\2\2\u013e\u0136\3\2\2\2\u013e\u013f\3\2\2\2\u013f\u0140\3\2\2\2\u0140"+
-		"\u0141\7)\2\2\u0141/\3\2\2\2\u0142\u0143\7\32\2\2\u0143\u0144\7-\2\2\u0144"+
-		"\u014d\7!\2\2\u0145\u014a\5\64\33\2\u0146\u0147\7\35\2\2\u0147\u0149\5"+
-		"\64\33\2\u0148\u0146\3\2\2\2\u0149\u014c\3\2\2\2\u014a\u0148\3\2\2\2\u014a"+
-		"\u014b\3\2\2\2\u014b\u014e\3\2\2\2\u014c\u014a\3\2\2\2\u014d\u0145\3\2"+
-		"\2\2\u014d\u014e\3\2\2\2\u014e\u014f\3\2\2\2\u014f\u0150\7)\2\2\u0150"+
-		"\u0151\5\22\n\2\u0151\61\3\2\2\2\u0152\u0153\5*\26\2\u0153\u0154\7-\2"+
-		"\2\u0154\u015d\7!\2\2\u0155\u015a\5\64\33\2\u0156\u0157\7\35\2\2\u0157"+
+		"\u0135\5\24\13\2\u0135\u013e\7!\2\2\u0136\u013b\5\24\13\2\u0137\u0138"+
+		"\7\35\2\2\u0138\u013a\5\24\13\2\u0139\u0137\3\2\2\2\u013a\u013d\3\2\2"+
+		"\2\u013b\u0139\3\2\2\2\u013b\u013c\3\2\2\2\u013c\u013f\3\2\2\2\u013d\u013b"+
+		"\3\2\2\2\u013e\u0136\3\2\2\2\u013e\u013f\3\2\2\2\u013f\u0140\3\2\2\2\u0140"+
+		"\u0141\7)\2\2\u0141/\3\2\2\2\u0142\u0143\7\32\2\2\u0143\u0144\5\26\f\2"+
+		"\u0144\u014d\7!\2\2\u0145\u014a\5\64\33\2\u0146\u0147\7\35\2\2\u0147\u0149"+
+		"\5\64\33\2\u0148\u0146\3\2\2\2\u0149\u014c\3\2\2\2\u014a\u0148\3\2\2\2"+
+		"\u014a\u014b\3\2\2\2\u014b\u014e\3\2\2\2\u014c\u014a\3\2\2\2\u014d\u0145"+
+		"\3\2\2\2\u014d\u014e\3\2\2\2\u014e\u014f\3\2\2\2\u014f\u0150\7)\2\2\u0150"+
+		"\u0151\5\22\n\2\u0151\61\3\2\2\2\u0152\u0153\5*\26\2\u0153\u0154\5\26"+
+		"\f\2\u0154\u015d\7!\2\2\u0155\u015a\5\64\33\2\u0156\u0157\7\35\2\2\u0157"+
 		"\u0159\5\64\33\2\u0158\u0156\3\2\2\2\u0159\u015c\3\2\2\2\u015a\u0158\3"+
 		"\2\2\2\u015a\u015b\3\2\2\2\u015b\u015e\3\2\2\2\u015c\u015a\3\2\2\2\u015d"+
 		"\u0155\3\2\2\2\u015d\u015e\3\2\2\2\u015e\u015f\3\2\2\2\u015f\u0160\7)"+

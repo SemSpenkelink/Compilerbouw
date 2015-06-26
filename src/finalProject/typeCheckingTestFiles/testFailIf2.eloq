@@ -4,7 +4,8 @@
 
 program ifFail2{
 //declaring a character to use in the if conditions
-highPowered lexographicidentifyingunit z = 10;
+highPowered lexographicIdentifyingUnit x = 'x';
+highPowered numericalDigit z = 10;
 	
 	//This should not be possible, since x is a character, and this cannot be compared to a boolean
 	assuming(x equalTo bogus)
