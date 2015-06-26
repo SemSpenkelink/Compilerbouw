@@ -9,7 +9,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.NewIDContext;
-import pp.block5.cc.simple.Result;
 import pp.iloc.*;
 import pp.iloc.eval.*;
 import pp.iloc.model.*;
@@ -122,14 +121,14 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		visitChildren(ctx);
 		for(NewIDContext newId : ctx.variable().newID()){
 				if(ctx.expression() != null){
-					emit(OpCode.i2i, reg(ctx.expression()),reg1);
+					emit(OpCode.i2i, reg(ctx.expression()), reg1);
 				} else{
 					emit(OpCode.loadI, new Num(0), reg1);
 				}
-				emit(OpCode.storeAI,arp,offset(newId.ID()),reg1);
+				emit(OpCode.storeAI,arp,offset(newId), reg1);
 		}
 		
-		return visitChildren(ctx); 
+		return null; 
 	
 	}
 	
@@ -137,14 +136,14 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		visitChildren(ctx);
 		for(NewIDContext newId : ctx.variable().newID()){
 				if(ctx.expression() != null){
-					emit(OpCode.i2i, reg(ctx.expression()),reg1);
+					emit(OpCode.i2i, reg(ctx.expression()), reg1);
 				} else{
 					emit(OpCode.loadI, new Num(0), reg1);
 				}
-				emit(OpCode.storeAI,arp,offset(newId.ID()),reg1);
+				emit(OpCode.storeAI,arp,offset(newId), reg1);
 		}
 		
-		return visitChildren(ctx);  }
+		return null;   }
 	
 	@Override public Op visitDeclArray(EloquenceParser.DeclArrayContext ctx) { return visitChildren(ctx); }
 	
@@ -184,7 +183,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 			emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx.ID()));
 		
-		return visitChildren(ctx); }
+			return null;  }
 	
 	@Override public Op visitNewID(EloquenceParser.NewIDContext ctx) { return visitChildren(ctx); }
 	
@@ -277,7 +276,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		else 
 			emit(OpCode.i2i, reg(ctx.expression()),reg(ctx));
 		
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitExprAdd(EloquenceParser.ExprAddContext ctx) {
 		visitChildren(ctx);
@@ -288,7 +287,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.sub,reg(ctx.expression(0)), reg(ctx.expression(1)),reg(ctx));
 		}
 		
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitExprAnd(EloquenceParser.ExprAndContext ctx) {
 		visitChildren(ctx);
@@ -298,11 +297,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitExprId(EloquenceParser.ExprIdContext ctx) { 
 		
 		
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitExprFalse(EloquenceParser.ExprFalseContext ctx) {
 		emit(OpCode.loadI, new Num(0), reg(ctx));
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) { return visitChildren(ctx); }
 	

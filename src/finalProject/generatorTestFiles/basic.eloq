@@ -1,0 +1,3 @@
+Program basic {
+	highPowered numericalDigit x = 1+2;
+}

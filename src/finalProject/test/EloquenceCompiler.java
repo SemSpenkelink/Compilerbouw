@@ -13,6 +13,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import finalProject.checker.Checker;
 import finalProject.checker.ErrorListener;
+import finalProject.checker.Generator;
 import finalProject.checker.ParseException;
 import finalProject.checker.Result;
 import finalProject.grammar.EloquenceLexer;
@@ -55,9 +56,11 @@ public class EloquenceCompiler {
 
 	/** The fixed checker of this compiler. */
 	private final Checker checker;
+	private final Generator generator;
 
 	private EloquenceCompiler() {
 		this.checker = new Checker();
+		this.generator = new Generator();
 	}
 
 	/** Typechecks a given Simple Pascal string. */
@@ -88,8 +91,7 @@ public class EloquenceCompiler {
 	/** Compiles a given Simple Pascal parse tree into an ILOC program. */
 	public Program compile(ParseTree tree) throws ParseException {
 		Result checkResult = this.checker.check(tree);
-		//TODO return program
-		return null;
+		return generator.generate(tree, checkResult);
 	}
 
 	/** Compiles a given Simple Pascal string into a parse tree. */
