@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import finalProject.grammar.EloquenceBaseListener;
 import finalProject.grammar.EloquenceParser;
-import finalProject.grammar.EloquenceParser.ArrayExpressionContext;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
 import finalProject.grammar.EloquenceParser.StatContext;
@@ -45,6 +44,9 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	
+	/**
+	 * Set type of body to type of last child.
+	 */
 	@Override public void exitBody(finalProject.grammar.EloquenceParser.BodyContext ctx) {
 		setType(ctx, getType(ctx.getChild(ctx.getChildCount()-1)));
 	}
@@ -184,6 +186,11 @@ public class Checker extends EloquenceBaseListener {
 			setEntry(ctx, entry(ctx.expression(0)));	
 		}else
 			setType(ctx, null);
+	}
+	
+	@Override public void exitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
+		checkNull(ctx.functionID());
+		setType(ctx, null);
 	}
 	
 	@Override public void enterStatBlockBody(finalProject.grammar.EloquenceParser.StatBlockBodyContext ctx) {
@@ -361,8 +368,8 @@ public class Checker extends EloquenceBaseListener {
 	}
 
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
-		checkScope(ctx.target(0));
-		setType(ctx, this.scope.type(ctx.target(0).getText()));
+		checkScope(ctx.expression(0));
+		setType(ctx, this.scope.type(ctx.expression(0).getText()));
 	}
 	
 	@Override public void enterVoidFunc(finalProject.grammar.EloquenceParser.VoidFuncContext ctx) {
@@ -460,6 +467,12 @@ public class Checker extends EloquenceBaseListener {
 		Type actual = getType(node);
 		if(actual == null)
 			addError(node, "Expected type not null but found '%s'", actual);
+	}
+	
+	private void checkNull(ParserRuleContext node){
+		Type actual = getType(node);
+		if(actual != null)
+			addError(node, "Expected type to be void, but found '%s'", actual);
 	}
 
 	/** Records an error at a given parse tree node.

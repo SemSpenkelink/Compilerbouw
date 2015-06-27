@@ -177,6 +177,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitStatOut(EloquenceParser.StatOutContext ctx) { return visitChildren(ctx); }
 	
+	@Override public Op visitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) { return visitChildren(ctx); }
+	
 	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) {

@@ -46,6 +46,7 @@ stat
 	| returnStat														#statReturn
 	| IN LPAR target (COMMA target)* RPAR SEMI							#statIn
 	| OUT LPAR expression (COMMA expression)* RPAR SEMI					#statOut
+	| functionID SEMI													#statVoid
 	;
 	
 statBlockBody
@@ -132,7 +133,7 @@ func
 	;
 	
 functionID
-	: target LPAR (target (COMMA target)*)? RPAR
+	: target LPAR (expression (COMMA expression)*)? RPAR
 	;
 	
 voidFunc

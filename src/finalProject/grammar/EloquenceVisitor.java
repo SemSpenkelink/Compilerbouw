@@ -140,6 +140,13 @@ public interface EloquenceVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatOut(EloquenceParser.StatOutContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code statVoid}
+	 * labeled alternative in {@link EloquenceParser#stat}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatVoid(EloquenceParser.StatVoidContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link EloquenceParser#statBlockBody}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
