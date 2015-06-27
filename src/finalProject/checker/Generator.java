@@ -159,7 +159,30 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { //TODO busy here
+		
+		Label body = createLabel(ctx, "ifBody");
+		Label ifContinue = createLabel(ctx, "continue");
+		labels.put(ctx.stat(0), body);
+		//visitChildren(ctx);
+		visit(ctx.expression());
+		
+		if(ctx.ELSE() == null){ //There is no else
+			emit(OpCode.cbr, reg(ctx.expression()), body, ifContinue);
+			visit(ctx.stat(0));
+			emit(OpCode.jumpI, ifContinue);
+		} else {			
+			Label elseBody = createLabel(ctx, "elseBody");
+			labels.put(ctx.stat(1), elseBody);
+			emit(OpCode.cbr, reg(ctx.expression()), body, elseBody);
+			visit(ctx.stat(0));
+			emit(OpCode.jumpI, ifContinue);
+			visit(ctx.stat(1));
+		}
+		
+		emit(ifContinue, OpCode.nop);
+		
+		return null; }
 	
 	@Override public Op visitStatWhile(EloquenceParser.StatWhileContext ctx) { return visitChildren(ctx); }
 	
@@ -169,7 +192,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
+		
+		return visitChildren(ctx); }
 	
 	@Override public Op visitStatReturn(EloquenceParser.StatReturnContext ctx) { return visitChildren(ctx); }
 	
@@ -207,7 +234,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.cmp_NE, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 		} 
 		
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitExprCompound(EloquenceParser.ExprCompoundContext ctx) { 
 		visitChildren(ctx);

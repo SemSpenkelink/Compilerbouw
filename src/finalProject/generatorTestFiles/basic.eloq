@@ -1,3 +1,9 @@
 Program basic {
-	highPowered numericalDigit x = 1+2;
+	highPowered numericalDigit x = 1;
+	
+	assuming(x equalTo 12){
+		x = x-1;
+	}contrariwise{
+		x = x+1;
+	}
 }
