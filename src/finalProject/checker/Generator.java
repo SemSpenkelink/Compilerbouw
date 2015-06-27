@@ -159,7 +159,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { //TODO busy here
+	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { //TODO if stat
 		
 		Label body = createLabel(ctx, "ifBody");
 		Label ifContinue = createLabel(ctx, "continue");
@@ -184,7 +184,26 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		return null; }
 	
-	@Override public Op visitStatWhile(EloquenceParser.StatWhileContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitStatWhile(EloquenceParser.StatWhileContext ctx) { //TODO while stat
+		if(labels.get(ctx) != null){
+			emit(labels.get(ctx),OpCode.nop);
+		}	else{
+			Label whileLoop = createLabel(ctx, "whileLoop");
+			labels.put(ctx, whileLoop);
+			emit(whileLoop, OpCode.nop);
+		}
+		
+		Label whileBody = createLabel(ctx, "whileBody");
+		labels.put(ctx.stat(), whileBody);
+		Label whileContinue = createLabel(ctx, "whileContinue");
+		
+		visit(ctx.expression());
+		emit(OpCode.cbr, reg(ctx.expression()), whileBody, whileContinue);
+		visit(ctx.stat());
+		emit(OpCode.jumpI, labels.get(ctx));
+		emit(whileContinue, OpCode.nop);
+		
+		return null; }
 	
 	@Override public Op visitStatAssign(EloquenceParser.StatAssignContext ctx) { return visitChildren(ctx); }
 	
