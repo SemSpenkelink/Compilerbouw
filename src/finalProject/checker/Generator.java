@@ -50,7 +50,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		this.regs = new ParseTreeProperty<>();
 		this.labels = new ParseTreeProperty<>();
 		this.regCount = 0;
-		this.cfg = new BottomUpCFGBuilder().build(tree);
 		tree.accept(this);
 		return this.prog;
 	}

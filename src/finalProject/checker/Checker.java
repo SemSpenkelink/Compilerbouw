@@ -469,13 +469,13 @@ public class Checker extends EloquenceBaseListener {
 		
 		/** CFG creation. */
 		constructNodes(ctx);		
-		if(ctx.getChildCount() >= 1){
-			entry.get(ctx).addEdge(entry.get(ctx.getChild(0)));
-			exit.get(ctx.getChild(ctx.getChildCount()-1)).addEdge(exit.get(ctx));
+		if(ctx.expression().size() >= 1){
+			entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+			exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(exit.get(ctx));
 		}else
 			entry.get(ctx).addEdge(exit.get(ctx));
-		for(int index = 1; index < ctx.getChildCount()-1; index++){
-			exit.get(ctx.getChild(index-1)).addEdge(entry.get(ctx.getChild(index)));
+		for(int index = 1; index < ctx.expression().size(); index++){
+			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
 		}
 	}
 	
@@ -607,7 +607,7 @@ public class Checker extends EloquenceBaseListener {
 	 * CFG creation:
 	 * Create entry and exit nodes, link the entry node to the entry node of the first expression.
 	 * Link the exit node of the first expression to the entry node of the second, and link the exit
-	 * node of the second expression to the exit node of the exprComp.
+	 * node of the second expression to the exit node of the exprMult.
 	 */
 	@Override public void exitExprMult(EloquenceParser.ExprMultContext ctx) {
 		checkType(ctx.expression(0), Type.INT);
@@ -742,7 +742,7 @@ public class Checker extends EloquenceBaseListener {
 	 * CFG creation:
 	 * Create entry and exit nodes, link the entry node to the entry node of the first expression.
 	 * Link the exit node of the first expression to the entry node of the second, and link the exit
-	 * node of the second expression to the exit node of the exprComp.
+	 * node of the second expression to the exit node of the exprOr.
 	 */
 	@Override public void exitExprOr(EloquenceParser.ExprOrContext ctx) {
 		checkType(ctx.expression(0), Type.BOOL);
@@ -757,6 +757,15 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 
+	/**
+	 * Check if the type of expression is an integer.
+	 * Set the type to that of the element type of the array.
+	 * Set the entry to itself.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes. Link the entry node to the entry node of expression.
+	 * Link the exit node of expression to the exit node of exprArray.
+	 */
 	@Override public void exitExprArray(finalProject.grammar.EloquenceParser.ExprArrayContext ctx) {
 		checkType(ctx.expression(), Type.INT);
 		setType(ctx, ((Type.Array)getType(ctx.target())).getElemType());
@@ -768,6 +777,16 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Check if both expressions are of type integer.
+	 * Set the resulting type to integer.
+	 * Set the entry to the entry of the first expression.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry node of the first expression.
+	 * Link the exit node of the first expression to the entry node of the second, and link the exit
+	 * node of the second expression to the exit node of the exprAdd.
+	 */
 	@Override public void exitExprAdd(EloquenceParser.ExprAddContext ctx) {
 		checkType(ctx.expression(0), Type.INT);
 		checkType(ctx.expression(1), Type.INT);
@@ -781,6 +800,17 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Check if both expressions are of type boolean.
+	 * Set the resulting type to boolean.
+	 * Set the entry to the entry of first expression.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry node of the first expression.
+	 * Link the exit node of the first expression to the entry node of the second, and link the exit
+	 * node of the second expression to the exit node of the exprAnd.
+	 * 
+	 */
 	@Override public void exitExprAnd(EloquenceParser.ExprAndContext ctx) {
 		checkType(ctx.expression(0), Type.BOOL);
 		checkType(ctx.expression(1), Type.BOOL);
@@ -794,6 +824,9 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * 
+	 */
 	@Override public void exitExprId(EloquenceParser.ExprIdContext ctx) {
 		String id = ctx.target().getText();
 		Type type = this.scope.type(id);
