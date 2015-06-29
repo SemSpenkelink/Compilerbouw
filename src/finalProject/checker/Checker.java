@@ -37,9 +37,9 @@ public class Checker extends EloquenceBaseListener {
 	ParseTreeProperty<Node> entry = new ParseTreeProperty<Node>();
 	/** Exit node of context. */
 	ParseTreeProperty<Node> exit = new ParseTreeProperty<Node>();
-	/** Entry node of function */
+	/** Entry node of function, to retrieve from functionID. */
 	Map<String, Node> entryFunc = new HashMap<String, Node>();
-	/** Exit node of function. */
+	/** Exit node of function, to retrieve from functionID. */
 	Map<String, Node> exitFunc = new HashMap<String, Node>();
 
 	/** Runs this checker on a given parse tree,
@@ -308,7 +308,7 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	/**
-	 * Open a new scope for the variables declared within the comparison expression of the if statement.
+	 * Open a new scope for the variables declared within the comparison expression of the while statement.
 	 */
 	@Override public void enterStatWhile(finalProject.grammar.EloquenceParser.StatWhileContext ctx) {
 		symbolTable.openScope();
@@ -499,7 +499,7 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	/**
-	 * Open a new scope for the variables declared within the comparison expression of the if statement.
+	 * Open a new scope for the variables declared within the comparison expression of the block statement.
 	 */
 	@Override public void enterStatBlockBody(finalProject.grammar.EloquenceParser.StatBlockBodyContext ctx) {
 		symbolTable.openScope();
@@ -963,8 +963,17 @@ public class Checker extends EloquenceBaseListener {
 	}
 
 	/**
+	 * Check if the function is defined.
+	 * Check if the number of parameters given matches the number of parameters required.
+	 * Check if the type of parameters match the type of parameters required.
+	 * Set type to that of target.
+	 * Set entry to itself.
 	 * 
-	 * @param ctx
+	 * CFG creation:
+	 * Create entry and exit nodes. If the function contains expressions, link the expressions
+	 * sequentially. Afterwards enter the function if it is defined. Set the exit of the function
+	 * to the exit of the functionID if the function is defined.
+	 * @param ctx;
 	 */
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
 		checkScope(ctx.target());
@@ -982,7 +991,7 @@ public class Checker extends EloquenceBaseListener {
 
 		/** CFG creation. */
 		constructNodes(ctx);
-		if(ctx.expression().size() >= 1){
+		if(ctx.expression().size() >= 1 && checkScope(ctx.target())){
 			entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
 			exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(entryFunc.get(ctx.target().getText()));
 		}
@@ -992,11 +1001,28 @@ public class Checker extends EloquenceBaseListener {
 			exitFunc.get(ctx.target().getText()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Open a new scope for the variables declared within the comparison expression of the void function.
+	 */
 	@Override public void enterVoidFunc(finalProject.grammar.EloquenceParser.VoidFuncContext ctx) {
 		symbolTable.openScope();
 	}
 	
-	//TODO
+	/**
+	 * Close scope to remove unnecessary variables.
+	 * Set return type of ID to null, i.e. void.
+	 * Add arguments to the list of arguments.
+	 * Add symbol to symboltable.
+	 * Put function in scope, which is of type void, immutable and with the given argumentlist.
+	 * Set offset accordingly.
+	 * Check if the body contains a return statement, which is not allowed.
+	 * Set return type to null, i.e. void.
+	 * 
+	 * CFG creation:
+	 * Link the entry node to that of the body, link the exit of body to its own exit.
+	 * Set the entry node in entryFunc and the exit node in exitFunc.
+	 * @param ctx
+	 */
 	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
 		symbolTable.closeScope();
 		setType(ctx.newID(), null);
@@ -1020,11 +1046,29 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.statBlockBody()).addEdge(exit.get(ctx));
 	}
 
+	/**
+	 * Open a new scope for the variables declared within the comparison expression of the return function.
+	 */
 	@Override public void enterReturnFunc(finalProject.grammar.EloquenceParser.ReturnFuncContext ctx) {
 		symbolTable.openScope();
 	}
 
-	//TODO
+	/**
+	 * Close scope to remove unnecessary variables.
+	 * Set return type of ID to given type.
+	 * Set return type to given type.
+	 * Add arguments to the list of arguments.
+	 * Add symbol to symboltable.
+	 * Put function in scope, which is of type type, immutable and with the given argumentlist.
+	 * Set offset accordingly.
+	 * Set entry to entry of return statement.
+	 * 
+	 * CFG creation:
+	 * Link the entry node to that of the body, link the exit of body to the return statement.
+	 * Link the return statement to the exit of returnFunc.
+	 * Set the entry node in entryFunc and the exit node in exitFunc.
+	 * @param ctx
+	 */
 	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {	
 		symbolTable.closeScope();
 		setType(ctx.newID(), getType(ctx.type()));
@@ -1047,6 +1091,10 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.returnStat()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Put the parameters in the scope and set the offset accordingly.
+	 * @param ctx
+	 */
 	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
 		this.scope.put(ctx.newID().getText(), getType(ctx.type()), true, null);
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
@@ -1074,11 +1122,13 @@ public class Checker extends EloquenceBaseListener {
 		return this.errors;
 	}
 	
+	/** Checks if a variable is mutable. */
 	private void checkMutable(ParserRuleContext node){
 		if(!scope.mutable(node.getText()))
 			addError(node, "Variable '%s' is immutable.", node.getText());
 	}
 
+	/** Checks if a variable is contained in the scope. */
 	private boolean checkScope(ParserRuleContext node){
 		if(!symbolTable.contains(node.getText())){
 			addError(node, "'%s' not defined in scope", node.getText());
@@ -1086,7 +1136,8 @@ public class Checker extends EloquenceBaseListener {
 		}
 		return true;
 	}
-	
+
+	/** Add a symbol to the scope. */
 	private void addSymbol(ParserRuleContext node){
 		if(!symbolTable.add(node.getText()))
 			addError(node, "'%s' already defined within the scope", node.getText());
@@ -1120,6 +1171,7 @@ public class Checker extends EloquenceBaseListener {
 		return true;
 	}
 	
+	/** Check if a variable is null. */
 	private void checkNull(ParserRuleContext node){
 		Type actual = getType(node);
 		if(actual != null)
