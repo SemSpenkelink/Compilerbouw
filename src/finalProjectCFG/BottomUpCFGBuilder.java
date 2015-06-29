@@ -89,7 +89,6 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	
 
 	//TODO on assigning a value, enter the expression because a function can be called.
-	//TODO add a statement where a (void) function can be called. A normal function should be used with an assignment check for this.
 	//TODO go from a function call to the declaration of that function. (And especially going back!)
 	 
 	 
@@ -118,6 +117,11 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	 * @param ctx
 	 */
 	@Override public void exitBody(EloquenceParser.BodyContext ctx) {
+		constructNodes(ctx);
+		List<ParserContext> 
+		
+		
+		
 		constructNodes(ctx);
 		if(ctx.getChildCount() >= 1){
 			entry.get(ctx).addEdge(entry.get(ctx.getChild(0)));

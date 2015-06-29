@@ -45,12 +45,17 @@ public class Checker extends EloquenceBaseListener {
 	
 	
 	/**
-	 * Set type of body to type of last child.
+	 * Set type of body to type of last child, used for compound expressions.
 	 */
 	@Override public void exitBody(finalProject.grammar.EloquenceParser.BodyContext ctx) {
 		setType(ctx, getType(ctx.getChild(ctx.getChildCount()-1)));
 	}
 	
+	/**
+	 * If the declaration contains an expression, it checks whether the expression
+	 * has the same type as the variable it is assigned to.
+	 * The entry is set to the entry of the variable.
+	 */
 	@Override public void exitDeclVar(EloquenceParser.DeclVarContext ctx) {
 		if(ctx.expression() != null){
 			checkType(ctx.variable(), getType(ctx.expression()));
@@ -58,6 +63,13 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, entry(ctx.variable()));
 	}
 	
+	/**
+	 * Set the type of all newIDs to that of the declared type.
+	 * Put this in the scope, together with its type and whether the variable
+	 * is constant or not. The offset is set to that of the scope.
+	 * The own type of variable is set to that of the declared type,
+	 * the entry is its own node.
+	 */
 	@Override public void exitVariable(EloquenceParser.VariableContext ctx){
 		for(NewIDContext id : ctx.newID()){
 			setType(id, getType(ctx.type()));
@@ -68,6 +80,9 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, ctx);
 	}
 	
+	/**
+	 * 
+	 */
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem().NUM(0).getText()), Integer.parseInt(ctx.arrayElem().NUM(1).getText()), getType(ctx.type())));
 		this.scope.put(ctx.newID().getText(), getType(ctx), false);
@@ -77,9 +92,9 @@ public class Checker extends EloquenceBaseListener {
 
 	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
 		for(NewIDContext id : ctx.newID()){
-			setType(id, this.scope.type(ctx.target().getText()));
+			setType(id.ID(), this.scope.type(ctx.target().getText()));
 			this.scope.put(id.getText(), getType(id), true);
-			setOffset(id, scope.offset(id.getText()));
+			setOffset(id.ID(), scope.offset(id.getText()));
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setEntry(ctx, ctx);
