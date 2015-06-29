@@ -1,13 +1,16 @@
 package finalProject.checker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jdk.nashorn.internal.ir.SetSplitState;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import finalProject.grammar.EloquenceBaseListener;
@@ -26,6 +29,17 @@ public class Checker extends EloquenceBaseListener {
 	private SymbolTable symbolTable;
 	/** List of errors collected in the latest call of {@link #check}. */
 	private List<String> errors;
+	
+	/** Control flow graph. */
+	private Graph cfg;
+	/** Entry node of context. */
+	ParseTreeProperty<Node> entry = new ParseTreeProperty<Node>();
+	/** Exit node of context. */
+	ParseTreeProperty<Node> exit = new ParseTreeProperty<Node>();
+	/** Entry node of function */
+	Map<String, Node> entryFunc = new HashMap<String, Node>();
+	/** Exit node of function. */
+	Map<String, Node> exitFunc = new HashMap<String, Node>();
 
 	/** Runs this checker on a given parse tree,
 	 * and returns the checker result.
@@ -36,19 +50,48 @@ public class Checker extends EloquenceBaseListener {
 		this.symbolTable = new SymbolTable();
 		this.result = new Result();
 		this.errors = new ArrayList<>();
+		this.cfg = new Graph();
 		new ParseTreeWalker().walk(this, tree);
 		if (hasErrors()) {
 			throw new ParseException(getErrors());
 		}
+		System.out.println(cfg);
 		return this.result;
 	}
 	
+	/**
+	 * Create initial node and last node of program.
+	 * Connect the initial node to entry of body.
+	 * Connect the exit of body to the last node.
+	 * @param ctx
+	 */
+	@Override public void exitProgram(EloquenceParser.ProgramContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.body()));
+		exit.get(ctx.body()).addEdge(exit.get(ctx));
+	}
 	
 	/**
 	 * Set type of body to type of last child, used for compound expressions.
 	 */
 	@Override public void exitBody(finalProject.grammar.EloquenceParser.BodyContext ctx) {
 		setType(ctx, getType(ctx.getChild(ctx.getChildCount()-1)));
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		List<ParseTree> notFunctionChildren = new ArrayList<ParseTree>();
+		for(int index = 0; index < ctx.getChildCount(); index++)
+			if(!ctx.func().contains(ctx.getChild(index)))
+				notFunctionChildren.add(ctx.getChild(index));
+		
+		if(notFunctionChildren.size() >= 1){
+			entry.get(ctx).addEdge(entry.get(notFunctionChildren.get(0)));
+			exit.get(notFunctionChildren.get(notFunctionChildren.size()-1)).addEdge(exit.get(ctx));
+		}else
+			entry.get(ctx).addEdge(exit.get(ctx));
+		for(int index = 1; index < notFunctionChildren.size(); index++){
+			exit.get(notFunctionChildren.get(index-1)).addEdge(entry.get(notFunctionChildren.get(index)));
+		}
 	}
 	
 	/**
@@ -61,6 +104,14 @@ public class Checker extends EloquenceBaseListener {
 			checkType(ctx.variable(), getType(ctx.expression()));
 		}
 		setEntry(ctx, entry(ctx.variable()));
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		if(ctx.expression() != null){
+			entry.get(ctx).addEdge(entry.get(ctx.expression()));
+			exit.get(ctx.expression()).addEdge(exit.get(ctx));
+		}else
+			entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
 	/**
@@ -88,6 +139,10 @@ public class Checker extends EloquenceBaseListener {
 		this.scope.put(ctx.newID().getText(), getType(ctx), false);
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 		setEntry(ctx, ctx);
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 
 	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
@@ -98,6 +153,10 @@ public class Checker extends EloquenceBaseListener {
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setEntry(ctx, ctx);
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 
 	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
@@ -109,20 +168,40 @@ public class Checker extends EloquenceBaseListener {
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setEntry(ctx, ctx);
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.arrayExpression()));
+		exit.get(ctx.arrayExpression()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
 		setEntry(ctx, entry(ctx.variable()));
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));	
 	}
 	
 	@Override public void exitDeclArray(EloquenceParser.DeclArrayContext ctx) {
 		setType(ctx, getType(ctx.arrayDecl()));
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.arrayDecl()));
+		exit.get(ctx.arrayDecl()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) {
 		setType(ctx, getType(ctx.returnStat()));
 		if(getType(ctx.returnStat()) != null)
 			setEntry(ctx, ctx.returnStat());
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.returnStat()));
+		exit.get(ctx.returnStat()).addEdge(exit.get(ctx));	
 	}
 	
 	@Override public void enterStatIf(finalProject.grammar.EloquenceParser.StatIfContext ctx) {
@@ -136,6 +215,18 @@ public class Checker extends EloquenceBaseListener {
 		else
 			setType(ctx, null);
 		symbolTable.closeScope();
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(entry.get(ctx.stat(0)));
+		exit.get(ctx.stat(0)).addEdge(exit.get(ctx));
+		if(ctx.stat().size() > 1){
+			exit.get(ctx.expression()).addEdge(entry.get(ctx.stat(1)));
+			exit.get(ctx.stat(1)).addEdge(exit.get(ctx));			
+		}else{
+			entry.get(ctx.expression()).addEdge(exit.get(ctx));
+		}
 	}
 	
 	@Override public void enterStatWhile(finalProject.grammar.EloquenceParser.StatWhileContext ctx) {
@@ -146,6 +237,13 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(), Type.BOOL);
 		setType(ctx, null);
 		symbolTable.closeScope();
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
+		exit.get(ctx.expression()).addEdge(entry.get(ctx.stat()));
+		exit.get(ctx.stat()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
@@ -155,6 +253,11 @@ public class Checker extends EloquenceBaseListener {
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setOffset(ctx, scope.offset(ctx.target().getText()));
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
@@ -165,6 +268,12 @@ public class Checker extends EloquenceBaseListener {
 		}
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
@@ -174,11 +283,21 @@ public class Checker extends EloquenceBaseListener {
 		}
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.arrayExpression()));
+		exit.get(ctx.arrayExpression()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		setType(ctx, getType(ctx.statBlockBody()));
 		//setEntry(ctx, entry(ctx.body().stat(0)));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.statBlockBody()));
+		exit.get(ctx.statBlockBody()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitStatIn(EloquenceParser.StatInContext ctx){
@@ -191,6 +310,10 @@ public class Checker extends EloquenceBaseListener {
 		}else{
 			setType(ctx, null);
 		}
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitStatOut(EloquenceParser.StatOutContext ctx){
@@ -201,11 +324,27 @@ public class Checker extends EloquenceBaseListener {
 			setEntry(ctx, entry(ctx.expression(0)));	
 		}else
 			setType(ctx, null);
+		
+		/** CFG creation. */
+		constructNodes(ctx);		
+		if(ctx.getChildCount() >= 1){
+			entry.get(ctx).addEdge(entry.get(ctx.getChild(0)));
+			exit.get(ctx.getChild(ctx.getChildCount()-1)).addEdge(exit.get(ctx));
+		}else
+			entry.get(ctx).addEdge(exit.get(ctx));
+		for(int index = 1; index < ctx.getChildCount()-1; index++){
+			exit.get(ctx.getChild(index-1)).addEdge(entry.get(ctx.getChild(index)));
+		}
 	}
 	
 	@Override public void exitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
 		checkNull(ctx.functionID());
 		setType(ctx, null);
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.functionID()));
+		exit.get(ctx.functionID()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void enterStatBlockBody(finalProject.grammar.EloquenceParser.StatBlockBodyContext ctx) {
@@ -215,6 +354,11 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitStatBlockBody(finalProject.grammar.EloquenceParser.StatBlockBodyContext ctx) {
 		setType(ctx, getType(ctx.body()));
 		symbolTable.closeScope();
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.body()));
+		exit.get(ctx.body()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) {
@@ -223,6 +367,14 @@ public class Checker extends EloquenceBaseListener {
 			setEntry(ctx, ctx.expression());
 		}else
 			setType(ctx, null);
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		if(ctx.expression() != null){
+			entry.get(ctx).addEdge(entry.get(ctx.expression()));
+			exit.get(ctx.expression()).addEdge(exit.get(ctx));
+		}else
+			entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitTargetId(finalProject.grammar.EloquenceParser.TargetIdContext ctx) {
@@ -248,6 +400,12 @@ public class Checker extends EloquenceBaseListener {
 		}		
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, entry(ctx.expression(0)));
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprMult(EloquenceParser.ExprMultContext ctx) {
@@ -255,6 +413,12 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(1), Type.INT);
 		setType(ctx, Type.INT);
 		setEntry(ctx, entry(ctx.expression(0)));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprUnary(EloquenceParser.ExprUnaryContext ctx) {
@@ -268,32 +432,60 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(), type);
 		setType(ctx, type);
 		setEntry(ctx, entry(ctx.expression()));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprNum(EloquenceParser.ExprNumContext ctx) {
 		setType(ctx, Type.INT);
 		setEntry(ctx, ctx);
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprTrue(EloquenceParser.ExprTrueContext ctx) {
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, ctx);
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprChar(EloquenceParser.ExprCharContext ctx) {
 		setType(ctx, Type.CHAR);
 		setEntry(ctx, ctx);
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
 		checkNotNull(ctx.functionID());
 		setType(ctx, getType(ctx.functionID()));
 		//setEntry(ctx, entry(ctx.functionID()));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.functionID()));
+		exit.get(ctx.functionID()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprCompound(finalProject.grammar.EloquenceParser.ExprCompoundContext ctx) {
 		setType(ctx, getType(ctx.expression()));
 		setEntry(ctx, entry(ctx.expression()));
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.body()));
+		exit.get(ctx.body()).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprOr(EloquenceParser.ExprOrContext ctx) {
@@ -301,12 +493,23 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(1), Type.BOOL);
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, entry(ctx.expression(0)));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 
 	@Override public void exitExprArray(finalProject.grammar.EloquenceParser.ExprArrayContext ctx) {
 		checkType(ctx.expression(), Type.INT);
 		setType(ctx, ((Type.Array)getType(ctx.target())).getElemType());
 		setEntry(ctx, ctx);
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprAdd(EloquenceParser.ExprAddContext ctx) {
@@ -314,6 +517,12 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(1), Type.INT);
 		setType(ctx, Type.INT);
 		setEntry(ctx, entry(ctx.expression(0)));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprAnd(EloquenceParser.ExprAndContext ctx) {
@@ -321,6 +530,12 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(1), Type.BOOL);
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, entry(ctx.expression(0)));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprId(EloquenceParser.ExprIdContext ctx) {
@@ -334,16 +549,29 @@ public class Checker extends EloquenceBaseListener {
 			setOffset(ctx.target(), this.scope.offset(id));
 			setEntry(ctx, ctx);
 		}
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprFalse(EloquenceParser.ExprFalseContext ctx) {
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, ctx);
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitExprPar(finalProject.grammar.EloquenceParser.ExprParContext ctx) {
 		setType(ctx, getType(ctx.expression()));
 		setEntry(ctx, entry(ctx.expression()));
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 
 	@Override public void exitArrayMulExpr(finalProject.grammar.EloquenceParser.ArrayMulExprContext ctx) {		
@@ -355,10 +583,22 @@ public class Checker extends EloquenceBaseListener {
 		}
 		setType(ctx, type);
 		setEntry(ctx, ctx);
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(exit.get(ctx));
+		for(int index = 1; index < ctx.expression().size(); index++)
+			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
 	}
 	
 	@Override public void exitArraySingleExpr(finalProject.grammar.EloquenceParser.ArraySingleExprContext ctx) {
 		setType(ctx, getType(ctx.expression()));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitTypeInt(EloquenceParser.TypeIntContext ctx) {
@@ -385,6 +625,14 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
 		checkScope(ctx.expression(0));
 		setType(ctx, this.scope.type(ctx.expression(0).getText()));
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		for(int index = 1; index < ctx.expression().size(); index++)
+			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
+		exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(entryFunc.get(ctx.target().getText()));
+		exitFunc.get(ctx.target().getText()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void enterVoidFunc(finalProject.grammar.EloquenceParser.VoidFuncContext ctx) {
@@ -401,6 +649,13 @@ public class Checker extends EloquenceBaseListener {
 				addError(ctx, "No return statements are allowed.");
 		setType(ctx, null);
 		symbolTable.closeScope();
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entryFunc.put(ctx.newID().getText(), entry.get(ctx));
+		exitFunc.put(ctx.newID().getText(), exit.get(ctx));
+		entry.get(ctx).addEdge(entry.get(ctx.statBlockBody()));
+		exit.get(ctx.statBlockBody()).addEdge(exit.get(ctx));
 	}
 
 	@Override public void enterReturnFunc(finalProject.grammar.EloquenceParser.ReturnFuncContext ctx) {
@@ -412,6 +667,14 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, getType(ctx.type()));
 		setEntry(ctx, entry(ctx.returnStat()));
 		symbolTable.closeScope();
+
+		/** CFG creation. */
+		constructNodes(ctx);
+		entryFunc.put(ctx.newID().getText(), entry.get(ctx));
+		exitFunc.put(ctx.newID().getText(), exit.get(ctx));
+		entry.get(ctx).addEdge(entry.get(ctx.body()));
+		exit.get(ctx.body()).addEdge(entry.get(ctx.returnStat()));
+		exit.get(ctx.returnStat()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
@@ -539,5 +802,22 @@ public class Checker extends EloquenceBaseListener {
 	/** Returns the flow graph entry of a given expression or statement. */
 	private ParserRuleContext entry(ParseTree node) {
 		return this.result.getEntry(node);
+	}
+	
+	/** Adds a node to he CGF, based on a given parse tree node.
+	 * Gives the CFG node a meaningful ID, consisting of line number and 
+	 * a further indicator.
+	 */
+	private Node addNode(ParserRuleContext node, String text) {
+		return this.cfg.addNode(node.getStart().getLine() + ": " + text);
+	}
+	
+	public void constructNodes(ParserRuleContext ctx){
+		String enterMessage = "enter[%s]";
+		enterMessage = String.format(enterMessage, ctx.getText());
+		String exitMessage = "exit[%s]";
+		exitMessage = String.format(exitMessage, ctx.getText());
+		entry.put(ctx, addNode(ctx, enterMessage));
+		exit.put(ctx, addNode(ctx, exitMessage));		
 	}
 }

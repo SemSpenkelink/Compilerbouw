@@ -21,6 +21,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import finalProject.checker.ErrorListener;
+import finalProject.checker.Graph;
+import finalProject.checker.Node;
 import finalProject.grammar.EloquenceBaseListener;
 import finalProject.grammar.EloquenceLexer;
 import finalProject.grammar.EloquenceParser;

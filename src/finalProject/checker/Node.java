@@ -1,4 +1,4 @@
-package finalProjectCFG;
+package finalProject.checker;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

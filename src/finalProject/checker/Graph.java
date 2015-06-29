@@ -1,8 +1,10 @@
-package finalProjectCFG;
+package finalProject.checker;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.antlr.v4.runtime.tree.ParseTree;
 
 /**
  * Graph class, used for CFGs.
