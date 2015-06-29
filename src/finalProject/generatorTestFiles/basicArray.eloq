@@ -1,11 +1,10 @@
 program basicArray{
-	hodgePodge x = George [0..2];
+	hodgePodge x = numericalDigit [0..2];
 	
-	highpowered a, b = x;
+	highpowered a = x;
 
-	a[1] = unfeigned;
-	b = {[unfeigned,bogus]};
-	exude(b[1]);
+	a[0] = 25;
 	
+//	exude(a[1]);
 	
 }

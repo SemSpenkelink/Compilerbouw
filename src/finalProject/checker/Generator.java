@@ -159,10 +159,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx) {
 		visitChildren(ctx);
 		
+		
+		//reg1 the left bound, reg2 contains the right bound
 		emit(OpCode.storeAI,reg1,arp, offset(ctx.newID().ID()));
 		emit(OpCode.loadI, offset(ctx.newID().ID()), reg3);
 		emit(OpCode.addI, reg3, new Num(4), reg3);
 		emit(OpCode.storeAO,reg2,arp, reg3);
+		
 		
 		return null; }
 	
@@ -194,7 +197,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { //TODO if stat
 		
 		
-		/*
+		
 		Label body = createLabel(ctx, "ifBody");
 		Label ifContinue = createLabel(ctx, "continue");
 		labels.put(ctx.stat(0), body);
@@ -215,7 +218,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		emit(ifContinue, OpCode.nop);
-		*/
+		
 		return null; }
 	
 	@Override public Op visitStatWhile(EloquenceParser.StatWhileContext ctx) { //TODO while stat
@@ -273,6 +276,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		//	emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(2).getText())), reg2);
 			 emit(OpCode.storeAO, reg(ctx.expression(1)), arp,reg1);
 			
+			//Debug
+			//	emit(OpCode.out, new Str("test"), reg1);
 		return null; }
 	
 	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
@@ -448,7 +453,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.addI,reg1,new Num(8),reg1); //reg1 now contains the address of the index
 		
 		emit(OpCode.loadAO,arp,reg1,reg(ctx));
-		
+		emit(OpCode.out, new Str("Test: "), reg(ctx));
 		return null; }
 	
 	@Override public Op visitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) {

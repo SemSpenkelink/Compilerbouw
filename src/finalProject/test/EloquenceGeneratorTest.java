@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import finalProject.checker.ParseException;
 import pp.iloc.Simulator;
+import pp.iloc.eval.Machine;
 import pp.iloc.model.Program;
 
 @SuppressWarnings("javadoc")
@@ -24,8 +25,22 @@ public class EloquenceGeneratorTest {
 	@Test
 	public void testPrime() throws IOException, ParseException {
 		Program prog = compile("basicArray");
+		
+		Machine vm = new Machine();
+		Simulator sim = new Simulator(prog, vm);
+		
+		run(sim,1,1);
+		
 	}
 
+	private void run(Simulator sim, int input, int output){
+		Machine vm = sim.getVM();
+		vm.clear();
+		//sim.setIn(new ByteArrayInputStream(("" + input).getBytes()));
+		sim.run();
+		//assertEquals(output, vm.getReg("r_ret"));
+		System.out.println(vm);
+	}
 	private Program compile(String filename) throws IOException, ParseException {
 		return this.compiler.compile(new File(BASE_DIR, filename + EXT));
 	}
