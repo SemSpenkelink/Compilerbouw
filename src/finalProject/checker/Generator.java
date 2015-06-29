@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.ArrayElemContext;
+import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
 import finalProject.grammar.EloquenceParser.TargetContext;
 import finalProjectCFG.BottomUpCFGBuilder;
@@ -287,7 +288,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitStatOut(EloquenceParser.StatOutContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitStatOut(EloquenceParser.StatOutContext ctx) { 
+		for(ExpressionContext out : ctx.expression()){
+			emit(OpCode.out, new Str("Output: ") , reg(out));
+		}
+		
+		return visitChildren(ctx); }
 	
 	@Override public Op visitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) { return visitChildren(ctx); }
 	
