@@ -175,6 +175,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
 		for(NewIDContext id : ctx.newID()){
+			setType(id, this.scope.type(ctx.target().getText()));
 			setType(id.ID(), this.scope.type(ctx.target().getText()));
 			this.scope.put(id.getText(), getType(id), true);
 			setOffset(id.ID(), scope.offset(id.getText()));
@@ -201,6 +202,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
 		checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
 		for(NewIDContext id : ctx.newID()){
+			setType(id, this.scope.type(ctx.target().getText()));
 			setType(id, this.scope.type(ctx.target().getText()));
 			this.scope.put(id.ID().getText(), getType(id), false);
 			setOffset(id.ID(), scope.offset(id.getText()));
