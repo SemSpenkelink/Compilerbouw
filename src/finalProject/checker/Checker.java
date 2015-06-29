@@ -55,7 +55,6 @@ public class Checker extends EloquenceBaseListener {
 		if (hasErrors()) {
 			throw new ParseException(getErrors());
 		}
-		System.out.println(cfg);
 		return this.result;
 	}
 	
@@ -147,7 +146,12 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	/**
+	 * Set the type of the array to an array ranging from [NUM(0)..NUM(1)] with the type of ctx.type().
+	 * Add this ID into the scope and set the offset accordingly.
+	 * Set the entry to itself.
 	 * 
+	 * CFG creation:
+	 * Link its own entry node to its own exit node.
 	 */
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem().NUM(0).getText()), Integer.parseInt(ctx.arrayElem().NUM(1).getText()), getType(ctx.type())));
@@ -160,6 +164,15 @@ public class Checker extends EloquenceBaseListener {
 		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 
+	/**
+	 * Set the type of each id to the type of the target.
+	 * Add each id to the scope and set the offset accordingly.
+	 * Set the type of varArrayDecl to that of its target.
+	 * Set the entry to itself.
+	 * 
+	 * CFG creation:
+	 * Link its own entry node to its own exit node. 
+	 */
 	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
 		for(NewIDContext id : ctx.newID()){
 			setType(id.ID(), this.scope.type(ctx.target().getText()));
@@ -174,6 +187,9 @@ public class Checker extends EloquenceBaseListener {
 		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 
+	/**
+	 * 
+	 */
 	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
 		checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
 		for(NewIDContext id : ctx.newID()){
