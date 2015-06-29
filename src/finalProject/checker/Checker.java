@@ -136,8 +136,8 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem().NUM(0).getText()), Integer.parseInt(ctx.arrayElem().NUM(1).getText()), getType(ctx.type())));
-		this.scope.put(ctx.newID().getText(), getType(ctx), false);
-		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
+		this.scope.put(ctx.newID().ID().getText(), getType(ctx), false);
+		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().getText()));
 		setEntry(ctx, ctx);
 		
 		/** CFG creation. */
