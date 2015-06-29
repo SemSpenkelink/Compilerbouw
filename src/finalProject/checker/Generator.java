@@ -162,7 +162,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.storeAI,reg1,arp, offset(ctx.newID().ID()));
 		emit(OpCode.loadI, offset(ctx.newID().ID()), reg3);
 		emit(OpCode.addI, reg3, new Num(4), reg3);
-		emit(OpCode.storeAI,reg2,arp, reg3);
+		emit(OpCode.storeAO,reg2,arp, reg3);
 		
 		return null; }
 	
@@ -181,11 +181,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			
 			emit(OpCode.loadI, offset(ctx.target()),reg1);	//load offset in reg1
 			emit(OpCode.addI, reg1, new Num(4), reg1);		//add 4 to the offset
-			emit(OpCode.loadAI, arp, reg1, reg1); //Load the ending value in reg1
+			emit(OpCode.loadAO, arp, reg1, reg1); //Load the ending value in reg1
 			
 			emit(OpCode.loadI, offset(newId.ID()), reg2);
 			emit(OpCode.addI, reg2, new Num(4), reg2);
-			emit(OpCode.storeAI, reg1, arp,reg2);
+			emit(OpCode.storeAO, reg1, arp,reg2);
 		}
 		return null; }
 	
@@ -271,11 +271,21 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			
 			//The the target value
 		//	emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(2).getText())), reg2);
-			 emit(OpCode.storeAI, reg(ctx.expression(1)), arp,reg1);
+			 emit(OpCode.storeAO, reg(ctx.expression(1)), arp,reg1);
 			
 		return null; }
 	
-	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
+		visitChildren(ctx.target());
+		//We need the offset of the target. We'll store this in reg1
+		emit(OpCode.loadI, offset(ctx.target()),reg1);
+		//The array starts two places further, the first two are used for config
+		emit(OpCode.addI, reg1, new Num(8),reg1);
+		//Reg 2 now contains the offset of where the first value should be placed.
+		 
+		visit(ctx.arrayExpression());
+		
+		return null; }
 	
 	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		if(labels.get(ctx) != null)
@@ -288,11 +298,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitStatOut(EloquenceParser.StatOutContext ctx) { 
+		visitChildren(ctx);
 		for(ExpressionContext out : ctx.expression()){
 			emit(OpCode.out, new Str("Output: ") , reg(out));
 		}
 		
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) { return visitChildren(ctx); }
 	
@@ -426,11 +437,32 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.loadI, new Num(0), reg(ctx));
 		return null; }
 	
-	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) {
+		visitChildren(ctx);
+		//We need the index, this is in expression. We'll store the index in reg1
+		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1);
+		//We also need the starting value of the array. We'll put this in reg2
+		emit(OpCode.loadAI, arp, offset(ctx.target()),reg2);
+		emit(OpCode.sub, reg1,reg2,reg1);
+		emit(OpCode.multI,reg1,new Num(4),reg1);
+		emit(OpCode.addI,reg1,new Num(8),reg1); //reg1 now contains the address of the index
+		
+		emit(OpCode.loadAO,arp,reg1,reg(ctx));
+		
+		return null; }
 	
-	@Override public Op visitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) {
+		visitChildren(ctx);
+		for(ExpressionContext exp : ctx.expression()){
+			emit(OpCode.storeAO, reg(exp), arp,reg1);
+			emit(OpCode.addI, reg1, new Num(4), reg1);
+		}
+		return null; }
 	
-	@Override public Op visitArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx) { 
+		visitChildren(ctx);
+		emit(OpCode.storeAO, reg(ctx.expression()), arp,reg1);
+		return null; }
 	
 	@Override public Op visitUnary(EloquenceParser.UnaryContext ctx) { return visitChildren(ctx); }
 	
