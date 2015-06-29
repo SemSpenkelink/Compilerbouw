@@ -345,7 +345,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitExprId(EloquenceParser.ExprIdContext ctx) { 
 		
 		
-		return null; }
+		return visitChildren(ctx); }
 	
 	@Override public Op visitExprFalse(EloquenceParser.ExprFalseContext ctx) {
 		emit(OpCode.loadI, new Num(0), reg(ctx));
