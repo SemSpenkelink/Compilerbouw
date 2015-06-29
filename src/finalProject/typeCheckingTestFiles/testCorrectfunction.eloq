@@ -15,5 +15,5 @@ program funcTest{
 		relinquish one*2;
 	}
 	
-	invoke func1(5);
+	func1(5);
 }

@@ -17,6 +17,7 @@ import finalProject.grammar.EloquenceBaseListener;
 import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
+import finalProject.grammar.EloquenceParser.ParametersContext;
 import finalProject.grammar.EloquenceParser.StatContext;
 import finalProject.grammar.EloquenceParser.TargetContext;
 /** Class to type check and calculate flow entries and variable offsets. */
@@ -138,7 +139,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitVariable(EloquenceParser.VariableContext ctx){
 		for(NewIDContext id : ctx.newID()){
 			setType(id.ID(), getType(ctx.type()));
-			this.scope.put(id.getText(), getType(ctx.type()), ctx.getParent().getChild(0).getText().toLowerCase().equals("highpowered"));
+			this.scope.put(id.getText(), getType(ctx.type()), ctx.getParent().getChild(0).getText().toLowerCase().equals("highpowered"), null);
 			setOffset(id.ID(), scope.offset(id.getText()));
 		}
 		setType(ctx, getType(ctx.type()));
@@ -155,7 +156,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem().NUM(0).getText()), Integer.parseInt(ctx.arrayElem().NUM(1).getText()), getType(ctx.type())));
-		this.scope.put(ctx.newID().ID().getText(), getType(ctx), false);
+		this.scope.put(ctx.newID().ID().getText(), getType(ctx), false, null);
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().getText()));
 		setEntry(ctx, ctx);
 		
@@ -177,7 +178,7 @@ public class Checker extends EloquenceBaseListener {
 		for(NewIDContext id : ctx.newID()){
 			setType(id, this.scope.type(ctx.target().getText()));
 			setType(id.ID(), this.scope.type(ctx.target().getText()));
-			this.scope.put(id.getText(), getType(id), true);
+			this.scope.put(id.getText(), getType(id), true, null);
 			setOffset(id.ID(), scope.offset(id.getText()));
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
@@ -204,7 +205,7 @@ public class Checker extends EloquenceBaseListener {
 		for(NewIDContext id : ctx.newID()){
 			setType(id, this.scope.type(ctx.target().getText()));
 			setType(id, this.scope.type(ctx.target().getText()));
-			this.scope.put(id.ID().getText(), getType(id), false);
+			this.scope.put(id.ID().getText(), getType(id), false, null);
 			setOffset(id.ID(), scope.offset(id.getText()));
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
@@ -346,7 +347,7 @@ public class Checker extends EloquenceBaseListener {
 	 * exit node of expression to the exit node of assignment.
 	 */
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
-		if(checkScope(ctx.target())){
+		if(checkScope(ctx.target()) && checkNotNull(ctx.expression())){
 			checkType(ctx.expression(), getType(ctx.target()));
 			checkMutable(ctx.target());
 		}
@@ -708,8 +709,8 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
 		checkNotNull(ctx.functionID());
+		checkScope(ctx.functionID().target());
 		setType(ctx, getType(ctx.functionID()));
-		//setEntry(ctx, entry(ctx.functionID()));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -809,7 +810,6 @@ public class Checker extends EloquenceBaseListener {
 	 * Create entry and exit nodes, link the entry node to the entry node of the first expression.
 	 * Link the exit node of the first expression to the entry node of the second, and link the exit
 	 * node of the second expression to the exit node of the exprAnd.
-	 * 
 	 */
 	@Override public void exitExprAnd(EloquenceParser.ExprAndContext ctx) {
 		checkType(ctx.expression(0), Type.BOOL);
@@ -825,7 +825,12 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	/**
+	 * Check if the target is declared. If this is the case, set the type
+	 * to the type of target. Set the offsets of this and target according
+	 * to the scope and set the entry to itself.
 	 * 
+	 * CFG creation:
+	 * Link its own entry node to its own exit node.
 	 */
 	@Override public void exitExprId(EloquenceParser.ExprIdContext ctx) {
 		String id = ctx.target().getText();
@@ -844,6 +849,13 @@ public class Checker extends EloquenceBaseListener {
 		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set type of expression to boolean.
+	 * Set entry to itself. 
+	 * 
+	 * CFG creation:
+	 * Link its own entry node to its own exit node.
+	 */
 	@Override public void exitExprFalse(EloquenceParser.ExprFalseContext ctx) {
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, ctx);
@@ -853,6 +865,14 @@ public class Checker extends EloquenceBaseListener {
 		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set type of exprPar to type of expression.
+	 * Set entry to entry of expression. 
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes. Link the entry node to the entry node of expression.
+	 * Link the exit node of expression to the exit node of exprPar.
+	 */
 	@Override public void exitExprPar(finalProject.grammar.EloquenceParser.ExprParContext ctx) {
 		setType(ctx, getType(ctx.expression()));
 		setEntry(ctx, entry(ctx.expression()));
@@ -863,6 +883,14 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 
+	/**
+	 * Check if all types of expressions are equal.
+	 * Set type to the type of first expression.
+	 * Set entry to itself.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes and link them sequentially.
+	 */
 	@Override public void exitArrayMulExpr(finalProject.grammar.EloquenceParser.ArrayMulExprContext ctx) {		
 		Type type = getType(ctx.expression(0));
 		for(ExpressionContext expr : ctx.expression()){
@@ -881,6 +909,13 @@ public class Checker extends EloquenceBaseListener {
 			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
 	}
 	
+	/**
+	 * Set the type to the type of expression.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes. Link the entry node to the entry node of expression.
+	 * Link the exit node of expression to the exit node of arraySingleExpr.
+	 */
 	@Override public void exitArraySingleExpr(finalProject.grammar.EloquenceParser.ArraySingleExprContext ctx) {
 		setType(ctx, getType(ctx.expression()));
 
@@ -890,38 +925,71 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set the type to integer.
+	 */
 	@Override public void exitTypeInt(EloquenceParser.TypeIntContext ctx) {
 		setType(ctx, Type.INT);
 	}
 	
+	/**
+	 * Set the type to boolean.
+	 */
 	@Override public void exitTypeBool(EloquenceParser.TypeBoolContext ctx) {
 		setType(ctx, Type.BOOL);		
 	}
 	
+	/**
+	 * Set the type to character.
+	 */
 	@Override public void exitTypeChar(EloquenceParser.TypeCharContext ctx) {
 		setType(ctx, Type.CHAR);
 	}
 	
+	/**
+	 * Set the type to null, i.e. void.
+	 */
 	@Override public void exitFuncVoid(EloquenceParser.FuncVoidContext ctx) {
 		setType(ctx, null);
 	}
 
+	/**
+	 * Set type to the type of return function.
+	 * Set the entry to the entry of return function.
+	 */
 	@Override public void exitFuncReturn(EloquenceParser.FuncReturnContext ctx) {
 		setType(ctx, getType(ctx.returnFunc()));
 		setEntry(ctx, entry(ctx.returnFunc()));
 	}
 
+	/**
+	 * 
+	 * @param ctx
+	 */
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
-		checkScope(ctx.expression(0));
-		setType(ctx, this.scope.type(ctx.expression(0).getText()));
+		checkScope(ctx.target());
+		List<Type> argumentTypes = scope.arguments(ctx.target().toString());
+		if(argumentTypes != null && ctx.expression().size() != 0){
+			if(argumentTypes.size() != ctx.expression().size())
+				addError(ctx, "Number of arguments do not match, expected '%d' arguments but got '%d' arguments.",
+						argumentTypes.size(), ctx.expression().size());
+			for(int index = 0; index < ctx.expression().size(); index++){
+				checkType(ctx.expression(index), argumentTypes.get(index));
+			}
+		}
+		setType(ctx, getType(ctx.target()));
+		setEntry(ctx, ctx);
 
 		/** CFG creation. */
 		constructNodes(ctx);
-		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		if(ctx.expression().size() >= 1){
+			entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+			exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(entryFunc.get(ctx.target().getText()));
+		}
 		for(int index = 1; index < ctx.expression().size(); index++)
 			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
-		exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(entryFunc.get(ctx.target().getText()));
-		exitFunc.get(ctx.target().getText()).addEdge(exit.get(ctx));
+		if(checkScope(ctx.target()))
+			exitFunc.get(ctx.target().getText()).addEdge(exit.get(ctx));
 	}
 	
 	@Override public void enterVoidFunc(finalProject.grammar.EloquenceParser.VoidFuncContext ctx) {
@@ -930,14 +998,19 @@ public class Checker extends EloquenceBaseListener {
 	
 	//TODO
 	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
+		symbolTable.closeScope();
 		setType(ctx.newID(), null);
-		this.scope.put(ctx.newID().getText(), null, ctx.getParent().getChild(0).getText().toLowerCase().equals("highpowered"));
+		List<Type> arguments = new ArrayList<Type>();
+		for(ParametersContext param : ctx.parameters()){
+			arguments.add(getType(param));
+		}
+		addSymbol(ctx.newID());
+		this.scope.put(ctx.newID().getText(), null, false, arguments);
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 		for(StatContext stat : ctx.statBlockBody().body().stat())
 			if(stat.getText().toLowerCase().contains("relinquish"))
 				addError(ctx, "No return statements are allowed.");
 		setType(ctx, null);
-		symbolTable.closeScope();
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -953,9 +1026,17 @@ public class Checker extends EloquenceBaseListener {
 
 	//TODO
 	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {	
-		setType(ctx, getType(ctx.type()));
-		setEntry(ctx, entry(ctx.returnStat()));
 		symbolTable.closeScope();
+		setType(ctx.newID(), getType(ctx.type()));
+		setType(ctx, getType(ctx.type()));
+		List<Type> arguments = new ArrayList<Type>();
+		for(ParametersContext param : ctx.parameters()){
+			arguments.add(getType(param));
+		}
+		addSymbol(ctx.newID());
+		this.scope.put(ctx.newID().getText(), getType(ctx.type()), false, arguments);
+		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
+		setEntry(ctx, entry(ctx.returnStat()));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -967,7 +1048,7 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
-		this.scope.put(ctx.newID().getText(), getType(ctx.type()), true);
+		this.scope.put(ctx.newID().getText(), getType(ctx.type()), true, null);
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 	}
 	
@@ -1030,10 +1111,13 @@ public class Checker extends EloquenceBaseListener {
 	/** Checks if node is not of type null.
 	 * @param node;
 	 */
-	private void checkNotNull(ParserRuleContext node){
+	private boolean checkNotNull(ParserRuleContext node){
 		Type actual = getType(node);
-		if(actual == null)
+		if(actual == null){
 			addError(node, "Expected type not null but found '%s'", actual);
+			return false;
+		}
+		return true;
 	}
 	
 	private void checkNull(ParserRuleContext node){

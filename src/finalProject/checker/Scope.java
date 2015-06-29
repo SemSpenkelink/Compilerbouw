@@ -1,6 +1,7 @@
 package finalProject.checker;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import pp.iloc.eval.Machine;
@@ -17,12 +18,15 @@ public class Scope {
 	private final Map<String, Integer> offsets;
 	/** Map from mutable objects. */
 	private final Map<String, Boolean> mutable;
+	/** Map from function id to list of argument types.*/
+	private final Map<String, List<Type>> functionArguments;
 
 	/** Constructs a fresh, initially empty scope. */
 	public Scope() {
 		this.types = new LinkedHashMap<>();
 		this.offsets = new LinkedHashMap<>();
 		this.mutable = new LinkedHashMap<>();
+		this.functionArguments = new LinkedHashMap<>();
 	}
 
 	/** Tests if a given identifier is declared in this scope. */
@@ -35,12 +39,13 @@ public class Scope {
 	 * @return <code>true</code> if the identifier was added;
 	 * <code>false</code> if it was already declared.
 	 */
-	public boolean put(String id, Type type, boolean mutable) {
+	public boolean put(String id, Type type, boolean mutable, List<Type> arguments) {
 		boolean result = !this.types.containsKey(id);
 		if (result) {
 			this.types.put(id, type);
 			this.offsets.put(id, this.size);
 			this.mutable.put(id, mutable);
+			this.functionArguments.put(id, arguments);
 			if(type != null)
 				this.size += type.size();
 			else
@@ -66,5 +71,10 @@ public class Scope {
 	/** Returns whether a given (presumably declared) identifier is mutable.*/
 	public Boolean mutable(String id) {
 		return this.mutable.get(id);
+	}
+	
+	/** Returns the list of argument types of a (presumably declared) identifier.*/
+	public List<Type> arguments(String id){
+		return this.functionArguments.get(id);
 	}
 }
