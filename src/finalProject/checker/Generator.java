@@ -172,7 +172,22 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUM(1).getText())), reg2);
 		return null; }
 	
-	@Override public Op visitVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx) { 
+		System.out.println("visitVarArrayDecl");
+		visitChildren(ctx);
+		System.out.println("\n");
+		for(NewIDContext newId : ctx.newID()){
+			emit(OpCode.storeAI, reg(ctx.target()), arp, offset(newId.ID()));
+			
+			emit(OpCode.loadI, offset(ctx.target()),reg1);	//load offset in reg1
+			emit(OpCode.addI, reg1, new Num(4), reg1);		//add 4 to the offset
+			emit(OpCode.loadAI, arp, reg1, reg1); //Load the ending value in reg1
+			
+			emit(OpCode.loadI, offset(newId.ID()), reg2);
+			emit(OpCode.addI, reg2, new Num(4), reg2);
+			emit(OpCode.storeAI, reg1, arp,reg2);
+		}
+		return null; }
 	
 	@Override public Op visitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) { return visitChildren(ctx); }
 	
@@ -238,7 +253,27 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		return null; }
 	
-	@Override public Op visitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
+		visitChildren(ctx);
+		
+		System.out.println("stat assign array \n");
+		
+			//Start by computing the begin value of the array. We'll store that in reg1
+			emit(OpCode.loadAI, arp, offset(ctx.target()), reg1);
+			//Now we need the index value. This is stored in expression(0). We'll store it in reg2
+			emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(0).getText())),reg2);
+			//Subtract the index by the begin value.
+			emit(OpCode.sub, reg2, reg1, reg1);
+			//Multiply by four to get the offset
+			emit(OpCode.multI, reg1, new Num(4), reg1);
+			//Add 8
+			emit(OpCode.addI, reg1, new Num(8),reg1); //This is the address where the value needs to be stored.
+			
+			//The the target value
+		//	emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(2).getText())), reg2);
+			 emit(OpCode.storeAI, reg(ctx.expression(1)), arp,reg1);
+			
+		return null; }
 	
 	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) { return visitChildren(ctx); }
 	
@@ -259,13 +294,15 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) {
-		
+		System.out.println("Target ID");
 			emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));
 		
 			return null;  }
 	
 	@Override public Op visitNewID(EloquenceParser.NewIDContext ctx) { 
+		System.out.println("visit New ID");
 			emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx.ID()));
+		//	emit(OpCode.storeAI, reg(ctx.ID()), arp, offset(ctx.ID()));
 		return visitChildren(ctx); }
 	
 	@Override public Op visitReturnStat(EloquenceParser.ReturnStatContext ctx) { return visitChildren(ctx); }

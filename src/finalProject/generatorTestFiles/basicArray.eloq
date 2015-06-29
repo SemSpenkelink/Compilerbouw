@@ -1,4 +1,7 @@
 program basicArray{
 	hodgePodge x = George [0..2];
+	
+	highpowered a, b = x;
 
+	a[1] = unfeigned;
 }
