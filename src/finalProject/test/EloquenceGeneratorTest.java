@@ -23,7 +23,7 @@ public class EloquenceGeneratorTest {
 
 	@Test
 	public void testPrime() throws IOException, ParseException {
-		Program prog = compile("basicWhile");
+		Program prog = compile("basicArray");
 	}
 
 	private Program compile(String filename) throws IOException, ParseException {

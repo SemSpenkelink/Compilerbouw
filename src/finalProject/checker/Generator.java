@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
+import finalProject.grammar.EloquenceParser.ArrayElemContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
 import finalProject.grammar.EloquenceParser.TargetContext;
 import finalProjectCFG.BottomUpCFGBuilder;
@@ -129,7 +130,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				} else{
 					emit(OpCode.loadI, new Num(0), reg(newId.ID()));
 				}
-				emit(OpCode.storeAI,arp,offset(newId.ID()), reg(newId.ID()));
+				emit(OpCode.storeAI,reg(newId.ID()),arp, offset(newId.ID()));
 		}
 		
 		return null; 
@@ -144,7 +145,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				} else{
 					emit(OpCode.loadI, new Num(0), reg1);
 				}
-				emit(OpCode.storeAI,arp,offset(newId.ID()), reg1);
+				emit(OpCode.storeAI,reg1,arp, offset(newId.ID()));
 		}
 		
 		return null;   }
@@ -156,10 +157,20 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return visitChildren(ctx); }
 	
 	@Override public Op visitArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx) {
+		visitChildren(ctx);
 		
-		return visitChildren(ctx); }
+		emit(OpCode.storeAI,reg1,arp, offset(ctx.newID().ID()));
+		emit(OpCode.loadI, offset(ctx.newID().ID()), reg3);
+		emit(OpCode.addI, reg3, new Num(4), reg3);
+		emit(OpCode.storeAI,reg2,arp, reg3);
+		
+		return null; }
 	
-	@Override public Op visitArrayElem(EloquenceParser.ArrayElemContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitArrayElem(EloquenceParser.ArrayElemContext ctx) {
+		visitChildren(ctx);
+		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUM(0).getText())), reg1);
+		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUM(1).getText())), reg2);
+		return null; }
 	
 	@Override public Op visitVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx) { return visitChildren(ctx); }
 	
@@ -167,6 +178,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { //TODO if stat
 		
+		
+		/*
 		Label body = createLabel(ctx, "ifBody");
 		Label ifContinue = createLabel(ctx, "continue");
 		labels.put(ctx.stat(0), body);
@@ -187,7 +200,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		emit(ifContinue, OpCode.nop);
-		
+		*/
 		return null; }
 	
 	@Override public Op visitStatWhile(EloquenceParser.StatWhileContext ctx) { //TODO while stat
@@ -216,11 +229,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 			if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
 				emit(OpCode.c2c, reg(ctx.expression()),reg(ctx.target()));
-				emit(OpCode.storeAI, arp, offset(ctx.target()), reg(ctx.target()));
+				emit(OpCode.storeAI, reg(ctx.target()), arp, offset(ctx.target()));
 			}
 			else{
 				emit(OpCode.i2i, reg(ctx.expression()),reg(ctx.target()));
-				emit(OpCode.storeAI, arp, offset(ctx.target()), reg(ctx.target())); //TODO offset of ID
+				emit(OpCode.storeAI, reg(ctx.target()), arp, offset(ctx.target())); //TODO offset of ID
 			}
 		
 		return null; }

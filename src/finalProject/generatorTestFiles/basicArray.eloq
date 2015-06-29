@@ -1,0 +1,4 @@
+program basicArray{
+	hodgePodge x = George [0..2];
+
+}
