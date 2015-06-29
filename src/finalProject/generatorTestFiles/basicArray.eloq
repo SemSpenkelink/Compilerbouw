@@ -5,7 +5,7 @@ program basicArray{
 
 	a[1] = unfeigned;
 	b = {[unfeigned,bogus]};
-	exude(2);
+	exude(b[1]);
 	
 	
 }
