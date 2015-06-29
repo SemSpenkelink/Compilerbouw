@@ -188,14 +188,22 @@ public class Checker extends EloquenceBaseListener {
 	}
 
 	/**
+	 * Check whether the type of the given arrayExpression equals that of the element type of the target array.
+	 * For each ID, set the type to that of the target array.
+	 * Add the ID to the scope and set the offset accordingly.
+	 * Set the type of this declaration to that of the target.
+	 * Set the entry to itself.
 	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to that of its arrayExpression.
+	 * Link the exit node of the arrayExpression to its own exit node.
 	 */
 	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
 		checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
 		for(NewIDContext id : ctx.newID()){
 			setType(id, this.scope.type(ctx.target().getText()));
-			this.scope.put(id.getText(), getType(id), false);
-			setOffset(id, scope.offset(id.getText()));
+			this.scope.put(id.ID().getText(), getType(id), false);
+			setOffset(id.ID(), scope.offset(id.getText()));
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setEntry(ctx, ctx);
@@ -206,6 +214,13 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.arrayExpression()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set the entry of the declaration to the entry of its variable.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to that of its expression.
+	 * Link the exit node of the expression to its own exit node.
+	 */
 	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
 		setEntry(ctx, entry(ctx.variable()));
 		
@@ -215,6 +230,13 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression()).addEdge(exit.get(ctx));	
 	}
 	
+	/**
+	 * Set the type of the array declaration to that of its array declaration.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to that of its array declaration.
+	 * Link the exit node of the array declaration to its own exit node.
+	 */
 	@Override public void exitDeclArray(EloquenceParser.DeclArrayContext ctx) {
 		setType(ctx, getType(ctx.arrayDecl()));
 		
@@ -224,6 +246,14 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.arrayDecl()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set the type of return stat to that of its returnStat.
+	 * If its returnStat is not a void, set the entry to the value of its returnStat.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to that of its returnStat.
+	 * Link the exit node of the returnStat to its own exit node.
+	 */
 	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) {
 		setType(ctx, getType(ctx.returnStat()));
 		if(getType(ctx.returnStat()) != null)
@@ -235,13 +265,27 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.returnStat()).addEdge(exit.get(ctx));	
 	}
 	
+	/**
+	 * Open a new scope for the variables declared within the comparison expression of the if statement.
+	 */
 	@Override public void enterStatIf(finalProject.grammar.EloquenceParser.StatIfContext ctx) {
 		symbolTable.openScope();
 	}
 	
+	/**
+	 * Check whether the expression of the if statement is a boolean expression.
+	 * If there is an no else part, or if the if and else have the same type set the type to the type of if.
+	 * If there is an else part but it does not return the same type as the if part, set the type to null.
+	 * Close the scope that was opened at the enterStatIf to ensure inner variables cannot be used again.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes. The CFG first visits the expression, depending on its outcome and whether
+	 * there is an else part it goes to the if, else or exits the if. The if body and else body both exit to
+	 * the exit of the entire if statement.
+	 */
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
-		if(ctx.ELSE() != null && getType(ctx.stat(0)).equals(getType(ctx.stat(1))))
+		if(ctx.ELSE() == null || getType(ctx.stat(0)).equals(getType(ctx.stat(1))))
 			setType(ctx, getType(ctx.stat(0)));
 		else
 			setType(ctx, null);
@@ -260,10 +304,23 @@ public class Checker extends EloquenceBaseListener {
 		}
 	}
 	
+	/**
+	 * Open a new scope for the variables declared within the comparison expression of the if statement.
+	 */
 	@Override public void enterStatWhile(finalProject.grammar.EloquenceParser.StatWhileContext ctx) {
 		symbolTable.openScope();
 	}
 	
+	/**
+	 * Check whether the expression type is a boolean, set the type of the while statement
+	 * to void. Finally, close the scope that was opened at the enterStatIf to ensure inner
+	 * variables cannot be used again.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to that of its expression and the 
+	 * exit node of expression to the entry node of stat and the exit node of while.
+	 * Link the exit node of stat to the exit node of while.
+	 */
 	@Override public void exitStatWhile(EloquenceParser.StatWhileContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
 		setType(ctx, null);
@@ -277,9 +334,18 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.stat()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Check if the target is in the scope. If this is the case, check if the type of expression
+	 * is equal to that of the target. Also check whether the target is mutable, i.e. not constant.
+	 * Set the type of the assignment to that of its target, set the offset to that of its target.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to that of its expression and the
+	 * exit node of expression to the exit node of assignment.
+	 */
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
 		if(checkScope(ctx.target())){
-			checkType(ctx.target(), getType(ctx.expression()));
+			checkType(ctx.expression(), getType(ctx.target()));
 			checkMutable(ctx.target());
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
@@ -291,6 +357,17 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 
+	/**
+	 * Check if the target is in the scope. If this is the case, check if the type of the first
+	 * expression is an integer and the second expression is equal to the type of the array elements.
+	 * Check if the target is mutable. Then set the type to that of the target en the entry to that
+	 * of its target.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry of its first expression, link
+	 * the exit of that expression to the entry of the second expression. Finally link the exit of
+	 * the second expression to the exit of the stat assign array.
+	 */
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
 		if(checkScope(ctx.target())){
 			checkType(ctx.expression(0), Type.INT);
@@ -307,6 +384,15 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 
+	/**
+	 * Check if the target is in the scope. If this is the case, check if the type of the arrayExpression
+	 * is equal to that of the type of the array elements. Check if the target is mutable.
+	 * Set the type to that of the target and the entry also to the type of the target.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to that of the arrayExpression and the exit
+	 * of the arrayExpression to the exit of the statAssignArrayMult.
+	 */
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
 		if(checkScope(ctx.target())){
 			checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
@@ -321,6 +407,13 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.arrayExpression()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set the type of the block to that of its body.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to that of the statBlockBody and the exit
+	 * of the statBlockBody to the exit of the statBlock.
+	 */
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		setType(ctx, getType(ctx.statBlockBody()));
 		//setEntry(ctx, entry(ctx.body().stat(0)));
@@ -331,6 +424,14 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.statBlockBody()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * For each target from statIn check whether it is contained in the scope and whether it is mutable.
+	 * If there is only one target, the type of in is set to the type of the target. The entry is also
+	 * set to the target. If there are multiple targets, the type is set to null, i.e. void.
+	 * 
+	 * CFG creation: 
+	 * Link its own entry node to its own exit node. 
+	 */
 	@Override public void exitStatIn(EloquenceParser.StatInContext ctx){
 		for(TargetContext target : ctx.target())
 			if(checkScope(target))
@@ -347,6 +448,14 @@ public class Checker extends EloquenceBaseListener {
 		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * For each expression from statOut check whether the expression is not null. If there is one
+	 * expression, set the type to that of its expression and set the entry to that of its expression.
+	 * If there are multiple expressions, set the type to null, i.e. void.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes and link them sequentially.
+	 */
 	@Override public void exitStatOut(EloquenceParser.StatOutContext ctx){
 		for(ExpressionContext expr : ctx.expression())
 			checkNotNull(expr);
@@ -368,6 +477,14 @@ public class Checker extends EloquenceBaseListener {
 		}
 	}
 	
+	/**
+	 * Check whether the functionID is of type void.
+	 * Set the type to void.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry node of functionID.
+	 * Link the exit node of functionID to the exit node of statVoid.
+	 */
 	@Override public void exitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
 		checkNull(ctx.functionID());
 		setType(ctx, null);
@@ -378,10 +495,21 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.functionID()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Open a new scope for the variables declared within the comparison expression of the if statement.
+	 */
 	@Override public void enterStatBlockBody(finalProject.grammar.EloquenceParser.StatBlockBodyContext ctx) {
 		symbolTable.openScope();
 	}
 	
+	/**
+	 * Set the type of statBlockBody to that of its body.
+	 * Close the scope that was opened at the enterStatBlockBody to ensure inner variables cannot be used again.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link entry node to entry node of body.
+	 * Link exit node of body to own exit node.
+	 */
 	@Override public void exitStatBlockBody(finalProject.grammar.EloquenceParser.StatBlockBodyContext ctx) {
 		setType(ctx, getType(ctx.body()));
 		symbolTable.closeScope();
@@ -392,6 +520,16 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.body()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Check whether the return statement has an expression.
+	 * If it does, set the type to the type of the expression and the entry to the entry of expression.
+	 * If it does not have an expression, i.e. is of type void, set the type to null, i.e. void.
+	 * 
+	 * CFG creation:
+	 * If it contains an expression, link the entry node to the entry of expression and
+	 * link the exit of expression to its own exit node. If it does not contain an expression,
+	 * add its own entry node to its own exit node.
+	 */
 	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) {
 		if(ctx.expression() != null){
 			setType(ctx, getType(ctx.expression()));
@@ -408,6 +546,13 @@ public class Checker extends EloquenceBaseListener {
 			entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Check whether the targetID is in the scope.
+	 * If this is the case, set the offset of target to the offset of the scope.
+	 * Set the offset of the child to the offset in the scope.
+	 * Set the entry to itself, and the entry of the child to this.
+	 * Set the type to the type as declared in the scope.
+	 */
 	@Override public void exitTargetId(finalProject.grammar.EloquenceParser.TargetIdContext ctx) {
 		if(checkScope(ctx)){
 			setOffset(ctx, this.scope.offset(ctx.getText()));
@@ -418,10 +563,23 @@ public class Checker extends EloquenceBaseListener {
 		}
 	}
 	
+	/**
+	 * Add the symbol of ctx in the symbolTable.
+	 */
 	@Override public void exitNewID(NewIDContext ctx) {
 		addSymbol(ctx);
 	}
 	
+	/**
+	 * Check the type of expression, if they are <, <=, >=, or > check if both expressions are integers.
+	 * Otherwise check if the types are equal.
+	 * Set the resulting type to a boolean and set the entry to the entry of the first expression.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry node of the first expression.
+	 * Link the exit node of the first expression to the entry node of the second, and link the exit
+	 * node of the second expression to the exit node of the exprComp.
+	 */
 	@Override public void exitExprComp(EloquenceParser.ExprCompContext ctx) {
 		if(ctx.compare().LT() != null || ctx.compare().LE() != null || ctx.compare().GE() != null || ctx.compare().GT() != null){
 			checkType(ctx.expression(0), Type.INT);
@@ -439,6 +597,16 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Check whether the types of both expressions are integers.
+	 * Set the resulting type to integer.
+	 * Set the entry to that of the first expression.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry node of the first expression.
+	 * Link the exit node of the first expression to the entry node of the second, and link the exit
+	 * node of the second expression to the exit node of the exprComp.
+	 */
 	@Override public void exitExprMult(EloquenceParser.ExprMultContext ctx) {
 		checkType(ctx.expression(0), Type.INT);
 		checkType(ctx.expression(1), Type.INT);
@@ -452,6 +620,16 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * If the unary sign is a plus or minus, check whether the type is integer.
+	 * If the unary sign is a not, check whether the type is boolean.
+	 * Set the type to that of the expression.
+	 * Set the entry to that of the expression.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry node of expression.
+	 * Link the exit of the expression to the exit of exprUnary.
+	 */
 	@Override public void exitExprUnary(EloquenceParser.ExprUnaryContext ctx) {
 		Type type;
 		if (ctx.unary().MINUS() != null || ctx.unary().PLUS() != null) {
@@ -470,6 +648,13 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set the type of this expression to integer.
+	 * Set the entry of this expression to itself.
+	 * 
+	 * CFG creation: 
+	 * Link its own entry node to its own exit node.
+	 */
 	@Override public void exitExprNum(EloquenceParser.ExprNumContext ctx) {
 		setType(ctx, Type.INT);
 		setEntry(ctx, ctx);
@@ -479,6 +664,13 @@ public class Checker extends EloquenceBaseListener {
 		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set the type of this expression to boolean.
+	 * Set the entry of this expression to itself.
+	 * 
+	 * CFG creation: 
+	 * Link its own entry node to its own exit node.
+	 */
 	@Override public void exitExprTrue(EloquenceParser.ExprTrueContext ctx) {
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, ctx);
@@ -488,6 +680,13 @@ public class Checker extends EloquenceBaseListener {
 		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set the type of this expression to character.
+	 * Set the entry of this expression to itself.
+	 * 
+	 * CFG creation: 
+	 * Link its own entry node to its own exit node.
+	 */
 	@Override public void exitExprChar(EloquenceParser.ExprCharContext ctx) {
 		setType(ctx, Type.CHAR);
 		setEntry(ctx, ctx);
@@ -497,6 +696,14 @@ public class Checker extends EloquenceBaseListener {
 		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Check if the function is not a void function.
+	 * Set the type to the type of functionID
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry of functionID.
+	 * Link the exit of functionID to its own exit node.
+	 */
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
 		checkNotNull(ctx.functionID());
 		setType(ctx, getType(ctx.functionID()));
@@ -508,6 +715,12 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.functionID()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Set the type to that of the expression.
+	 * Set the entry to that of its expression.
+	 * 
+	 * Create entry and exit nodes, link them sequentially with its body and expression.
+	 */
 	@Override public void exitExprCompound(finalProject.grammar.EloquenceParser.ExprCompoundContext ctx) {
 		setType(ctx, getType(ctx.expression()));
 		setEntry(ctx, entry(ctx.expression()));
@@ -519,6 +732,16 @@ public class Checker extends EloquenceBaseListener {
 		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 	
+	/**
+	 * Check if both expression are of type boolean.
+	 * Set the resulting type to boolean.
+	 * Set the entry to the entry of the first expression.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry node of the first expression.
+	 * Link the exit node of the first expression to the entry node of the second, and link the exit
+	 * node of the second expression to the exit node of the exprComp.
+	 */
 	@Override public void exitExprOr(EloquenceParser.ExprOrContext ctx) {
 		checkType(ctx.expression(0), Type.BOOL);
 		checkType(ctx.expression(1), Type.BOOL);
