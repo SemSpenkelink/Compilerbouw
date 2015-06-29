@@ -3,6 +3,10 @@ package finalProjectCFG;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -28,6 +32,8 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	
 	ParseTreeProperty<Node> entry = new ParseTreeProperty<Node>();
 	ParseTreeProperty<Node> exit = new ParseTreeProperty<Node>();
+	Map<String, Node> entryFunc = new HashMap<String, Node>();
+	Map<String, Node> exitFunc = new HashMap<String, Node>();
 	
 	/** Builds the CFG for a program contained in a given file. */
 	public Graph build(File file) {
@@ -86,13 +92,7 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 			System.out.println(builder.build(file));
 		}
 	}
-	
-
-	//TODO on assigning a value, enter the expression because a function can be called.
-	//TODO go from a function call to the declaration of that function. (And especially going back!)
-	 
-	 
-	 
+		 
 	/**
 	 * Create initial node and last node of program.
 	 * Connect the initial node to entry of body.
@@ -109,7 +109,8 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	 * Create entry and exit node of body.
 	 * If body has children, connect entry to
 	 * entry node of first child and exit node
-	 * of last child to own exit node. Connect the
+	 * of last child to own exit node whilst skipping
+	 * the function declarations. Connect the
 	 * exit node of all children to the entry node
 	 * of the next child, the last child is connected
 	 * to the exit node of body. If body does not have
@@ -118,18 +119,18 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	 */
 	@Override public void exitBody(EloquenceParser.BodyContext ctx) {
 		constructNodes(ctx);
-		List<ParserContext> 
+		List<ParseTree> notFunctionChildren = new ArrayList<ParseTree>();
+		for(int index = 0; index < ctx.getChildCount(); index++)
+			if(!ctx.func().contains(ctx.getChild(index)))
+				notFunctionChildren.add(ctx.getChild(index));
 		
-		
-		
-		constructNodes(ctx);
-		if(ctx.getChildCount() >= 1){
-			entry.get(ctx).addEdge(entry.get(ctx.getChild(0)));
-			exit.get(ctx.getChild(ctx.getChildCount()-1)).addEdge(exit.get(ctx));
+		if(notFunctionChildren.size() >= 1){
+			entry.get(ctx).addEdge(entry.get(notFunctionChildren.get(0)));
+			exit.get(notFunctionChildren.get(notFunctionChildren.size()-1)).addEdge(exit.get(ctx));
 		}else
 			entry.get(ctx).addEdge(exit.get(ctx));
-		for(int index = 1; index < ctx.getChildCount()-1; index++){
-			exit.get(ctx.getChild(index-1)).addEdge(entry.get(ctx.getChild(index)));
+		for(int index = 1; index < notFunctionChildren.size(); index++){
+			exit.get(notFunctionChildren.get(index-1)).addEdge(entry.get(notFunctionChildren.get(index)));
 		}
 	}
 
@@ -140,7 +141,11 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	 */
 	@Override public void exitDeclVar(EloquenceParser.DeclVarContext ctx) {
 		constructNodes(ctx);
-		entry.get(ctx).addEdge(exit.get(ctx));
+		if(ctx.expression() != null){
+			entry.get(ctx).addEdge(entry.get(ctx.expression()));
+			exit.get(ctx.expression()).addEdge(exit.get(ctx));
+		}else
+			entry.get(ctx).addEdge(exit.get(ctx));
 	}
 
 	/**
@@ -150,8 +155,8 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	 */
 	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) { 
 		constructNodes(ctx);
-		entry.get(ctx).addEdge(exit.get(ctx));
-		
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));		
 	}
 	
 	/**
@@ -161,7 +166,28 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	 */
 	@Override public void exitDeclArray(EloquenceParser.DeclArrayContext ctx) { 
 		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.arrayDecl()));
+		exit.get(ctx.arrayDecl()).addEdge(exit.get(ctx));
+	}
+	
+	/**
+	 * Create entry and exit node of variable array declaration.
+	 * Connect own entry node to own exit node.
+	 */
+	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
+		constructNodes(ctx);
 		entry.get(ctx).addEdge(exit.get(ctx));
+	}
+	
+	/**
+	 * Create entry and exit node of variable array declaration.
+	 * Connect own entry node to entry node of arrayExpression.
+	 * Connect exit node of arrayExpression to own exit node.
+	 */
+	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.arrayExpression()));
+		exit.get(ctx.arrayExpression()).addEdge(exit.get(ctx));
 	}
 	
 	/**
@@ -185,11 +211,14 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	 */
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
 		constructNodes(ctx);
-		entry.get(ctx).addEdge(entry.get(ctx.stat(0)));
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(entry.get(ctx.stat(0)));
 		exit.get(ctx.stat(0)).addEdge(exit.get(ctx));
 		if(ctx.stat().size() > 1){
-			entry.get(ctx).addEdge(entry.get(ctx.stat(1)));
+			exit.get(ctx.expression()).addEdge(entry.get(ctx.stat(1)));
 			exit.get(ctx.stat(1)).addEdge(exit.get(ctx));			
+		}else{
+			entry.get(ctx.expression()).addEdge(exit.get(ctx));
 		}
 	}
 
@@ -202,108 +231,211 @@ public class BottomUpCFGBuilder extends EloquenceBaseListener {
 	 */
 	@Override public void exitStatWhile(EloquenceParser.StatWhileContext ctx) {
 		constructNodes(ctx);
-		entry.get(ctx).addEdge(entry.get(ctx.stat()));
-		entry.get(ctx).addEdge(exit.get(ctx));
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
+		exit.get(ctx.expression()).addEdge(entry.get(ctx.stat()));
 		exit.get(ctx.stat()).addEdge(exit.get(ctx));
 	}
 
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
 		constructNodes(ctx);
-		entry.get(ctx).addEdge(exit.get(ctx));
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
 		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.arrayExpression()));
+		exit.get(ctx.arrayExpression()).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.statBlockBody()));
+		exit.get(ctx.statBlockBody()).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.returnStat()));
+		exit.get(ctx.returnStat()).addEdge(exit.get(ctx));		
+	}
+	
+	@Override public void exitStatIn(EloquenceParser.StatInContext ctx) {
+		constructNodes(ctx);
 		entry.get(ctx).addEdge(exit.get(ctx));
 	}
 
-	@Override public void exitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) { }
-
-	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) { }
-
-	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) { }
+	@Override public void exitStatOut(EloquenceParser.StatOutContext ctx) {
+		constructNodes(ctx);		
+		if(ctx.getChildCount() >= 1){
+			entry.get(ctx).addEdge(entry.get(ctx.getChild(0)));
+			exit.get(ctx.getChild(ctx.getChildCount()-1)).addEdge(exit.get(ctx));
+		}else
+			entry.get(ctx).addEdge(exit.get(ctx));
+		for(int index = 1; index < ctx.getChildCount()-1; index++){
+			exit.get(ctx.getChild(index-1)).addEdge(entry.get(ctx.getChild(index)));
+		}
+	}
 	
-	@Override public void exitStatIn(EloquenceParser.StatInContext ctx) { }
+	@Override public void exitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.functionID()));
+		exit.get(ctx.functionID()).addEdge(exit.get(ctx));
+	}
 
-	@Override public void exitStatOut(EloquenceParser.StatOutContext ctx) { }
+	@Override public void exitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.body()));
+		exit.get(ctx.body()).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) {
+		constructNodes(ctx);
+		if(ctx.expression() != null){
+			entry.get(ctx).addEdge(entry.get(ctx.expression()));
+			exit.get(ctx.expression()).addEdge(exit.get(ctx));
+		}else
+			entry.get(ctx).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitExprComp(EloquenceParser.ExprCompContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitExprCompound(EloquenceParser.ExprCompoundContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.body()));
+		exit.get(ctx.body()).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitExprMult(EloquenceParser.ExprMultContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitExprUnary(EloquenceParser.ExprUnaryContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitExprNum(EloquenceParser.ExprNumContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
+	}
+
+	@Override public void exitExprTrue(EloquenceParser.ExprTrueContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
+	}
 	
-	@Override public void exitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) { }
+	@Override public void exitExprChar(EloquenceParser.ExprCharContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
+	}
 
-	@Override public void exitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { }
+	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.functionID()));
+		exit.get(ctx.functionID()).addEdge(exit.get(ctx));
+	}
 	
-	@Override public void exitTargetId(EloquenceParser.TargetIdContext ctx) { }
+	@Override public void exitExprOr(EloquenceParser.ExprOrContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
+	}
 
-	@Override public void exitNewID(EloquenceParser.NewIDContext ctx) { }
+	@Override public void exitExprPar(EloquenceParser.ExprParContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
+	}
 
-	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) { }
+	@Override public void exitExprAdd(EloquenceParser.ExprAddContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
+	}
 
-	@Override public void exitExprComp(EloquenceParser.ExprCompContext ctx) { }
-
-	@Override public void exitExprCompound(EloquenceParser.ExprCompoundContext ctx) { }
-
-	@Override public void exitExprMult(EloquenceParser.ExprMultContext ctx) { }
-
-	@Override public void exitExprUnary(EloquenceParser.ExprUnaryContext ctx) { }
-
-	@Override public void exitExprNum(EloquenceParser.ExprNumContext ctx) { }
-
-	@Override public void exitExprTrue(EloquenceParser.ExprTrueContext ctx) { }
+	@Override public void exitExprAnd(EloquenceParser.ExprAndContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(0)).addEdge(entry.get(ctx.expression(1)));
+		exit.get(ctx.expression(1)).addEdge(exit.get(ctx));
+	}
 	
-	@Override public void exitExprChar(EloquenceParser.ExprCharContext ctx) { }
+	@Override public void exitExprId(EloquenceParser.ExprIdContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
+	}
 
-	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) { }
-	
-	@Override public void exitExprOr(EloquenceParser.ExprOrContext ctx) { }
-
-	@Override public void exitExprPar(EloquenceParser.ExprParContext ctx) { }
-
-	@Override public void exitExprAdd(EloquenceParser.ExprAddContext ctx) { }
-
-	@Override public void exitExprAnd(EloquenceParser.ExprAndContext ctx) { }
-	
-	@Override public void exitExprId(EloquenceParser.ExprIdContext ctx) { }
-
-	@Override public void exitExprFalse(EloquenceParser.ExprFalseContext ctx) { }
+	@Override public void exitExprFalse(EloquenceParser.ExprFalseContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
+	}
 	 
-	@Override public void exitExprArray(EloquenceParser.ExprArrayContext ctx) { }
+	@Override public void exitExprArray(EloquenceParser.ExprArrayContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
+	}
 
-	@Override public void exitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) { }
+	@Override public void exitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(exit.get(ctx));
+		for(int index = 1; index < ctx.expression().size(); index++)
+			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
+	}
 
-	@Override public void exitArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx) { }
-
-	@Override public void exitUnary(EloquenceParser.UnaryContext ctx) { }
+	@Override public void exitArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
+	}
 	
-	@Override public void exitMultiply(EloquenceParser.MultiplyContext ctx) { }
-	 
-	@Override public void exitAddition(EloquenceParser.AdditionContext ctx) { }
-
-	@Override public void exitCompare(EloquenceParser.CompareContext ctx) { }
-
-	@Override public void exitAnd(EloquenceParser.AndContext ctx) { }
-
-	@Override public void exitOr(EloquenceParser.OrContext ctx) { }
-	
-	@Override public void exitTypeInt(EloquenceParser.TypeIntContext ctx) { }
-
-	@Override public void exitTypeBool(EloquenceParser.TypeBoolContext ctx) { }
-
-	@Override public void exitTypeChar(EloquenceParser.TypeCharContext ctx) { }
-	
-	@Override public void exitFuncVoid(EloquenceParser.FuncVoidContext ctx) { }
-	
-	@Override public void exitFuncReturn(EloquenceParser.FuncReturnContext ctx) { }
-	
-	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) { }
+	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		for(int index = 1; index < ctx.expression().size(); index++)
+			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
+		exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(entryFunc.get(ctx.target().getText()));
+		exitFunc.get(ctx.target().getText()).addEdge(exit.get(ctx));
+	}
  
-	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) { }
+	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
+		constructNodes(ctx);
+		entryFunc.put(ctx.newID().getText(), entry.get(ctx));
+		exitFunc.put(ctx.newID().getText(), exit.get(ctx));
+		entry.get(ctx).addEdge(entry.get(ctx.statBlockBody()));
+		exit.get(ctx.statBlockBody()).addEdge(exit.get(ctx));
+	}
 	
-	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) { }
-	
-	@Override public void exitParameters(EloquenceParser.ParametersContext ctx) { }
-
-	@Override public void visitTerminal(TerminalNode node) { }
-
-	@Override public void visitErrorNode(ErrorNode node) { }
+	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
+		constructNodes(ctx);
+		entryFunc.put(ctx.newID().getText(), entry.get(ctx));
+		exitFunc.put(ctx.newID().getText(), exit.get(ctx));
+		entry.get(ctx).addEdge(entry.get(ctx.body()));
+		exit.get(ctx.body()).addEdge(entry.get(ctx.returnStat()));
+		exit.get(ctx.returnStat()).addEdge(exit.get(ctx));
+	}
 	
 	public void constructNodes(ParserRuleContext ctx){
 		String enterMessage = "enter[%s]";
