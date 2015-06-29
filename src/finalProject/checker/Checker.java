@@ -60,6 +60,7 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	/**
+	 * This is only used for the construction of the CFG.
 	 * Create initial node and last node of program.
 	 * Connect the initial node to entry of body.
 	 * Connect the exit of body to the last node.
@@ -73,6 +74,12 @@ public class Checker extends EloquenceBaseListener {
 	
 	/**
 	 * Set type of body to type of last child, used for compound expressions.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit node of body. All children of body that are not
+	 * functions are linked sequentially, or a function declaration should
+	 * not execute the function itself. The last child that is not a function
+	 * is linked to the exit node of the body.
 	 */
 	@Override public void exitBody(finalProject.grammar.EloquenceParser.BodyContext ctx) {
 		setType(ctx, getType(ctx.getChild(ctx.getChildCount()-1)));
@@ -96,13 +103,21 @@ public class Checker extends EloquenceBaseListener {
 	
 	/**
 	 * If the declaration contains an expression, it checks whether the expression
-	 * has the same type as the variable it is assigned to.
+	 * has the same type as the variable it is assigned to. The type is set to the
+	 * type of variable.
 	 * The entry is set to the entry of the variable.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit node of variable declaration. If it contains an
+	 * expression the next node is set to that expression, which exits to this exit
+	 * node. If it does not contain an expression, the entry node is linked to the
+	 * exit node of this variable declaration.
 	 */
 	@Override public void exitDeclVar(EloquenceParser.DeclVarContext ctx) {
 		if(ctx.expression() != null){
-			checkType(ctx.variable(), getType(ctx.expression()));
+			checkType(ctx.expression(), getType(ctx.variable()));
 		}
+		setType(ctx, getType(ctx.variable()));
 		setEntry(ctx, entry(ctx.variable()));
 		
 		/** CFG creation. */
@@ -812,6 +827,11 @@ public class Checker extends EloquenceBaseListener {
 		return this.cfg.addNode(node.getStart().getLine() + ": " + text);
 	}
 	
+	/**
+	 * Construct an entry and exit node for ParserRuleContext.
+	 * Put them in entry and exit respectively.
+	 * @param ctx
+	 */
 	public void constructNodes(ParserRuleContext ctx){
 		String enterMessage = "enter[%s]";
 		enterMessage = String.format(enterMessage, ctx.getText());
