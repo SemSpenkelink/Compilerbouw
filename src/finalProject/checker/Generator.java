@@ -9,8 +9,10 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.ArrayElemContext;
+import finalProject.grammar.EloquenceParser.ArrayExpressionContext;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
+import finalProject.grammar.EloquenceParser.ParametersContext;
 import finalProject.grammar.EloquenceParser.TargetContext;
 import finalProjectCFG.BottomUpCFGBuilder;
 import pp.iloc.*;
@@ -192,7 +194,23 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		return null; }
 	
-	@Override public Op visitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) {
+		
+		System.out.println("visit Constant array");
+		visitChildren(ctx);
+		for(NewIDContext newId : ctx.newID()){
+			emit(OpCode.storeAI, reg(ctx.target()), arp, offset(newId.ID()));
+			
+			emit(OpCode.loadI, offset(ctx.target()),reg1);	//load offset in reg1
+			emit(OpCode.addI, reg1, new Num(4), reg1);		//add 4 to the offset
+			emit(OpCode.loadAO, arp, reg1, reg1); //Load the ending value in reg1
+			
+			emit(OpCode.loadI, offset(newId.ID()), reg2);
+			emit(OpCode.addI, reg2, new Num(4), reg2);
+			emit(OpCode.storeAO, reg1, arp,reg2);
+		}
+		
+		return visitChildren(ctx); }
 	
 	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { //TODO if stat
 		
@@ -271,11 +289,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.multI, reg1, new Num(4), reg1);
 			//Add 8
 			emit(OpCode.addI, reg1, new Num(8),reg1); //This is the address where the value needs to be stored.
-			
+			emit(OpCode.addI, reg1, offset(ctx.target()),reg1);
 			//The the target value
 		//	emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(2).getText())), reg2);
 			 emit(OpCode.storeAO, reg(ctx.expression(1)), arp,reg1);
-			
 			//Debug
 			//	emit(OpCode.out, new Str("test"), reg1);
 		return null; }
@@ -289,6 +306,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		//Reg 2 now contains the offset of where the first value should be placed.
 		 
 		visit(ctx.arrayExpression());
+		
 		
 		return null; }
 	
@@ -387,8 +405,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return visitChildren(ctx); }
 	
 	@Override public Op visitExprNum(EloquenceParser.ExprNumContext ctx) { 
+		visitChildren(ctx);
 		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.getText())), reg(ctx));
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitExprTrue(EloquenceParser.ExprTrueContext ctx) { 
 		emit(OpCode.loadI, new Num(1), reg(ctx));
@@ -442,18 +461,22 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.loadI, new Num(0), reg(ctx));
 		return null; }
 	
-	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) {
+	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) { //TODO
+		System.out.println("\n VisitExprArray before children");
 		visitChildren(ctx);
+		System.out.println("\n VisitExprArray after children");
 		//We need the index, this is in expression. We'll store the index in reg1
 		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1);
+		
 		//We also need the starting value of the array. We'll put this in reg2
 		emit(OpCode.loadAI, arp, offset(ctx.target()),reg2);
 		emit(OpCode.sub, reg1,reg2,reg1);
 		emit(OpCode.multI,reg1,new Num(4),reg1);
 		emit(OpCode.addI,reg1,new Num(8),reg1); //reg1 now contains the address of the index
+		emit(OpCode.addI,reg1,offset(ctx.target()),reg1);
 		
 		emit(OpCode.loadAO,arp,reg1,reg(ctx));
-		emit(OpCode.out, new Str("Test: "), reg(ctx));
+		emit(OpCode.out, new Str("Test: "), reg1);
 		return null; }
 	
 	@Override public Op visitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) {
@@ -493,7 +516,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitFunctionID(EloquenceParser.FunctionIDContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitVoidFunc(EloquenceParser.VoidFuncContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
+		
+		return null; }
 	
 	@Override public Op visitReturnFunc(EloquenceParser.ReturnFuncContext ctx) { return visitChildren(ctx); }
 	
