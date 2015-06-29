@@ -1,8 +1,9 @@
 program basicWhile{
 	
 	highpowered george tmp = unfeigned;
+	highpowered george tmp2 = unfeigned;
 	throughout(tmp equalto unfeigned){
-		tmp = bogus;
+		tmp2 = bogus;
 	}
 
 }

@@ -72,9 +72,9 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitVariable(EloquenceParser.VariableContext ctx){
 		for(NewIDContext id : ctx.newID()){
-			setType(id, getType(ctx.type()));
+			setType(id.ID(), getType(ctx.type()));
 			this.scope.put(id.getText(), getType(ctx.type()), ctx.getParent().getChild(0).getText().toLowerCase().equals("highpowered"));
-			setOffset(id, scope.offset(id.getText()));
+			setOffset(id.ID(), scope.offset(id.getText()));
 		}
 		setType(ctx, getType(ctx.type()));
 		setEntry(ctx, ctx);
