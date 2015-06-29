@@ -4,5 +4,8 @@ program basicArray{
 	highpowered a, b = x;
 
 	a[1] = unfeigned;
+	b = {[unfeigned,bogus]};
 	exude(2);
+	
+	
 }

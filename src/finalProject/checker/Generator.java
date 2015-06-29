@@ -275,7 +275,17 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			
 		return null; }
 	
-	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
+		visitChildren(ctx.target());
+		//We need the offset of the target. We'll store this in reg1
+		emit(OpCode.loadI, offset(ctx.target()),reg1);
+		//The array starts two places further, the first two are used for config
+		emit(OpCode.addI, reg1, new Num(8),reg1);
+		//Reg 2 now contains the offset of where the first value should be placed.
+		 
+		visit(ctx.arrayExpression());
+		
+		return null; }
 	
 	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		if(labels.get(ctx) != null)
@@ -288,11 +298,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitStatOut(EloquenceParser.StatOutContext ctx) { 
+		visitChildren(ctx);
 		for(ExpressionContext out : ctx.expression()){
 			emit(OpCode.out, new Str("Output: ") , reg(out));
 		}
 		
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) { return visitChildren(ctx); }
 	
@@ -428,7 +439,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) {
+		visitChildren(ctx);
+		for(ExpressionContext exp : ctx.expression()){
+			emit(OpCode.storeAI, reg(exp), arp,reg1);
+			emit(OpCode.addI, reg1, new Num(4), reg1);
+		}
+		return null; }
 	
 	@Override public Op visitArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx) { return visitChildren(ctx); }
 	
