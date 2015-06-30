@@ -473,7 +473,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprFunc(EloquenceParser.ExprFuncContext ctx) { 
 		visitChildren(ctx);
-		emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
+		if(checkResult.getType(ctx.functionID()).equals(Type.INT))
+			emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
+		else
+			emit(OpCode.c2c, reg(ctx.functionID()), reg(ctx));
 		return null; }
 	
 	@Override public Op visitExprOr(EloquenceParser.ExprOrContext ctx) {
@@ -509,7 +512,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprId(EloquenceParser.ExprIdContext ctx) { 
 		visitChildren(ctx);
-		emit(OpCode.i2i, reg(ctx.target()),reg(ctx));
+		if(checkResult.getType(ctx.target()).equals(Type.INT))
+			emit(OpCode.i2i, reg(ctx.target()),reg(ctx));
+		else
+			emit(OpCode.c2c, reg(ctx.target()),reg(ctx));
 		return null; }
 	
 	@Override public Op visitExprFalse(EloquenceParser.ExprFalseContext ctx) {
@@ -586,8 +592,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		for(ParametersContext p : ctx.parameters()){
 			visitChildren(p);
-			emit(OpCode.pop, reg4);
-			emit(OpCode.i2i, reg4 , reg(p.newID().ID()));
+			emit(OpCode.pop, reg(p.newID().ID()));
 			emit(OpCode.storeAI, reg(p.newID().ID()),arp, offset(p.newID().ID()));
 		}
 		visitChildren(ctx.statBlockBody());
@@ -609,8 +614,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		for(ParametersContext p : ctx.parameters()){
 			visitChildren(p);
-			emit(OpCode.pop, reg4);
-			emit(OpCode.i2i, reg4 , reg(p.newID().ID()));
+			emit(OpCode.pop, reg(p.newID().ID()));
 			emit(OpCode.storeAI, reg(p.newID().ID()),arp, offset(p.newID().ID()));
 		}
 		visit(ctx.body());
