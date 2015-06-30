@@ -1,0 +1,22 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//This program tests the correct basic expressions.
+
+Program basicExprSpellingContextFreeSyntaxError{
+	highPowered numericalDigit a, b;
+	
+	//An error in an expression:
+	a + * b;
+	
+	//An incomplete assignment token:
+	a b;
+	
+	//Non-existing and misspelled keywords:
+	amusse(bosug){
+		a = b;
+	}contrirawise
+		b = b+1;
+		
+	//Hurray, finally something good:
+	a + b;
+}

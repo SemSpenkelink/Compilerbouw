@@ -1,0 +1,44 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//This program tests the correct basic expressions.
+
+Program basicExprContextError{
+
+	//Incorrect assignments
+	highPowered numericalDigit x, y;
+	sacrosanct numericalDigit z = 1;
+	z = 10;
+	12 = 10;
+	x + y = 10;
+	
+	//Type errors
+	- 'a';
+	+ true;
+	highPowered lexographicIdentifyingUnit c;
+	!c;
+	highPowered George b;
+	b + 10 * c % 2;
+	'a' inferiorTo c;
+	b and 10 or c;
+	
+	//binary operators
+	'a' = b;
+	b notEqualTo 10;
+	x + y equalTo c;
+	
+	//Left and right-hand sides of assignment must be of same type
+	c = x + y;
+	b = 10;
+	
+	//Missing declarations
+	p; q;
+	highPowered George q;
+	
+	//Compound expressions without a result
+	{2 + 4 * 3; highPowered numericalDigit w;}
+	
+	//Operations on operands of type void
+	expropriate(x, y) + 10;
+	'c' notEqualTo exude(x, y);
+	10 + {highPowered numericalDigit u, v; expropriate(u,v); exude(u,v);};
+}
