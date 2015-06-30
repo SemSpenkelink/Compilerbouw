@@ -1,0 +1,13 @@
+//The program has an int function which should have a return value, this is however not the case.
+
+program testFailFunc8{
+
+	highpowered numericalDigit x = 10;
+	sacrosanct George bool = bogus;
+	
+	numericalDigit function2(numericalDigit param1, numericalDigit param2){
+		relinquish param1*param2;
+	}
+	
+	x = function2(x, bogus);
+}

@@ -952,12 +952,12 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
 		checkScope(ctx.target());
-		List<Type> argumentTypes = scope.arguments(ctx.target().toString());
+		List<Type> argumentTypes = scope.arguments(ctx.target().getText());
 		if(argumentTypes != null && ctx.expression().size() != 0){
 			if(argumentTypes.size() != ctx.expression().size())
 				addError(ctx, "Number of arguments do not match, expected '%d' arguments but got '%d' arguments.",
 						argumentTypes.size(), ctx.expression().size());
-			for(int index = 0; index < ctx.expression().size(); index++){
+			for(int index = 0; index < ctx.expression().size() && index < argumentTypes.size(); index++){
 				checkType(ctx.expression(index), argumentTypes.get(index));
 			}
 		}
@@ -1071,6 +1071,7 @@ public class Checker extends EloquenceBaseListener {
 	 * @param ctx
 	 */
 	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
+		setType(ctx, getType(ctx.type()));
 		this.scope.put(ctx.newID().getText(), getType(ctx.type()), true, null);
 		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
 	}

@@ -65,6 +65,11 @@ public class EloquenceCheckerTest {
 		checkFail("testFailFunc2");
 		checkFail("testFailFunc3");
 		checkFail("testFailFunc4");
+		checkFail("testFailFunc5");
+		checkFail("testFailFunc6");
+		checkFail("testFailFunc7");
+		checkFail("testFailFunc8");
+		checkFail("testFailFunc9");
 	}
 	
 	@Test
