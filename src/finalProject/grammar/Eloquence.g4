@@ -31,8 +31,8 @@ arrayElem
 	;
 	
 arrayDecl
-	: VAR newID (COMMA newID)* ASSIGN target												#varArrayDecl
-	| CONST ARRAY newID (COMMA newID)* ASSIGN target SETARRAY LBRACE arrayExpression RBRACE	#constArrayDecl
+	: VAR newID (COMMA newID)* ASSIGN target																#varArrayDecl
+	| CONST ARRAY newID (COMMA newID)* ASSIGN target SETARRAY LBRACE expression (COMMA expression)* RBRACE	#constArrayDecl
 	;	
 
 	
@@ -41,7 +41,7 @@ stat
 	| WHILE LPAR expression RPAR stat									#statWhile
 	| target ASSIGN expression SEMI										#statAssign
 	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI 	#statAssignArray		//Assign a single expression to an array
-	| target ASSIGN LBRACE arrayExpression RBRACE SEMI 					#statAssignArrayMult	//Assign multiple values to a n-dimensional array
+	| target ASSIGN LBRACE expression (COMMA expression)* RBRACE SEMI 	#statAssignArrayMult	//Assign multiple values to a n-dimensional array
 	| statBlockBody														#statBlock
 	| returnStat														#statReturn
 	| IN LPAR target (COMMA target)* RPAR SEMI							#statIn
