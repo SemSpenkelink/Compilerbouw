@@ -18,12 +18,14 @@ program functions{
 		}
 	}
 */
-	numericaldigit func2(numericalDigit two){
-		relinquish two*2;
+	numericaldigit func2(numericalDigit a,numericalDigit b){
+		relinquish a*b;
 	}
 	
-	x = func2(4);
+	x = func2(4,4);
 	
+	assuming(x equalTo 16)
+		x = 13;
 	
 //	function(3,4);
 	exude(x);

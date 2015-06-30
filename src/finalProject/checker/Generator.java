@@ -234,6 +234,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null;  }
 	
 	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { 
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
 		
 		Label body = createLabel(ctx, "ifBody");
 		Label ifContinue = createLabel(ctx, "continue");
@@ -255,7 +257,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		emit(ifContinue, OpCode.nop);
-		
 		return null; }
 	
 	@Override public Op visitStatWhile(EloquenceParser.StatWhileContext ctx) { 
@@ -280,9 +281,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatAssign(EloquenceParser.StatAssignContext ctx) { 
-		System.out.println(" \n Stat assign, before children");
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
-		System.out.println(" \n visitStatAssign = empty \n offset of target: " + offset(ctx.target(0)));
 		for(TargetContext target : ctx.target()){
 			if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
 				emit(OpCode.c2c, reg(ctx.expression()),reg(target));
@@ -296,9 +297,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
-		
-		System.out.println("stat assign array \n");
 		
 			//Start by computing the begin value of the array. We'll store that in reg1
 			emit(OpCode.loadAI, arp, offset(ctx.target()), reg1);
@@ -319,6 +320,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		System.out.println("\n Visit Mult array assign");
 		//Start by computing the begin value of the array. We'll store that in reg1
@@ -334,17 +337,26 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		return null; }
 	
-	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {
+	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {//TODO add these lables
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		
 		return visitChildren(ctx); }
 	
-	@Override public Op visitStatReturn(EloquenceParser.StatReturnContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitStatReturn(EloquenceParser.StatReturnContext ctx) { 
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
+		return visitChildren(ctx); }
 	
-	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { 
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
+		return visitChildren(ctx); }
 	
 	@Override public Op visitStatOut(EloquenceParser.StatOutContext ctx) { 
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
+		
 		visitChildren(ctx);
 		for(ExpressionContext out : ctx.expression()){
 			emit(OpCode.out, new Str("Output: ") , reg(out));
@@ -352,25 +364,28 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		return null; }
 	
-	@Override public Op visitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) { return visitChildren(ctx); }
-	
-	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { return visitChildren(ctx); }
-	
-	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) {
-		System.out.println("Target ID, offset : " + offset(ctx.ID()));
-	
-		emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));
-		
-			return null;  }
-	
-	@Override public Op visitNewID(EloquenceParser.NewIDContext ctx) { //TODO ID
-		System.out.println("visit New ID");
-			
-			emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx.ID()));
+	@Override public Op visitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
 		return visitChildren(ctx); }
 	
+	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { 
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
+		return visitChildren(ctx); }
+	
+	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) {
+		emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));
+			return null;  }
+	
+	@Override public Op visitNewID(EloquenceParser.NewIDContext ctx) {
+		visitChildren(ctx);
+		emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx.ID()));
+		return null; }
+	
 	@Override public Op visitReturnStat(EloquenceParser.ReturnStatContext ctx) { 
-		System.out.println("RETURN STAT RETURN STAT RETURN STAT RETURN STAT RETURN STAT");
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		if(ctx.expression() != null){
 			emit(OpCode.pop, reg3);
@@ -553,10 +568,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.push, reg(e));	
 		}
 		
-		emit(OpCode.jumpI, funcAddr.get(ctx.target().getText())); //TODO
+		emit(OpCode.jumpI, funcAddr.get(ctx.target().getText())); 
 		emit(funcContinue, OpCode.nop);
 		emit(OpCode.pop, reg(ctx));
-//		emit(OpCode.loadI, new Num(5), reg(ctx));
 		return null; }
 	
 	@Override public Op visitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
@@ -601,8 +615,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		visit(ctx.body());
 		visit(ctx.returnStat());
-	//	emit(OpCode.pop, reg3);
-	//	emit(OpCode.jump, reg3);
 		emit(funcEnd, OpCode.nop);
 		return null;
 		}
