@@ -12,8 +12,9 @@ program arrayTest{
 	//Assign array
 	highPowered a, b = x;
 	
-	a = {[bogus,bogus,bogus]};
+	a = {bogus,bogus,bogus};
 	
 	//const array
-	sacrosanct hodgepodge y = x << {[bogus,bogus,bogus]};
+	sacrosanct y = x << {bogus,bogus,bogus};
+	highPowered c = x << {unfeigned, unfeigned, unfeigned};
 }

@@ -190,18 +190,25 @@ public class Checker extends EloquenceBaseListener {
 	}
 
 	/**
-	 * Check whether the type of the given arrayExpression equals that of the element type of the target array.
+	 * Check for each expression, whether the types are equal and
+	 * whether the types correspond to the element type of the target array.
 	 * For each ID, set the type to that of the target array.
 	 * Add the ID to the scope and set the offset accordingly.
 	 * Set the type of this declaration to that of the target.
 	 * Set the entry to itself.
 	 * 
 	 * CFG creation:
-	 * Create entry and exit nodes, link the entry node to that of its arrayExpression.
-	 * Link the exit node of the arrayExpression to its own exit node.
+	 * Create entry and exit nodes, link them to the expressions sequentially.
 	 */
 	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
-		checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
+		Type type = getType(ctx.expression(0));
+		for(ExpressionContext expr : ctx.expression()){
+			if(expr.equals(ctx.expression(0)))
+				continue;
+			checkType(expr, type);
+		}		
+		checkType(ctx.expression(0), ((Type.Array)getType(ctx.target())).getElemType());
+		
 		for(NewIDContext id : ctx.newID()){
 			setType(id, this.scope.type(ctx.target().getText()));
 			setType(id, this.scope.type(ctx.target().getText()));
@@ -213,8 +220,10 @@ public class Checker extends EloquenceBaseListener {
 
 		/** CFG creation. */
 		constructNodes(ctx);
-		entry.get(ctx).addEdge(entry.get(ctx.arrayExpression()));
-		exit.get(ctx.arrayExpression()).addEdge(exit.get(ctx));
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(exit.get(ctx));
+		for(int index = 1; index < ctx.expression().size(); index++)
+			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
 	}
 	
 	/**
@@ -350,9 +359,9 @@ public class Checker extends EloquenceBaseListener {
 		if(checkScope(ctx.target()) && checkNotNull(ctx.expression())){
 			checkType(ctx.expression(), getType(ctx.target()));
 			checkMutable(ctx.target());
+			setType(ctx, this.scope.type(ctx.target().getText()));
+			setOffset(ctx, scope.offset(ctx.target().getText()));
 		}
-		setType(ctx, this.scope.type(ctx.target().getText()));
-		setOffset(ctx, scope.offset(ctx.target().getText()));
 		
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -397,17 +406,28 @@ public class Checker extends EloquenceBaseListener {
 	 * of the arrayExpression to the exit of the statAssignArrayMult.
 	 */
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
+		//TODO explain
 		if(checkScope(ctx.target())){
-			checkType(ctx.arrayExpression(), ((Type.Array)getType(ctx.target())).getElemType());
+			Type type = getType(ctx.expression(0));
+			for(ExpressionContext expr : ctx.expression()){
+				if(expr.equals(ctx.expression(0)))
+					continue;
+				checkType(expr, type);
+			}
+			
+			checkType(ctx.expression(0), ((Type.Array)getType(ctx.target())).getElemType());
 			checkMutable(ctx.target());
 		}
 		setType(ctx, getType(ctx.target()));
 		setEntry(ctx, entry(ctx.target()));
 
 		/** CFG creation. */
+		//TODO explain
 		constructNodes(ctx);
-		entry.get(ctx).addEdge(entry.get(ctx.arrayExpression()));
-		exit.get(ctx.arrayExpression()).addEdge(exit.get(ctx));
+		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
+		exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(exit.get(ctx));
+		for(int index = 1; index < ctx.expression().size(); index++)
+			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
 	}
 	
 	/**
@@ -877,48 +897,6 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, getType(ctx.expression()));
 		setEntry(ctx, entry(ctx.expression()));
 		
-		/** CFG creation. */
-		constructNodes(ctx);
-		entry.get(ctx).addEdge(entry.get(ctx.expression()));
-		exit.get(ctx.expression()).addEdge(exit.get(ctx));
-	}
-
-	/**
-	 * Check if all types of expressions are equal.
-	 * Set type to the type of first expression.
-	 * Set entry to itself.
-	 * 
-	 * CFG creation:
-	 * Create entry and exit nodes and link them sequentially.
-	 */
-	@Override public void exitArrayMulExpr(finalProject.grammar.EloquenceParser.ArrayMulExprContext ctx) {		
-		Type type = getType(ctx.expression(0));
-		for(ExpressionContext expr : ctx.expression()){
-			if(expr.equals(ctx.expression(0)))
-				continue;
-			checkType(expr, type);
-		}
-		setType(ctx, type);
-		setEntry(ctx, ctx);
-
-		/** CFG creation. */
-		constructNodes(ctx);
-		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
-		exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(exit.get(ctx));
-		for(int index = 1; index < ctx.expression().size(); index++)
-			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
-	}
-	
-	/**
-	 * Set the type to the type of expression.
-	 * 
-	 * CFG creation:
-	 * Create entry and exit nodes. Link the entry node to the entry node of expression.
-	 * Link the exit node of expression to the exit node of arraySingleExpr.
-	 */
-	@Override public void exitArraySingleExpr(finalProject.grammar.EloquenceParser.ArraySingleExprContext ctx) {
-		setType(ctx, getType(ctx.expression()));
-
 		/** CFG creation. */
 		constructNodes(ctx);
 		entry.get(ctx).addEdge(entry.get(ctx.expression()));
