@@ -16,4 +16,7 @@ program funcTest{
 	}
 	
 	func1(5);
+	
+	x = func2(x);
+	x = func2(5);
 }

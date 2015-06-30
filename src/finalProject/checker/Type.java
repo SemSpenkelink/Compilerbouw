@@ -98,7 +98,7 @@ abstract public class Type {
 
 		@Override
 		public int size() {
-			return (getUpper() - getLower() + 1) * this.elemType.size();
+			return (getUpper() - getLower() + 3) * this.elemType.size();
 		}
 
 		@Override
