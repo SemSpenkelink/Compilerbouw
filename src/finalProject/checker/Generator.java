@@ -177,10 +177,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx) { 
-		System.out.println("visitVarArrayDecl");
 		visitChildren(ctx);
-		System.out.println("\n");
+		System.out.println("\n visitVarArrayDecl");
+		
+		
 		for(NewIDContext newId : ctx.newID()){
+			System.out.println("\n offset: " + offset(newId.ID()));
 			emit(OpCode.storeAI, reg(ctx.target()), arp, offset(newId.ID()));
 			
 			emit(OpCode.loadI, offset(ctx.target()),reg1);	//load offset in reg1
@@ -190,13 +192,22 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.loadI, offset(newId.ID()), reg2);
 			emit(OpCode.addI, reg2, new Num(4), reg2);
 			emit(OpCode.storeAO, reg1, arp,reg2);
+			
+			if(ctx.SETARRAY() != null){
+				for(ExpressionContext c : ctx.expression()){
+					emit(OpCode.addI, reg2, new Num(4), reg2);
+					emit(OpCode.storeAO, reg(c), arp,reg2);
+				}
+				
+			}
+			
 		}
 		return null; }
 	
 	@Override public Op visitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) {
-		
-		System.out.println("visit Constant array");
 		visitChildren(ctx);
+		System.out.println("\n visitConstArrayDecl");
+		
 		for(NewIDContext newId : ctx.newID()){
 			emit(OpCode.storeAI, reg(ctx.target()), arp, offset(newId.ID()));
 			
@@ -207,13 +218,16 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.loadI, offset(newId.ID()), reg2);
 			emit(OpCode.addI, reg2, new Num(4), reg2);
 			emit(OpCode.storeAO, reg1, arp,reg2);
+			
+
+			for(ExpressionContext c : ctx.expression()){
+				emit(OpCode.addI, reg2, new Num(4), reg2);
+				emit(OpCode.storeAO, reg(c), arp,reg2);
+			}
 		}
-		
-		return visitChildren(ctx); }
+		return null;  }
 	
 	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { //TODO if stat
-		
-		
 		
 		Label body = createLabel(ctx, "ifBody");
 		Label ifContinue = createLabel(ctx, "continue");
@@ -297,7 +311,20 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
-		visitChildren(ctx.target());
+		visitChildren(ctx);
+		System.out.println("\n Visit Mult array assign");
+		//Start by computing the begin value of the array. We'll store that in reg1
+		emit(OpCode.loadI, offset(ctx.target()), reg1);
+		
+		//Add 8
+		emit(OpCode.addI, reg1, new Num(4),reg1); //This is the address where the value needs to be stored.
+	//	emit(OpCode.addI, reg1, offset(ctx.target()),reg1);
+		//The the target value
+	//	 emit(OpCode.storeAO, reg(ctx.expression(1)), arp,reg1);
+		 for(int i = 0; i < ctx.expression().size();i++){
+			 emit(OpCode.addI, reg1, new Num(4),reg1);
+			 emit(OpCode.storeAO, reg(ctx.expression(i)), arp,reg1);
+		 }
 		
 		
 		
