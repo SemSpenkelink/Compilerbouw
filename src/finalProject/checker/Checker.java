@@ -397,16 +397,15 @@ public class Checker extends EloquenceBaseListener {
 	}
 
 	/**
-	 * Check if the target is in the scope. If this is the case, check if the type of the arrayExpression
+	 * Check if the target is in the scope. If this is the case, check
+	 * for each expression if they are of the same type and if they are of the type of  the target array elements.
 	 * is equal to that of the type of the array elements. Check if the target is mutable.
 	 * Set the type to that of the target and the entry also to the type of the target.
 	 * 
 	 * CFG creation:
-	 * Create entry and exit nodes, link the entry node to that of the arrayExpression and the exit
-	 * of the arrayExpression to the exit of the statAssignArrayMult.
+	 * Create entry and exit nodes, link the nodes to the expressions sequentially.
 	 */
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
-		//TODO explain
 		if(checkScope(ctx.target())){
 			Type type = getType(ctx.expression(0));
 			for(ExpressionContext expr : ctx.expression()){
@@ -422,7 +421,6 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, entry(ctx.target()));
 
 		/** CFG creation. */
-		//TODO explain
 		constructNodes(ctx);
 		entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
 		exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(exit.get(ctx));
