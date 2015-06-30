@@ -1,4 +1,4 @@
-// Generated from Eloquence.g4 by ANTLR 4.4
+// Generated from Eloquence.g4 by ANTLR 4.5
 package finalProject.grammar;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class EloquenceParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.4", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -24,14 +24,6 @@ public class EloquenceParser extends Parser {
 		MODULO=34, MULTIPLY=35, PLUS=36, QUOTE=37, RBRACE=38, RPAR=39, RSQBRACKET=40, 
 		SEMI=41, SETARRAY=42, ID=43, NUM=44, CHARACTER=45, COMMENT=46, LINE_COMMENT=47, 
 		WS=48;
-	public static final String[] tokenNames = {
-		"<INVALID>", "AND", "ARRAY", "BOOLEAN", "CHAR", "CONST", "ELSE", "EQ", 
-		"FALSE", "GE", "GT", "IF", "IN", "INTEGER", "LE", "LT", "NE", "NOT", "OR", 
-		"OUT", "PROGRAM", "RETURN", "TRUE", "VAR", "VOID", "WHILE", "'='", "','", 
-		"'/'", "'.'", "'{'", "'('", "'['", "'-'", "'%'", "'*'", "'+'", "'''", 
-		"'}'", "')'", "']'", "';'", "'<<'", "ID", "NUM", "CHARACTER", "COMMENT", 
-		"LINE_COMMENT", "WS"
-	};
 	public static final int
 		RULE_program = 0, RULE_body = 1, RULE_decl = 2, RULE_variable = 3, RULE_arrayTypeDecl = 4, 
 		RULE_arrayElem = 5, RULE_arrayDecl = 6, RULE_stat = 7, RULE_statBlockBody = 8, 
@@ -46,11 +38,55 @@ public class EloquenceParser extends Parser {
 		"functionID", "voidFunc", "returnFunc", "parameters"
 	};
 
-	@Override
-	public String getGrammarFileName() { return "Eloquence.g4"; }
+	private static final String[] _LITERAL_NAMES = {
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, "'='", "','", "'/'", "'.'", "'{'", "'('", "'['", "'-'", "'%'", 
+		"'*'", "'+'", "'''", "'}'", "')'", "']'", "';'", "'<<'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, "AND", "ARRAY", "BOOLEAN", "CHAR", "CONST", "ELSE", "EQ", "FALSE", 
+		"GE", "GT", "IF", "IN", "INTEGER", "LE", "LT", "NE", "NOT", "OR", "OUT", 
+		"PROGRAM", "RETURN", "TRUE", "VAR", "VOID", "WHILE", "ASSIGN", "COMMA", 
+		"DIVIDE", "DOT", "LBRACE", "LPAR", "LSQBRACKET", "MINUS", "MODULO", "MULTIPLY", 
+		"PLUS", "QUOTE", "RBRACE", "RPAR", "RSQBRACKET", "SEMI", "SETARRAY", "ID", 
+		"NUM", "CHARACTER", "COMMENT", "LINE_COMMENT", "WS"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
 
 	@Override
-	public String[] getTokenNames() { return tokenNames; }
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
+
+	@Override
+	public String getGrammarFileName() { return "Eloquence.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -66,13 +102,13 @@ public class EloquenceParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class ProgramContext extends ParserRuleContext {
+		public TerminalNode PROGRAM() { return getToken(EloquenceParser.PROGRAM, 0); }
 		public TerminalNode ID() { return getToken(EloquenceParser.ID, 0); }
-		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
 		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public TerminalNode PROGRAM() { return getToken(EloquenceParser.PROGRAM, 0); }
+		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
 		public ProgramContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -98,11 +134,16 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(50); match(PROGRAM);
-			setState(51); match(ID);
-			setState(52); match(LBRACE);
-			setState(53); body();
-			setState(54); match(RBRACE);
+			setState(50);
+			match(PROGRAM);
+			setState(51);
+			match(ID);
+			setState(52);
+			match(LBRACE);
+			setState(53);
+			body();
+			setState(54);
+			match(RBRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -120,26 +161,26 @@ public class EloquenceParser extends Parser {
 		public List<ArrayTypeDeclContext> arrayTypeDecl() {
 			return getRuleContexts(ArrayTypeDeclContext.class);
 		}
-		public DeclContext decl(int i) {
-			return getRuleContext(DeclContext.class,i);
+		public ArrayTypeDeclContext arrayTypeDecl(int i) {
+			return getRuleContext(ArrayTypeDeclContext.class,i);
 		}
 		public List<DeclContext> decl() {
 			return getRuleContexts(DeclContext.class);
 		}
-		public ArrayTypeDeclContext arrayTypeDecl(int i) {
-			return getRuleContext(ArrayTypeDeclContext.class,i);
+		public DeclContext decl(int i) {
+			return getRuleContext(DeclContext.class,i);
+		}
+		public List<StatContext> stat() {
+			return getRuleContexts(StatContext.class);
+		}
+		public StatContext stat(int i) {
+			return getRuleContext(StatContext.class,i);
 		}
 		public List<FuncContext> func() {
 			return getRuleContexts(FuncContext.class);
 		}
 		public FuncContext func(int i) {
 			return getRuleContext(FuncContext.class,i);
-		}
-		public StatContext stat(int i) {
-			return getRuleContext(StatContext.class,i);
-		}
-		public List<StatContext> stat() {
-			return getRuleContexts(StatContext.class);
 		}
 		public BodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -177,24 +218,35 @@ public class EloquenceParser extends Parser {
 					switch (_input.LA(1)) {
 					case ARRAY:
 						{
-						setState(56); arrayTypeDecl();
+						setState(56);
+						arrayTypeDecl();
 						}
 						break;
 					case CONST:
 					case VAR:
 						{
-						setState(57); decl();
+						setState(57);
+						decl();
 						}
 						break;
+					case FALSE:
 					case IF:
 					case IN:
+					case NOT:
 					case OUT:
 					case RETURN:
+					case TRUE:
 					case WHILE:
 					case LBRACE:
+					case LPAR:
+					case MINUS:
+					case PLUS:
 					case ID:
+					case NUM:
+					case CHARACTER:
 						{
-						setState(58); stat();
+						setState(58);
+						stat();
 						}
 						break;
 					case BOOLEAN:
@@ -202,7 +254,8 @@ public class EloquenceParser extends Parser {
 					case INTEGER:
 					case VOID:
 						{
-						setState(59); func();
+						setState(59);
+						func();
 						}
 						break;
 					default:
@@ -239,10 +292,10 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class DeclArrayContext extends DeclContext {
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
 		public ArrayDeclContext arrayDecl() {
 			return getRuleContext(ArrayDeclContext.class,0);
 		}
+		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
 		public DeclArrayContext(DeclContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -259,14 +312,14 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class DeclVarContext extends DeclContext {
-		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
 		public TerminalNode VAR() { return getToken(EloquenceParser.VAR, 0); }
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
 		public VariableContext variable() {
 			return getRuleContext(VariableContext.class,0);
+		}
+		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
+		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
 		public DeclVarContext(DeclContext ctx) { copyFrom(ctx); }
 		@Override
@@ -285,14 +338,14 @@ public class EloquenceParser extends Parser {
 	}
 	public static class DeclConstVarContext extends DeclContext {
 		public TerminalNode CONST() { return getToken(EloquenceParser.CONST, 0); }
-		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
 		public VariableContext variable() {
 			return getRuleContext(VariableContext.class,0);
 		}
+		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
 		public DeclConstVarContext(DeclContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -320,37 +373,49 @@ public class EloquenceParser extends Parser {
 				_localctx = new DeclVarContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(65); match(VAR);
-				setState(66); variable();
+				setState(65);
+				match(VAR);
+				setState(66);
+				variable();
 				setState(69);
 				_la = _input.LA(1);
 				if (_la==ASSIGN) {
 					{
-					setState(67); match(ASSIGN);
-					setState(68); expression(0);
+					setState(67);
+					match(ASSIGN);
+					setState(68);
+					expression(0);
 					}
 				}
 
-				setState(71); match(SEMI);
+				setState(71);
+				match(SEMI);
 				}
 				break;
 			case 2:
 				_localctx = new DeclConstVarContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(73); match(CONST);
-				setState(74); variable();
-				setState(75); match(ASSIGN);
-				setState(76); expression(0);
-				setState(77); match(SEMI);
+				setState(73);
+				match(CONST);
+				setState(74);
+				variable();
+				setState(75);
+				match(ASSIGN);
+				setState(76);
+				expression(0);
+				setState(77);
+				match(SEMI);
 				}
 				break;
 			case 3:
 				_localctx = new DeclArrayContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(79); arrayDecl();
-				setState(80); match(SEMI);
+				setState(79);
+				arrayDecl();
+				setState(80);
+				match(SEMI);
 				}
 				break;
 			}
@@ -367,16 +432,16 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class VariableContext extends ParserRuleContext {
-		public NewIDContext newID(int i) {
-			return getRuleContext(NewIDContext.class,i);
-		}
-		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
 		public List<NewIDContext> newID() {
 			return getRuleContexts(NewIDContext.class);
 		}
+		public NewIDContext newID(int i) {
+			return getRuleContext(NewIDContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(EloquenceParser.COMMA, i);
 		}
@@ -406,16 +471,20 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(84); type();
-			setState(85); newID();
+			setState(84);
+			type();
+			setState(85);
+			newID();
 			setState(90);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(86); match(COMMA);
-				setState(87); newID();
+				setState(86);
+				match(COMMA);
+				setState(87);
+				newID();
 				}
 				}
 				setState(92);
@@ -437,19 +506,19 @@ public class EloquenceParser extends Parser {
 
 	public static class ArrayTypeDeclContext extends ParserRuleContext {
 		public TerminalNode ARRAY() { return getToken(EloquenceParser.ARRAY, 0); }
-		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
-		public ArrayElemContext arrayElem() {
-			return getRuleContext(ArrayElemContext.class,0);
-		}
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
-		public TypeContext type() {
-			return getRuleContext(TypeContext.class,0);
-		}
-		public TerminalNode RSQBRACKET() { return getToken(EloquenceParser.RSQBRACKET, 0); }
 		public NewIDContext newID() {
 			return getRuleContext(NewIDContext.class,0);
 		}
+		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
+		public TypeContext type() {
+			return getRuleContext(TypeContext.class,0);
+		}
 		public TerminalNode LSQBRACKET() { return getToken(EloquenceParser.LSQBRACKET, 0); }
+		public ArrayElemContext arrayElem() {
+			return getRuleContext(ArrayElemContext.class,0);
+		}
+		public TerminalNode RSQBRACKET() { return getToken(EloquenceParser.RSQBRACKET, 0); }
+		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
 		public ArrayTypeDeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -475,14 +544,22 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(93); match(ARRAY);
-			setState(94); newID();
-			setState(95); match(ASSIGN);
-			setState(96); type();
-			setState(97); match(LSQBRACKET);
-			setState(98); arrayElem();
-			setState(99); match(RSQBRACKET);
-			setState(100); match(SEMI);
+			setState(93);
+			match(ARRAY);
+			setState(94);
+			newID();
+			setState(95);
+			match(ASSIGN);
+			setState(96);
+			type();
+			setState(97);
+			match(LSQBRACKET);
+			setState(98);
+			arrayElem();
+			setState(99);
+			match(RSQBRACKET);
+			setState(100);
+			match(SEMI);
 			}
 		}
 		catch (RecognitionException re) {
@@ -497,11 +574,11 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class ArrayElemContext extends ParserRuleContext {
-		public List<TerminalNode> DOT() { return getTokens(EloquenceParser.DOT); }
 		public List<TerminalNode> NUM() { return getTokens(EloquenceParser.NUM); }
 		public TerminalNode NUM(int i) {
 			return getToken(EloquenceParser.NUM, i);
 		}
+		public List<TerminalNode> DOT() { return getTokens(EloquenceParser.DOT); }
 		public TerminalNode DOT(int i) {
 			return getToken(EloquenceParser.DOT, i);
 		}
@@ -530,10 +607,14 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(102); match(NUM);
-			setState(103); match(DOT);
-			setState(104); match(DOT);
-			setState(105); match(NUM);
+			setState(102);
+			match(NUM);
+			setState(103);
+			match(DOT);
+			setState(104);
+			match(DOT);
+			setState(105);
+			match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -559,6 +640,10 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class VarArrayDeclContext extends ArrayDeclContext {
+		public TerminalNode VAR() { return getToken(EloquenceParser.VAR, 0); }
+		public List<NewIDContext> newID() {
+			return getRuleContexts(NewIDContext.class);
+		}
 		public NewIDContext newID(int i) {
 			return getRuleContext(NewIDContext.class,i);
 		}
@@ -566,23 +651,19 @@ public class EloquenceParser extends Parser {
 		public TargetContext target() {
 			return getRuleContext(TargetContext.class,0);
 		}
-		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
-		public TerminalNode VAR() { return getToken(EloquenceParser.VAR, 0); }
-		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
 		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode SETARRAY() { return getToken(EloquenceParser.SETARRAY, 0); }
-		public List<NewIDContext> newID() {
-			return getRuleContexts(NewIDContext.class);
-		}
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
 		public TerminalNode COMMA(int i) {
 			return getToken(EloquenceParser.COMMA, i);
 		}
+		public TerminalNode SETARRAY() { return getToken(EloquenceParser.SETARRAY, 0); }
+		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
 		public VarArrayDeclContext(ArrayDeclContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -600,6 +681,9 @@ public class EloquenceParser extends Parser {
 	}
 	public static class ConstArrayDeclContext extends ArrayDeclContext {
 		public TerminalNode CONST() { return getToken(EloquenceParser.CONST, 0); }
+		public List<NewIDContext> newID() {
+			return getRuleContexts(NewIDContext.class);
+		}
 		public NewIDContext newID(int i) {
 			return getRuleContext(NewIDContext.class,i);
 		}
@@ -607,19 +691,16 @@ public class EloquenceParser extends Parser {
 		public TargetContext target() {
 			return getRuleContext(TargetContext.class,0);
 		}
-		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
-		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
-		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
 		public TerminalNode SETARRAY() { return getToken(EloquenceParser.SETARRAY, 0); }
-		public List<NewIDContext> newID() {
-			return getRuleContexts(NewIDContext.class);
-		}
+		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(EloquenceParser.COMMA, i);
 		}
@@ -650,46 +731,58 @@ public class EloquenceParser extends Parser {
 				_localctx = new VarArrayDeclContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(107); match(VAR);
-				setState(108); newID();
+				setState(107);
+				match(VAR);
+				setState(108);
+				newID();
 				setState(113);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(109); match(COMMA);
-					setState(110); newID();
+					setState(109);
+					match(COMMA);
+					setState(110);
+					newID();
 					}
 					}
 					setState(115);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(116); match(ASSIGN);
-				setState(117); target();
+				setState(116);
+				match(ASSIGN);
+				setState(117);
+				target();
 				setState(130);
 				_la = _input.LA(1);
 				if (_la==SETARRAY) {
 					{
-					setState(118); match(SETARRAY);
-					setState(119); match(LBRACE);
-					setState(120); expression(0);
+					setState(118);
+					match(SETARRAY);
+					setState(119);
+					match(LBRACE);
+					setState(120);
+					expression(0);
 					setState(125);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					while (_la==COMMA) {
 						{
 						{
-						setState(121); match(COMMA);
-						setState(122); expression(0);
+						setState(121);
+						match(COMMA);
+						setState(122);
+						expression(0);
 						}
 						}
 						setState(127);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 					}
-					setState(128); match(RBRACE);
+					setState(128);
+					match(RBRACE);
 					}
 				}
 
@@ -699,42 +792,54 @@ public class EloquenceParser extends Parser {
 				_localctx = new ConstArrayDeclContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(132); match(CONST);
-				setState(133); newID();
+				setState(132);
+				match(CONST);
+				setState(133);
+				newID();
 				setState(138);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(134); match(COMMA);
-					setState(135); newID();
+					setState(134);
+					match(COMMA);
+					setState(135);
+					newID();
 					}
 					}
 					setState(140);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(141); match(ASSIGN);
-				setState(142); target();
-				setState(143); match(SETARRAY);
-				setState(144); match(LBRACE);
-				setState(145); expression(0);
+				setState(141);
+				match(ASSIGN);
+				setState(142);
+				target();
+				setState(143);
+				match(SETARRAY);
+				setState(144);
+				match(LBRACE);
+				setState(145);
+				expression(0);
 				setState(150);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(146); match(COMMA);
-					setState(147); expression(0);
+					setState(146);
+					match(COMMA);
+					setState(147);
+					expression(0);
 					}
 					}
 					setState(152);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(153); match(RBRACE);
+				setState(153);
+				match(RBRACE);
 				}
 				break;
 			default:
@@ -782,45 +887,15 @@ public class EloquenceParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class StatOutContext extends StatContext {
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
-		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public TerminalNode COMMA(int i) {
-			return getToken(EloquenceParser.COMMA, i);
-		}
-		public TerminalNode OUT() { return getToken(EloquenceParser.OUT, 0); }
-		public StatOutContext(StatContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterStatOut(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitStatOut(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof EloquenceVisitor ) return ((EloquenceVisitor<? extends T>)visitor).visitStatOut(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 	public static class StatWhileContext extends StatContext {
-		public StatContext stat() {
-			return getRuleContext(StatContext.class,0);
-		}
-		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public TerminalNode WHILE() { return getToken(EloquenceParser.WHILE, 0); }
+		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
+		public StatContext stat() {
+			return getRuleContext(StatContext.class,0);
 		}
 		public StatWhileContext(StatContext ctx) { copyFrom(ctx); }
 		@Override
@@ -857,44 +932,20 @@ public class EloquenceParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class StatInContext extends StatContext {
+	public static class StatAssignContext extends StatContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
 		public List<TargetContext> target() {
 			return getRuleContexts(TargetContext.class);
 		}
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
-		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
-		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public TargetContext target(int i) {
 			return getRuleContext(TargetContext.class,i);
 		}
-		public TerminalNode IN() { return getToken(EloquenceParser.IN, 0); }
-		public TerminalNode COMMA(int i) {
-			return getToken(EloquenceParser.COMMA, i);
-		}
-		public StatInContext(StatContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterStatIn(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitStatIn(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof EloquenceVisitor ) return ((EloquenceVisitor<? extends T>)visitor).visitStatIn(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class StatAssignContext extends StatContext {
-		public TargetContext target() {
-			return getRuleContext(TargetContext.class,0);
-		}
-		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
+		public List<TerminalNode> ASSIGN() { return getTokens(EloquenceParser.ASSIGN); }
+		public TerminalNode ASSIGN(int i) {
+			return getToken(EloquenceParser.ASSIGN, i);
 		}
 		public StatAssignContext(StatContext ctx) { copyFrom(ctx); }
 		@Override
@@ -911,20 +962,40 @@ public class EloquenceParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class StatExprContext extends StatContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
+		public StatExprContext(StatContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterStatExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitStatExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EloquenceVisitor ) return ((EloquenceVisitor<? extends T>)visitor).visitStatExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class StatAssignArrayContext extends StatContext {
 		public TargetContext target() {
 			return getRuleContext(TargetContext.class,0);
 		}
-		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
+		public TerminalNode LSQBRACKET() { return getToken(EloquenceParser.LSQBRACKET, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
 		public TerminalNode RSQBRACKET() { return getToken(EloquenceParser.RSQBRACKET, 0); }
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public TerminalNode LSQBRACKET() { return getToken(EloquenceParser.LSQBRACKET, 0); }
+		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
+		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
 		public StatAssignArrayContext(StatContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -945,16 +1016,16 @@ public class EloquenceParser extends Parser {
 			return getRuleContext(TargetContext.class,0);
 		}
 		public TerminalNode ASSIGN() { return getToken(EloquenceParser.ASSIGN, 0); }
-		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
 		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
-		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
+		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(EloquenceParser.COMMA, i);
 		}
@@ -974,19 +1045,19 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class StatIfContext extends StatContext {
-		public TerminalNode ELSE() { return getToken(EloquenceParser.ELSE, 0); }
 		public TerminalNode IF() { return getToken(EloquenceParser.IF, 0); }
-		public StatContext stat(int i) {
-			return getRuleContext(StatContext.class,i);
-		}
-		public List<StatContext> stat() {
-			return getRuleContexts(StatContext.class);
-		}
 		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
+		public List<StatContext> stat() {
+			return getRuleContexts(StatContext.class);
+		}
+		public StatContext stat(int i) {
+			return getRuleContext(StatContext.class,i);
+		}
+		public TerminalNode ELSE() { return getToken(EloquenceParser.ELSE, 0); }
 		public StatIfContext(StatContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -1027,23 +1098,31 @@ public class EloquenceParser extends Parser {
 		enterRule(_localctx, 14, RULE_stat);
 		int _la;
 		try {
-			setState(230);
-			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
+			int _alt;
+			setState(212);
+			switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 			case 1:
 				_localctx = new StatIfContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(157); match(IF);
-				setState(158); match(LPAR);
-				setState(159); expression(0);
-				setState(160); match(RPAR);
-				setState(161); stat();
+				setState(157);
+				match(IF);
+				setState(158);
+				match(LPAR);
+				setState(159);
+				expression(0);
+				setState(160);
+				match(RPAR);
+				setState(161);
+				stat();
 				setState(164);
 				switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
 				case 1:
 					{
-					setState(162); match(ELSE);
-					setState(163); stat();
+					setState(162);
+					match(ELSE);
+					setState(163);
+					stat();
 					}
 					break;
 				}
@@ -1053,132 +1132,138 @@ public class EloquenceParser extends Parser {
 				_localctx = new StatWhileContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(166); match(WHILE);
-				setState(167); match(LPAR);
-				setState(168); expression(0);
-				setState(169); match(RPAR);
-				setState(170); stat();
+				setState(166);
+				match(WHILE);
+				setState(167);
+				match(LPAR);
+				setState(168);
+				expression(0);
+				setState(169);
+				match(RPAR);
+				setState(170);
+				stat();
 				}
 				break;
 			case 3:
 				_localctx = new StatAssignContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(172); target();
-				setState(173); match(ASSIGN);
-				setState(174); expression(0);
-				setState(175); match(SEMI);
+				setState(175); 
+				_errHandler.sync(this);
+				_alt = 1;
+				do {
+					switch (_alt) {
+					case 1:
+						{
+						{
+						setState(172);
+						target();
+						setState(173);
+						match(ASSIGN);
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					setState(177); 
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input,12,_ctx);
+				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+				setState(179);
+				expression(0);
+				setState(180);
+				match(SEMI);
 				}
 				break;
 			case 4:
 				_localctx = new StatAssignArrayContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(177); target();
-				setState(178); match(LSQBRACKET);
-				setState(179); expression(0);
-				setState(180); match(RSQBRACKET);
-				setState(181); match(ASSIGN);
-				setState(182); expression(0);
-				setState(183); match(SEMI);
+				setState(182);
+				target();
+				setState(183);
+				match(LSQBRACKET);
+				setState(184);
+				expression(0);
+				setState(185);
+				match(RSQBRACKET);
+				setState(186);
+				match(ASSIGN);
+				setState(187);
+				expression(0);
+				setState(188);
+				match(SEMI);
 				}
 				break;
 			case 5:
 				_localctx = new StatAssignArrayMultContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(185); target();
-				setState(186); match(ASSIGN);
-				setState(187); match(LBRACE);
-				setState(188); expression(0);
+				setState(190);
+				target();
+				setState(191);
+				match(ASSIGN);
+				setState(192);
+				match(LBRACE);
 				setState(193);
+				expression(0);
+				setState(198);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(189); match(COMMA);
-					setState(190); expression(0);
-					}
-					}
+					setState(194);
+					match(COMMA);
 					setState(195);
+					expression(0);
+					}
+					}
+					setState(200);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(196); match(RBRACE);
-				setState(197); match(SEMI);
+				setState(201);
+				match(RBRACE);
+				setState(202);
+				match(SEMI);
 				}
 				break;
 			case 6:
 				_localctx = new StatBlockContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(199); statBlockBody();
+				setState(204);
+				statBlockBody();
 				}
 				break;
 			case 7:
 				_localctx = new StatReturnContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(200); returnStat();
+				setState(205);
+				returnStat();
 				}
 				break;
 			case 8:
-				_localctx = new StatInContext(_localctx);
+				_localctx = new StatVoidContext(_localctx);
 				enterOuterAlt(_localctx, 8);
 				{
-				setState(201); match(IN);
-				setState(202); match(LPAR);
-				setState(203); target();
-				setState(208);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while (_la==COMMA) {
-					{
-					{
-					setState(204); match(COMMA);
-					setState(205); target();
-					}
-					}
-					setState(210);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				}
-				setState(211); match(RPAR);
-				setState(212); match(SEMI);
+				setState(206);
+				functionID();
+				setState(207);
+				match(SEMI);
 				}
 				break;
 			case 9:
-				_localctx = new StatOutContext(_localctx);
+				_localctx = new StatExprContext(_localctx);
 				enterOuterAlt(_localctx, 9);
 				{
-				setState(214); match(OUT);
-				setState(215); match(LPAR);
-				setState(216); expression(0);
-				setState(221);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while (_la==COMMA) {
-					{
-					{
-					setState(217); match(COMMA);
-					setState(218); expression(0);
-					}
-					}
-					setState(223);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				}
-				setState(224); match(RPAR);
-				setState(225); match(SEMI);
-				}
-				break;
-			case 10:
-				_localctx = new StatVoidContext(_localctx);
-				enterOuterAlt(_localctx, 10);
-				{
-				setState(227); functionID();
-				setState(228); match(SEMI);
+				setState(209);
+				expression(0);
+				setState(210);
+				match(SEMI);
 				}
 				break;
 			}
@@ -1195,11 +1280,11 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class StatBlockBodyContext extends ParserRuleContext {
-		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
 		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
+		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
 		public StatBlockBodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1225,9 +1310,12 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(232); match(LBRACE);
-			setState(233); body();
-			setState(234); match(RBRACE);
+			setState(214);
+			match(LBRACE);
+			setState(215);
+			body();
+			setState(216);
+			match(RBRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1277,7 +1365,8 @@ public class EloquenceParser extends Parser {
 			_localctx = new TargetIdContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(236); match(ID);
+			setState(218);
+			match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1318,7 +1407,8 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(238); match(ID);
+			setState(220);
+			match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1364,16 +1454,19 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(240); match(RETURN);
-			setState(242);
+			setState(222);
+			match(RETURN);
+			setState(224);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FALSE) | (1L << NOT) | (1L << TRUE) | (1L << LBRACE) | (1L << LPAR) | (1L << MINUS) | (1L << PLUS) | (1L << ID) | (1L << NUM) | (1L << CHARACTER))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FALSE) | (1L << IN) | (1L << NOT) | (1L << OUT) | (1L << TRUE) | (1L << LBRACE) | (1L << LPAR) | (1L << MINUS) | (1L << PLUS) | (1L << ID) | (1L << NUM) | (1L << CHARACTER))) != 0)) {
 				{
-				setState(241); expression(0);
+				setState(223);
+				expression(0);
 				}
 			}
 
-			setState(244); match(SEMI);
+			setState(226);
+			match(SEMI);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1399,11 +1492,11 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class ExprCompContext extends ExpressionContext {
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
 		}
 		public CompareContext compare() {
 			return getRuleContext(CompareContext.class,0);
@@ -1424,15 +1517,15 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class ExprCompoundContext extends ExpressionContext {
-		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
 		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
-		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode SEMI() { return getToken(EloquenceParser.SEMI, 0); }
+		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
 		public ExprCompoundContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -1449,14 +1542,14 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class ExprMultContext extends ExpressionContext {
-		public MultiplyContext multiply() {
-			return getRuleContext(MultiplyContext.class,0);
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
+		public MultiplyContext multiply() {
+			return getRuleContext(MultiplyContext.class,0);
 		}
 		public ExprMultContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
@@ -1565,15 +1658,44 @@ public class EloquenceParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class ExprOrContext extends ExpressionContext {
-		public OrContext or() {
-			return getRuleContext(OrContext.class,0);
+	public static class StatOutContext extends ExpressionContext {
+		public TerminalNode OUT() { return getToken(EloquenceParser.OUT, 0); }
+		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
+		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(EloquenceParser.COMMA, i);
+		}
+		public StatOutContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterStatOut(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitStatOut(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EloquenceVisitor ) return ((EloquenceVisitor<? extends T>)visitor).visitStatOut(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprOrContext extends ExpressionContext {
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public OrContext or() {
+			return getRuleContext(OrContext.class,0);
 		}
 		public ExprOrContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
@@ -1590,12 +1712,41 @@ public class EloquenceParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class StatInContext extends ExpressionContext {
+		public TerminalNode IN() { return getToken(EloquenceParser.IN, 0); }
+		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
+		public List<TargetContext> target() {
+			return getRuleContexts(TargetContext.class);
+		}
+		public TargetContext target(int i) {
+			return getRuleContext(TargetContext.class,i);
+		}
+		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(EloquenceParser.COMMA, i);
+		}
+		public StatInContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).enterStatIn(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof EloquenceListener ) ((EloquenceListener)listener).exitStatIn(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EloquenceVisitor ) return ((EloquenceVisitor<? extends T>)visitor).visitStatIn(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class ExprParContext extends ExpressionContext {
 		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public ExprParContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -1612,14 +1763,14 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class ExprAddContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
 		public AdditionContext addition() {
 			return getRuleContext(AdditionContext.class,0);
-		}
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
 		}
 		public ExprAddContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
@@ -1637,11 +1788,11 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class ExprAndContext extends ExpressionContext {
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
 		}
 		public AndContext and() {
 			return getRuleContext(AndContext.class,0);
@@ -1701,11 +1852,11 @@ public class EloquenceParser extends Parser {
 		public TargetContext target() {
 			return getRuleContext(TargetContext.class,0);
 		}
-		public TerminalNode RSQBRACKET() { return getToken(EloquenceParser.RSQBRACKET, 0); }
+		public TerminalNode LSQBRACKET() { return getToken(EloquenceParser.LSQBRACKET, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode LSQBRACKET() { return getToken(EloquenceParser.LSQBRACKET, 0); }
+		public TerminalNode RSQBRACKET() { return getToken(EloquenceParser.RSQBRACKET, 0); }
 		public ExprArrayContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -1733,20 +1884,23 @@ public class EloquenceParser extends Parser {
 		ExpressionContext _prevctx = _localctx;
 		int _startState = 24;
 		enterRecursionRule(_localctx, 24, RULE_expression, _p);
+		int _la;
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(271);
-			switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
+			setState(277);
+			switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
 			case 1:
 				{
 				_localctx = new ExprUnaryContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(247); unary();
-				setState(248); expression(13);
+				setState(229);
+				unary();
+				setState(230);
+				expression(13);
 				}
 				break;
 			case 2:
@@ -1754,150 +1908,240 @@ public class EloquenceParser extends Parser {
 				_localctx = new ExprFuncContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(250); functionID();
+				setState(232);
+				functionID();
 				}
 				break;
 			case 3:
 				{
-				_localctx = new ExprCompoundContext(_localctx);
+				_localctx = new StatInContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(251); match(LBRACE);
-				setState(252); body();
-				setState(253); expression(0);
-				setState(254); match(SEMI);
-				setState(255); match(RBRACE);
+				setState(233);
+				match(IN);
+				setState(234);
+				match(LPAR);
+				setState(235);
+				target();
+				setState(240);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				while (_la==COMMA) {
+					{
+					{
+					setState(236);
+					match(COMMA);
+					setState(237);
+					target();
+					}
+					}
+					setState(242);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
+				setState(243);
+				match(RPAR);
 				}
 				break;
 			case 4:
 				{
-				_localctx = new ExprArrayContext(_localctx);
+				_localctx = new StatOutContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(257); target();
-				setState(258); match(LSQBRACKET);
-				setState(259); expression(0);
-				setState(260); match(RSQBRACKET);
+				setState(245);
+				match(OUT);
+				setState(246);
+				match(LPAR);
+				setState(247);
+				expression(0);
+				setState(252);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				while (_la==COMMA) {
+					{
+					{
+					setState(248);
+					match(COMMA);
+					setState(249);
+					expression(0);
+					}
+					}
+					setState(254);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
+				setState(255);
+				match(RPAR);
 				}
 				break;
 			case 5:
 				{
-				_localctx = new ExprParContext(_localctx);
+				_localctx = new ExprCompoundContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(262); match(LPAR);
-				setState(263); expression(0);
-				setState(264); match(RPAR);
+				setState(257);
+				match(LBRACE);
+				setState(258);
+				body();
+				setState(259);
+				expression(0);
+				setState(260);
+				match(SEMI);
+				setState(261);
+				match(RBRACE);
 				}
 				break;
 			case 6:
 				{
-				_localctx = new ExprIdContext(_localctx);
+				_localctx = new ExprArrayContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(266); target();
+				setState(263);
+				target();
+				setState(264);
+				match(LSQBRACKET);
+				setState(265);
+				expression(0);
+				setState(266);
+				match(RSQBRACKET);
 				}
 				break;
 			case 7:
 				{
-				_localctx = new ExprNumContext(_localctx);
+				_localctx = new ExprParContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(267); match(NUM);
+				setState(268);
+				match(LPAR);
+				setState(269);
+				expression(0);
+				setState(270);
+				match(RPAR);
 				}
 				break;
 			case 8:
 				{
-				_localctx = new ExprTrueContext(_localctx);
+				_localctx = new ExprIdContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(268); match(TRUE);
+				setState(272);
+				target();
 				}
 				break;
 			case 9:
 				{
-				_localctx = new ExprFalseContext(_localctx);
+				_localctx = new ExprNumContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(269); match(FALSE);
+				setState(273);
+				match(NUM);
 				}
 				break;
 			case 10:
 				{
+				_localctx = new ExprTrueContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(274);
+				match(TRUE);
+				}
+				break;
+			case 11:
+				{
+				_localctx = new ExprFalseContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(275);
+				match(FALSE);
+				}
+				break;
+			case 12:
+				{
 				_localctx = new ExprCharContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(270); match(CHARACTER);
+				setState(276);
+				match(CHARACTER);
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(295);
+			setState(301);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,20,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(293);
-					switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
+					setState(299);
+					switch ( getInterpreter().adaptivePredict(_input,19,_ctx) ) {
 					case 1:
 						{
 						_localctx = new ExprMultContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(273);
+						setState(279);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
-						setState(274); multiply();
-						setState(275); expression(13);
+						setState(280);
+						multiply();
+						setState(281);
+						expression(13);
 						}
 						break;
 					case 2:
 						{
 						_localctx = new ExprAddContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(277);
+						setState(283);
 						if (!(precpred(_ctx, 11))) throw new FailedPredicateException(this, "precpred(_ctx, 11)");
-						setState(278); addition();
-						setState(279); expression(12);
+						setState(284);
+						addition();
+						setState(285);
+						expression(12);
 						}
 						break;
 					case 3:
 						{
 						_localctx = new ExprCompContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(281);
+						setState(287);
 						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
-						setState(282); compare();
-						setState(283); expression(11);
+						setState(288);
+						compare();
+						setState(289);
+						expression(11);
 						}
 						break;
 					case 4:
 						{
 						_localctx = new ExprAndContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(285);
+						setState(291);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
-						setState(286); and();
-						setState(287); expression(10);
+						setState(292);
+						and();
+						setState(293);
+						expression(10);
 						}
 						break;
 					case 5:
 						{
 						_localctx = new ExprOrContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(289);
+						setState(295);
 						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
-						setState(290); or();
-						setState(291); expression(9);
+						setState(296);
+						or();
+						setState(297);
+						expression(9);
 						}
 						break;
 					}
 					} 
 				}
-				setState(297);
+				setState(303);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,20,_ctx);
 			}
 			}
 		}
@@ -1913,9 +2157,9 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class UnaryContext extends ParserRuleContext {
-		public TerminalNode NOT() { return getToken(EloquenceParser.NOT, 0); }
 		public TerminalNode MINUS() { return getToken(EloquenceParser.MINUS, 0); }
 		public TerminalNode PLUS() { return getToken(EloquenceParser.PLUS, 0); }
+		public TerminalNode NOT() { return getToken(EloquenceParser.NOT, 0); }
 		public UnaryContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1942,12 +2186,13 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(298);
+			setState(304);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NOT) | (1L << MINUS) | (1L << PLUS))) != 0)) ) {
 			_errHandler.recoverInline(this);
+			} else {
+				consume();
 			}
-			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1962,9 +2207,9 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class MultiplyContext extends ParserRuleContext {
+		public TerminalNode MULTIPLY() { return getToken(EloquenceParser.MULTIPLY, 0); }
 		public TerminalNode DIVIDE() { return getToken(EloquenceParser.DIVIDE, 0); }
 		public TerminalNode MODULO() { return getToken(EloquenceParser.MODULO, 0); }
-		public TerminalNode MULTIPLY() { return getToken(EloquenceParser.MULTIPLY, 0); }
 		public MultiplyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1991,12 +2236,13 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(300);
+			setState(306);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << DIVIDE) | (1L << MODULO) | (1L << MULTIPLY))) != 0)) ) {
 			_errHandler.recoverInline(this);
+			} else {
+				consume();
 			}
-			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2039,12 +2285,13 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(302);
+			setState(308);
 			_la = _input.LA(1);
 			if ( !(_la==MINUS || _la==PLUS) ) {
 			_errHandler.recoverInline(this);
+			} else {
+				consume();
 			}
-			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2059,10 +2306,10 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class CompareContext extends ParserRuleContext {
-		public TerminalNode GE() { return getToken(EloquenceParser.GE, 0); }
 		public TerminalNode LT() { return getToken(EloquenceParser.LT, 0); }
-		public TerminalNode GT() { return getToken(EloquenceParser.GT, 0); }
 		public TerminalNode LE() { return getToken(EloquenceParser.LE, 0); }
+		public TerminalNode GE() { return getToken(EloquenceParser.GE, 0); }
+		public TerminalNode GT() { return getToken(EloquenceParser.GT, 0); }
 		public TerminalNode EQ() { return getToken(EloquenceParser.EQ, 0); }
 		public TerminalNode NE() { return getToken(EloquenceParser.NE, 0); }
 		public CompareContext(ParserRuleContext parent, int invokingState) {
@@ -2091,12 +2338,13 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(304);
+			setState(310);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EQ) | (1L << GE) | (1L << GT) | (1L << LE) | (1L << LT) | (1L << NE))) != 0)) ) {
 			_errHandler.recoverInline(this);
+			} else {
+				consume();
 			}
-			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2137,7 +2385,8 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(306); match(AND);
+			setState(312);
+			match(AND);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2178,7 +2427,8 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(308); match(OR);
+			setState(314);
+			match(OR);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2259,27 +2509,30 @@ public class EloquenceParser extends Parser {
 		TypeContext _localctx = new TypeContext(_ctx, getState());
 		enterRule(_localctx, 38, RULE_type);
 		try {
-			setState(313);
+			setState(319);
 			switch (_input.LA(1)) {
 			case INTEGER:
 				_localctx = new TypeIntContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(310); match(INTEGER);
+				setState(316);
+				match(INTEGER);
 				}
 				break;
 			case BOOLEAN:
 				_localctx = new TypeBoolContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(311); match(BOOLEAN);
+				setState(317);
+				match(BOOLEAN);
 				}
 				break;
 			case CHAR:
 				_localctx = new TypeCharContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(312); match(CHAR);
+				setState(318);
+				match(CHAR);
 				}
 				break;
 			default:
@@ -2351,13 +2604,14 @@ public class EloquenceParser extends Parser {
 		FuncContext _localctx = new FuncContext(_ctx, getState());
 		enterRule(_localctx, 40, RULE_func);
 		try {
-			setState(317);
+			setState(323);
 			switch (_input.LA(1)) {
 			case VOID:
 				_localctx = new FuncVoidContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(315); voidFunc();
+				setState(321);
+				voidFunc();
 				}
 				break;
 			case BOOLEAN:
@@ -2366,7 +2620,8 @@ public class EloquenceParser extends Parser {
 				_localctx = new FuncReturnContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(316); returnFunc();
+				setState(322);
+				returnFunc();
 				}
 				break;
 			default:
@@ -2388,15 +2643,15 @@ public class EloquenceParser extends Parser {
 		public TargetContext target() {
 			return getRuleContext(TargetContext.class,0);
 		}
-		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
 		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
 		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(EloquenceParser.COMMA, i);
 		}
@@ -2426,31 +2681,37 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(319); target();
-			setState(320); match(LPAR);
-			setState(329);
+			setState(325);
+			target();
+			setState(326);
+			match(LPAR);
+			setState(335);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FALSE) | (1L << NOT) | (1L << TRUE) | (1L << LBRACE) | (1L << LPAR) | (1L << MINUS) | (1L << PLUS) | (1L << ID) | (1L << NUM) | (1L << CHARACTER))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FALSE) | (1L << IN) | (1L << NOT) | (1L << OUT) | (1L << TRUE) | (1L << LBRACE) | (1L << LPAR) | (1L << MINUS) | (1L << PLUS) | (1L << ID) | (1L << NUM) | (1L << CHARACTER))) != 0)) {
 				{
-				setState(321); expression(0);
-				setState(326);
+				setState(327);
+				expression(0);
+				setState(332);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(322); match(COMMA);
-					setState(323); expression(0);
-					}
-					}
 					setState(328);
+					match(COMMA);
+					setState(329);
+					expression(0);
+					}
+					}
+					setState(334);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
 				}
 			}
 
-			setState(331); match(RPAR);
+			setState(337);
+			match(RPAR);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2465,13 +2726,6 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class VoidFuncContext extends ParserRuleContext {
-		public ParametersContext parameters(int i) {
-			return getRuleContext(ParametersContext.class,i);
-		}
-		public List<ParametersContext> parameters() {
-			return getRuleContexts(ParametersContext.class);
-		}
-		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TerminalNode VOID() { return getToken(EloquenceParser.VOID, 0); }
 		public NewIDContext newID() {
 			return getRuleContext(NewIDContext.class,0);
@@ -2481,6 +2735,13 @@ public class EloquenceParser extends Parser {
 		public StatBlockBodyContext statBlockBody() {
 			return getRuleContext(StatBlockBodyContext.class,0);
 		}
+		public List<ParametersContext> parameters() {
+			return getRuleContexts(ParametersContext.class);
+		}
+		public ParametersContext parameters(int i) {
+			return getRuleContext(ParametersContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(EloquenceParser.COMMA, i);
 		}
@@ -2510,33 +2771,41 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(333); match(VOID);
-			setState(334); newID();
-			setState(335); match(LPAR);
-			setState(344);
+			setState(339);
+			match(VOID);
+			setState(340);
+			newID();
+			setState(341);
+			match(LPAR);
+			setState(350);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << CHAR) | (1L << INTEGER))) != 0)) {
 				{
-				setState(336); parameters();
-				setState(341);
+				setState(342);
+				parameters();
+				setState(347);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(337); match(COMMA);
-					setState(338); parameters();
-					}
-					}
 					setState(343);
+					match(COMMA);
+					setState(344);
+					parameters();
+					}
+					}
+					setState(349);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
 				}
 			}
 
-			setState(346); match(RPAR);
-			setState(347); statBlockBody();
+			setState(352);
+			match(RPAR);
+			setState(353);
+			statBlockBody();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2551,15 +2820,6 @@ public class EloquenceParser extends Parser {
 	}
 
 	public static class ReturnFuncContext extends ParserRuleContext {
-		public ParametersContext parameters(int i) {
-			return getRuleContext(ParametersContext.class,i);
-		}
-		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
-		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
-		public List<ParametersContext> parameters() {
-			return getRuleContexts(ParametersContext.class);
-		}
-		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
@@ -2568,12 +2828,21 @@ public class EloquenceParser extends Parser {
 		}
 		public TerminalNode LPAR() { return getToken(EloquenceParser.LPAR, 0); }
 		public TerminalNode RPAR() { return getToken(EloquenceParser.RPAR, 0); }
-		public ReturnStatContext returnStat() {
-			return getRuleContext(ReturnStatContext.class,0);
-		}
+		public TerminalNode LBRACE() { return getToken(EloquenceParser.LBRACE, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
+		public ReturnStatContext returnStat() {
+			return getRuleContext(ReturnStatContext.class,0);
+		}
+		public TerminalNode RBRACE() { return getToken(EloquenceParser.RBRACE, 0); }
+		public List<ParametersContext> parameters() {
+			return getRuleContexts(ParametersContext.class);
+		}
+		public ParametersContext parameters(int i) {
+			return getRuleContext(ParametersContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(EloquenceParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(EloquenceParser.COMMA, i);
 		}
@@ -2603,36 +2872,47 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(349); type();
-			setState(350); newID();
-			setState(351); match(LPAR);
-			setState(360);
+			setState(355);
+			type();
+			setState(356);
+			newID();
+			setState(357);
+			match(LPAR);
+			setState(366);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << CHAR) | (1L << INTEGER))) != 0)) {
 				{
-				setState(352); parameters();
-				setState(357);
+				setState(358);
+				parameters();
+				setState(363);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(353); match(COMMA);
-					setState(354); parameters();
-					}
-					}
 					setState(359);
+					match(COMMA);
+					setState(360);
+					parameters();
+					}
+					}
+					setState(365);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
 				}
 			}
 
-			setState(362); match(RPAR);
-			setState(363); match(LBRACE);
-			setState(364); body();
-			setState(365); returnStat();
-			setState(366); match(RBRACE);
+			setState(368);
+			match(RPAR);
+			setState(369);
+			match(LBRACE);
+			setState(370);
+			body();
+			setState(371);
+			returnStat();
+			setState(372);
+			match(RBRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2678,8 +2958,10 @@ public class EloquenceParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(368); type();
-			setState(369); newID();
+			setState(374);
+			type();
+			setState(375);
+			newID();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2695,23 +2977,29 @@ public class EloquenceParser extends Parser {
 
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 12: return expression_sempred((ExpressionContext)_localctx, predIndex);
+		case 12:
+			return expression_sempred((ExpressionContext)_localctx, predIndex);
 		}
 		return true;
 	}
 	private boolean expression_sempred(ExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 0: return precpred(_ctx, 12);
-		case 1: return precpred(_ctx, 11);
-		case 2: return precpred(_ctx, 10);
-		case 3: return precpred(_ctx, 9);
-		case 4: return precpred(_ctx, 8);
+		case 0:
+			return precpred(_ctx, 12);
+		case 1:
+			return precpred(_ctx, 11);
+		case 2:
+			return precpred(_ctx, 10);
+		case 3:
+			return precpred(_ctx, 9);
+		case 4:
+			return precpred(_ctx, 8);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\62\u0176\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\62\u017c\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -2723,125 +3011,128 @@ public class EloquenceParser extends Parser {
 		"\b\3\b\5\b\u0085\n\b\3\b\3\b\3\b\3\b\7\b\u008b\n\b\f\b\16\b\u008e\13\b"+
 		"\3\b\3\b\3\b\3\b\3\b\3\b\3\b\7\b\u0097\n\b\f\b\16\b\u009a\13\b\3\b\3\b"+
 		"\5\b\u009e\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u00a7\n\t\3\t\3\t\3\t\3"+
-		"\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t"+
-		"\3\t\3\t\3\t\3\t\7\t\u00c2\n\t\f\t\16\t\u00c5\13\t\3\t\3\t\3\t\3\t\3\t"+
-		"\3\t\3\t\3\t\3\t\3\t\7\t\u00d1\n\t\f\t\16\t\u00d4\13\t\3\t\3\t\3\t\3\t"+
-		"\3\t\3\t\3\t\3\t\7\t\u00de\n\t\f\t\16\t\u00e1\13\t\3\t\3\t\3\t\3\t\3\t"+
-		"\3\t\5\t\u00e9\n\t\3\n\3\n\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r\5\r\u00f5"+
-		"\n\r\3\r\3\r\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3"+
-		"\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\5"+
-		"\16\u0112\n\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16"+
-		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\7\16\u0128\n\16\f\16\16"+
-		"\16\u012b\13\16\3\17\3\17\3\20\3\20\3\21\3\21\3\22\3\22\3\23\3\23\3\24"+
-		"\3\24\3\25\3\25\3\25\5\25\u013c\n\25\3\26\3\26\5\26\u0140\n\26\3\27\3"+
-		"\27\3\27\3\27\3\27\7\27\u0147\n\27\f\27\16\27\u014a\13\27\5\27\u014c\n"+
-		"\27\3\27\3\27\3\30\3\30\3\30\3\30\3\30\3\30\7\30\u0156\n\30\f\30\16\30"+
-		"\u0159\13\30\5\30\u015b\n\30\3\30\3\30\3\30\3\31\3\31\3\31\3\31\3\31\3"+
-		"\31\7\31\u0166\n\31\f\31\16\31\u0169\13\31\5\31\u016b\n\31\3\31\3\31\3"+
-		"\31\3\31\3\31\3\31\3\32\3\32\3\32\3\32\2\3\32\33\2\4\6\b\n\f\16\20\22"+
-		"\24\26\30\32\34\36 \"$&(*,.\60\62\2\6\5\2\23\23##&&\4\2\36\36$%\4\2##"+
-		"&&\5\2\t\t\13\f\20\22\u018f\2\64\3\2\2\2\4@\3\2\2\2\6T\3\2\2\2\bV\3\2"+
-		"\2\2\n_\3\2\2\2\fh\3\2\2\2\16\u009d\3\2\2\2\20\u00e8\3\2\2\2\22\u00ea"+
-		"\3\2\2\2\24\u00ee\3\2\2\2\26\u00f0\3\2\2\2\30\u00f2\3\2\2\2\32\u0111\3"+
-		"\2\2\2\34\u012c\3\2\2\2\36\u012e\3\2\2\2 \u0130\3\2\2\2\"\u0132\3\2\2"+
-		"\2$\u0134\3\2\2\2&\u0136\3\2\2\2(\u013b\3\2\2\2*\u013f\3\2\2\2,\u0141"+
-		"\3\2\2\2.\u014f\3\2\2\2\60\u015f\3\2\2\2\62\u0172\3\2\2\2\64\65\7\26\2"+
-		"\2\65\66\7-\2\2\66\67\7 \2\2\678\5\4\3\289\7(\2\29\3\3\2\2\2:?\5\n\6\2"+
-		";?\5\6\4\2<?\5\20\t\2=?\5*\26\2>:\3\2\2\2>;\3\2\2\2><\3\2\2\2>=\3\2\2"+
-		"\2?B\3\2\2\2@>\3\2\2\2@A\3\2\2\2A\5\3\2\2\2B@\3\2\2\2CD\7\31\2\2DG\5\b"+
-		"\5\2EF\7\34\2\2FH\5\32\16\2GE\3\2\2\2GH\3\2\2\2HI\3\2\2\2IJ\7+\2\2JU\3"+
-		"\2\2\2KL\7\7\2\2LM\5\b\5\2MN\7\34\2\2NO\5\32\16\2OP\7+\2\2PU\3\2\2\2Q"+
-		"R\5\16\b\2RS\7+\2\2SU\3\2\2\2TC\3\2\2\2TK\3\2\2\2TQ\3\2\2\2U\7\3\2\2\2"+
-		"VW\5(\25\2W\\\5\26\f\2XY\7\35\2\2Y[\5\26\f\2ZX\3\2\2\2[^\3\2\2\2\\Z\3"+
-		"\2\2\2\\]\3\2\2\2]\t\3\2\2\2^\\\3\2\2\2_`\7\4\2\2`a\5\26\f\2ab\7\34\2"+
-		"\2bc\5(\25\2cd\7\"\2\2de\5\f\7\2ef\7*\2\2fg\7+\2\2g\13\3\2\2\2hi\7.\2"+
-		"\2ij\7\37\2\2jk\7\37\2\2kl\7.\2\2l\r\3\2\2\2mn\7\31\2\2ns\5\26\f\2op\7"+
-		"\35\2\2pr\5\26\f\2qo\3\2\2\2ru\3\2\2\2sq\3\2\2\2st\3\2\2\2tv\3\2\2\2u"+
-		"s\3\2\2\2vw\7\34\2\2w\u0084\5\24\13\2xy\7,\2\2yz\7 \2\2z\177\5\32\16\2"+
-		"{|\7\35\2\2|~\5\32\16\2}{\3\2\2\2~\u0081\3\2\2\2\177}\3\2\2\2\177\u0080"+
-		"\3\2\2\2\u0080\u0082\3\2\2\2\u0081\177\3\2\2\2\u0082\u0083\7(\2\2\u0083"+
-		"\u0085\3\2\2\2\u0084x\3\2\2\2\u0084\u0085\3\2\2\2\u0085\u009e\3\2\2\2"+
-		"\u0086\u0087\7\7\2\2\u0087\u008c\5\26\f\2\u0088\u0089\7\35\2\2\u0089\u008b"+
-		"\5\26\f\2\u008a\u0088\3\2\2\2\u008b\u008e\3\2\2\2\u008c\u008a\3\2\2\2"+
-		"\u008c\u008d\3\2\2\2\u008d\u008f\3\2\2\2\u008e\u008c\3\2\2\2\u008f\u0090"+
-		"\7\34\2\2\u0090\u0091\5\24\13\2\u0091\u0092\7,\2\2\u0092\u0093\7 \2\2"+
-		"\u0093\u0098\5\32\16\2\u0094\u0095\7\35\2\2\u0095\u0097\5\32\16\2\u0096"+
-		"\u0094\3\2\2\2\u0097\u009a\3\2\2\2\u0098\u0096\3\2\2\2\u0098\u0099\3\2"+
-		"\2\2\u0099\u009b\3\2\2\2\u009a\u0098\3\2\2\2\u009b\u009c\7(\2\2\u009c"+
-		"\u009e\3\2\2\2\u009dm\3\2\2\2\u009d\u0086\3\2\2\2\u009e\17\3\2\2\2\u009f"+
-		"\u00a0\7\r\2\2\u00a0\u00a1\7!\2\2\u00a1\u00a2\5\32\16\2\u00a2\u00a3\7"+
-		")\2\2\u00a3\u00a6\5\20\t\2\u00a4\u00a5\7\b\2\2\u00a5\u00a7\5\20\t\2\u00a6"+
-		"\u00a4\3\2\2\2\u00a6\u00a7\3\2\2\2\u00a7\u00e9\3\2\2\2\u00a8\u00a9\7\33"+
-		"\2\2\u00a9\u00aa\7!\2\2\u00aa\u00ab\5\32\16\2\u00ab\u00ac\7)\2\2\u00ac"+
-		"\u00ad\5\20\t\2\u00ad\u00e9\3\2\2\2\u00ae\u00af\5\24\13\2\u00af\u00b0"+
-		"\7\34\2\2\u00b0\u00b1\5\32\16\2\u00b1\u00b2\7+\2\2\u00b2\u00e9\3\2\2\2"+
-		"\u00b3\u00b4\5\24\13\2\u00b4\u00b5\7\"\2\2\u00b5\u00b6\5\32\16\2\u00b6"+
-		"\u00b7\7*\2\2\u00b7\u00b8\7\34\2\2\u00b8\u00b9\5\32\16\2\u00b9\u00ba\7"+
-		"+\2\2\u00ba\u00e9\3\2\2\2\u00bb\u00bc\5\24\13\2\u00bc\u00bd\7\34\2\2\u00bd"+
-		"\u00be\7 \2\2\u00be\u00c3\5\32\16\2\u00bf\u00c0\7\35\2\2\u00c0\u00c2\5"+
-		"\32\16\2\u00c1\u00bf\3\2\2\2\u00c2\u00c5\3\2\2\2\u00c3\u00c1\3\2\2\2\u00c3"+
-		"\u00c4\3\2\2\2\u00c4\u00c6\3\2\2\2\u00c5\u00c3\3\2\2\2\u00c6\u00c7\7("+
-		"\2\2\u00c7\u00c8\7+\2\2\u00c8\u00e9\3\2\2\2\u00c9\u00e9\5\22\n\2\u00ca"+
-		"\u00e9\5\30\r\2\u00cb\u00cc\7\16\2\2\u00cc\u00cd\7!\2\2\u00cd\u00d2\5"+
-		"\24\13\2\u00ce\u00cf\7\35\2\2\u00cf\u00d1\5\24\13\2\u00d0\u00ce\3\2\2"+
-		"\2\u00d1\u00d4\3\2\2\2\u00d2\u00d0\3\2\2\2\u00d2\u00d3\3\2\2\2\u00d3\u00d5"+
-		"\3\2\2\2\u00d4\u00d2\3\2\2\2\u00d5\u00d6\7)\2\2\u00d6\u00d7\7+\2\2\u00d7"+
-		"\u00e9\3\2\2\2\u00d8\u00d9\7\25\2\2\u00d9\u00da\7!\2\2\u00da\u00df\5\32"+
-		"\16\2\u00db\u00dc\7\35\2\2\u00dc\u00de\5\32\16\2\u00dd\u00db\3\2\2\2\u00de"+
-		"\u00e1\3\2\2\2\u00df\u00dd\3\2\2\2\u00df\u00e0\3\2\2\2\u00e0\u00e2\3\2"+
-		"\2\2\u00e1\u00df\3\2\2\2\u00e2\u00e3\7)\2\2\u00e3\u00e4\7+\2\2\u00e4\u00e9"+
-		"\3\2\2\2\u00e5\u00e6\5,\27\2\u00e6\u00e7\7+\2\2\u00e7\u00e9\3\2\2\2\u00e8"+
-		"\u009f\3\2\2\2\u00e8\u00a8\3\2\2\2\u00e8\u00ae\3\2\2\2\u00e8\u00b3\3\2"+
-		"\2\2\u00e8\u00bb\3\2\2\2\u00e8\u00c9\3\2\2\2\u00e8\u00ca\3\2\2\2\u00e8"+
-		"\u00cb\3\2\2\2\u00e8\u00d8\3\2\2\2\u00e8\u00e5\3\2\2\2\u00e9\21\3\2\2"+
-		"\2\u00ea\u00eb\7 \2\2\u00eb\u00ec\5\4\3\2\u00ec\u00ed\7(\2\2\u00ed\23"+
-		"\3\2\2\2\u00ee\u00ef\7-\2\2\u00ef\25\3\2\2\2\u00f0\u00f1\7-\2\2\u00f1"+
-		"\27\3\2\2\2\u00f2\u00f4\7\27\2\2\u00f3\u00f5\5\32\16\2\u00f4\u00f3\3\2"+
-		"\2\2\u00f4\u00f5\3\2\2\2\u00f5\u00f6\3\2\2\2\u00f6\u00f7\7+\2\2\u00f7"+
-		"\31\3\2\2\2\u00f8\u00f9\b\16\1\2\u00f9\u00fa\5\34\17\2\u00fa\u00fb\5\32"+
-		"\16\17\u00fb\u0112\3\2\2\2\u00fc\u0112\5,\27\2\u00fd\u00fe\7 \2\2\u00fe"+
-		"\u00ff\5\4\3\2\u00ff\u0100\5\32\16\2\u0100\u0101\7+\2\2\u0101\u0102\7"+
-		"(\2\2\u0102\u0112\3\2\2\2\u0103\u0104\5\24\13\2\u0104\u0105\7\"\2\2\u0105"+
-		"\u0106\5\32\16\2\u0106\u0107\7*\2\2\u0107\u0112\3\2\2\2\u0108\u0109\7"+
-		"!\2\2\u0109\u010a\5\32\16\2\u010a\u010b\7)\2\2\u010b\u0112\3\2\2\2\u010c"+
-		"\u0112\5\24\13\2\u010d\u0112\7.\2\2\u010e\u0112\7\30\2\2\u010f\u0112\7"+
-		"\n\2\2\u0110\u0112\7/\2\2\u0111\u00f8\3\2\2\2\u0111\u00fc\3\2\2\2\u0111"+
-		"\u00fd\3\2\2\2\u0111\u0103\3\2\2\2\u0111\u0108\3\2\2\2\u0111\u010c\3\2"+
-		"\2\2\u0111\u010d\3\2\2\2\u0111\u010e\3\2\2\2\u0111\u010f\3\2\2\2\u0111"+
-		"\u0110\3\2\2\2\u0112\u0129\3\2\2\2\u0113\u0114\f\16\2\2\u0114\u0115\5"+
-		"\36\20\2\u0115\u0116\5\32\16\17\u0116\u0128\3\2\2\2\u0117\u0118\f\r\2"+
-		"\2\u0118\u0119\5 \21\2\u0119\u011a\5\32\16\16\u011a\u0128\3\2\2\2\u011b"+
-		"\u011c\f\f\2\2\u011c\u011d\5\"\22\2\u011d\u011e\5\32\16\r\u011e\u0128"+
-		"\3\2\2\2\u011f\u0120\f\13\2\2\u0120\u0121\5$\23\2\u0121\u0122\5\32\16"+
-		"\f\u0122\u0128\3\2\2\2\u0123\u0124\f\n\2\2\u0124\u0125\5&\24\2\u0125\u0126"+
-		"\5\32\16\13\u0126\u0128\3\2\2\2\u0127\u0113\3\2\2\2\u0127\u0117\3\2\2"+
-		"\2\u0127\u011b\3\2\2\2\u0127\u011f\3\2\2\2\u0127\u0123\3\2\2\2\u0128\u012b"+
-		"\3\2\2\2\u0129\u0127\3\2\2\2\u0129\u012a\3\2\2\2\u012a\33\3\2\2\2\u012b"+
-		"\u0129\3\2\2\2\u012c\u012d\t\2\2\2\u012d\35\3\2\2\2\u012e\u012f\t\3\2"+
-		"\2\u012f\37\3\2\2\2\u0130\u0131\t\4\2\2\u0131!\3\2\2\2\u0132\u0133\t\5"+
-		"\2\2\u0133#\3\2\2\2\u0134\u0135\7\3\2\2\u0135%\3\2\2\2\u0136\u0137\7\24"+
-		"\2\2\u0137\'\3\2\2\2\u0138\u013c\7\17\2\2\u0139\u013c\7\5\2\2\u013a\u013c"+
-		"\7\6\2\2\u013b\u0138\3\2\2\2\u013b\u0139\3\2\2\2\u013b\u013a\3\2\2\2\u013c"+
-		")\3\2\2\2\u013d\u0140\5.\30\2\u013e\u0140\5\60\31\2\u013f\u013d\3\2\2"+
-		"\2\u013f\u013e\3\2\2\2\u0140+\3\2\2\2\u0141\u0142\5\24\13\2\u0142\u014b"+
-		"\7!\2\2\u0143\u0148\5\32\16\2\u0144\u0145\7\35\2\2\u0145\u0147\5\32\16"+
-		"\2\u0146\u0144\3\2\2\2\u0147\u014a\3\2\2\2\u0148\u0146\3\2\2\2\u0148\u0149"+
-		"\3\2\2\2\u0149\u014c\3\2\2\2\u014a\u0148\3\2\2\2\u014b\u0143\3\2\2\2\u014b"+
-		"\u014c\3\2\2\2\u014c\u014d\3\2\2\2\u014d\u014e\7)\2\2\u014e-\3\2\2\2\u014f"+
-		"\u0150\7\32\2\2\u0150\u0151\5\26\f\2\u0151\u015a\7!\2\2\u0152\u0157\5"+
-		"\62\32\2\u0153\u0154\7\35\2\2\u0154\u0156\5\62\32\2\u0155\u0153\3\2\2"+
-		"\2\u0156\u0159\3\2\2\2\u0157\u0155\3\2\2\2\u0157\u0158\3\2\2\2\u0158\u015b"+
-		"\3\2\2\2\u0159\u0157\3\2\2\2\u015a\u0152\3\2\2\2\u015a\u015b\3\2\2\2\u015b"+
-		"\u015c\3\2\2\2\u015c\u015d\7)\2\2\u015d\u015e\5\22\n\2\u015e/\3\2\2\2"+
-		"\u015f\u0160\5(\25\2\u0160\u0161\5\26\f\2\u0161\u016a\7!\2\2\u0162\u0167"+
-		"\5\62\32\2\u0163\u0164\7\35\2\2\u0164\u0166\5\62\32\2\u0165\u0163\3\2"+
-		"\2\2\u0166\u0169\3\2\2\2\u0167\u0165\3\2\2\2\u0167\u0168\3\2\2\2\u0168"+
-		"\u016b\3\2\2\2\u0169\u0167\3\2\2\2\u016a\u0162\3\2\2\2\u016a\u016b\3\2"+
-		"\2\2\u016b\u016c\3\2\2\2\u016c\u016d\7)\2\2\u016d\u016e\7 \2\2\u016e\u016f"+
-		"\5\4\3\2\u016f\u0170\5\30\r\2\u0170\u0171\7(\2\2\u0171\61\3\2\2\2\u0172"+
-		"\u0173\5(\25\2\u0173\u0174\5\26\f\2\u0174\63\3\2\2\2\36>@GT\\s\177\u0084"+
-		"\u008c\u0098\u009d\u00a6\u00c3\u00d2\u00df\u00e8\u00f4\u0111\u0127\u0129"+
-		"\u013b\u013f\u0148\u014b\u0157\u015a\u0167\u016a";
+		"\t\3\t\3\t\3\t\3\t\3\t\6\t\u00b2\n\t\r\t\16\t\u00b3\3\t\3\t\3\t\3\t\3"+
+		"\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\7\t\u00c7\n\t\f\t\16"+
+		"\t\u00ca\13\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u00d7\n"+
+		"\t\3\n\3\n\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r\5\r\u00e3\n\r\3\r\3\r\3\16"+
+		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\7\16\u00f1\n\16\f\16\16"+
+		"\16\u00f4\13\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\7\16\u00fd\n\16\f\16"+
+		"\16\16\u0100\13\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3"+
+		"\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\5\16\u0118"+
+		"\n\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16"+
+		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\7\16\u012e\n\16\f\16\16\16\u0131\13"+
+		"\16\3\17\3\17\3\20\3\20\3\21\3\21\3\22\3\22\3\23\3\23\3\24\3\24\3\25\3"+
+		"\25\3\25\5\25\u0142\n\25\3\26\3\26\5\26\u0146\n\26\3\27\3\27\3\27\3\27"+
+		"\3\27\7\27\u014d\n\27\f\27\16\27\u0150\13\27\5\27\u0152\n\27\3\27\3\27"+
+		"\3\30\3\30\3\30\3\30\3\30\3\30\7\30\u015c\n\30\f\30\16\30\u015f\13\30"+
+		"\5\30\u0161\n\30\3\30\3\30\3\30\3\31\3\31\3\31\3\31\3\31\3\31\7\31\u016c"+
+		"\n\31\f\31\16\31\u016f\13\31\5\31\u0171\n\31\3\31\3\31\3\31\3\31\3\31"+
+		"\3\31\3\32\3\32\3\32\3\32\2\3\32\33\2\4\6\b\n\f\16\20\22\24\26\30\32\34"+
+		"\36 \"$&(*,.\60\62\2\6\5\2\23\23##&&\4\2\36\36$%\4\2##&&\5\2\t\t\13\f"+
+		"\20\22\u0197\2\64\3\2\2\2\4@\3\2\2\2\6T\3\2\2\2\bV\3\2\2\2\n_\3\2\2\2"+
+		"\fh\3\2\2\2\16\u009d\3\2\2\2\20\u00d6\3\2\2\2\22\u00d8\3\2\2\2\24\u00dc"+
+		"\3\2\2\2\26\u00de\3\2\2\2\30\u00e0\3\2\2\2\32\u0117\3\2\2\2\34\u0132\3"+
+		"\2\2\2\36\u0134\3\2\2\2 \u0136\3\2\2\2\"\u0138\3\2\2\2$\u013a\3\2\2\2"+
+		"&\u013c\3\2\2\2(\u0141\3\2\2\2*\u0145\3\2\2\2,\u0147\3\2\2\2.\u0155\3"+
+		"\2\2\2\60\u0165\3\2\2\2\62\u0178\3\2\2\2\64\65\7\26\2\2\65\66\7-\2\2\66"+
+		"\67\7 \2\2\678\5\4\3\289\7(\2\29\3\3\2\2\2:?\5\n\6\2;?\5\6\4\2<?\5\20"+
+		"\t\2=?\5*\26\2>:\3\2\2\2>;\3\2\2\2><\3\2\2\2>=\3\2\2\2?B\3\2\2\2@>\3\2"+
+		"\2\2@A\3\2\2\2A\5\3\2\2\2B@\3\2\2\2CD\7\31\2\2DG\5\b\5\2EF\7\34\2\2FH"+
+		"\5\32\16\2GE\3\2\2\2GH\3\2\2\2HI\3\2\2\2IJ\7+\2\2JU\3\2\2\2KL\7\7\2\2"+
+		"LM\5\b\5\2MN\7\34\2\2NO\5\32\16\2OP\7+\2\2PU\3\2\2\2QR\5\16\b\2RS\7+\2"+
+		"\2SU\3\2\2\2TC\3\2\2\2TK\3\2\2\2TQ\3\2\2\2U\7\3\2\2\2VW\5(\25\2W\\\5\26"+
+		"\f\2XY\7\35\2\2Y[\5\26\f\2ZX\3\2\2\2[^\3\2\2\2\\Z\3\2\2\2\\]\3\2\2\2]"+
+		"\t\3\2\2\2^\\\3\2\2\2_`\7\4\2\2`a\5\26\f\2ab\7\34\2\2bc\5(\25\2cd\7\""+
+		"\2\2de\5\f\7\2ef\7*\2\2fg\7+\2\2g\13\3\2\2\2hi\7.\2\2ij\7\37\2\2jk\7\37"+
+		"\2\2kl\7.\2\2l\r\3\2\2\2mn\7\31\2\2ns\5\26\f\2op\7\35\2\2pr\5\26\f\2q"+
+		"o\3\2\2\2ru\3\2\2\2sq\3\2\2\2st\3\2\2\2tv\3\2\2\2us\3\2\2\2vw\7\34\2\2"+
+		"w\u0084\5\24\13\2xy\7,\2\2yz\7 \2\2z\177\5\32\16\2{|\7\35\2\2|~\5\32\16"+
+		"\2}{\3\2\2\2~\u0081\3\2\2\2\177}\3\2\2\2\177\u0080\3\2\2\2\u0080\u0082"+
+		"\3\2\2\2\u0081\177\3\2\2\2\u0082\u0083\7(\2\2\u0083\u0085\3\2\2\2\u0084"+
+		"x\3\2\2\2\u0084\u0085\3\2\2\2\u0085\u009e\3\2\2\2\u0086\u0087\7\7\2\2"+
+		"\u0087\u008c\5\26\f\2\u0088\u0089\7\35\2\2\u0089\u008b\5\26\f\2\u008a"+
+		"\u0088\3\2\2\2\u008b\u008e\3\2\2\2\u008c\u008a\3\2\2\2\u008c\u008d\3\2"+
+		"\2\2\u008d\u008f\3\2\2\2\u008e\u008c\3\2\2\2\u008f\u0090\7\34\2\2\u0090"+
+		"\u0091\5\24\13\2\u0091\u0092\7,\2\2\u0092\u0093\7 \2\2\u0093\u0098\5\32"+
+		"\16\2\u0094\u0095\7\35\2\2\u0095\u0097\5\32\16\2\u0096\u0094\3\2\2\2\u0097"+
+		"\u009a\3\2\2\2\u0098\u0096\3\2\2\2\u0098\u0099\3\2\2\2\u0099\u009b\3\2"+
+		"\2\2\u009a\u0098\3\2\2\2\u009b\u009c\7(\2\2\u009c\u009e\3\2\2\2\u009d"+
+		"m\3\2\2\2\u009d\u0086\3\2\2\2\u009e\17\3\2\2\2\u009f\u00a0\7\r\2\2\u00a0"+
+		"\u00a1\7!\2\2\u00a1\u00a2\5\32\16\2\u00a2\u00a3\7)\2\2\u00a3\u00a6\5\20"+
+		"\t\2\u00a4\u00a5\7\b\2\2\u00a5\u00a7\5\20\t\2\u00a6\u00a4\3\2\2\2\u00a6"+
+		"\u00a7\3\2\2\2\u00a7\u00d7\3\2\2\2\u00a8\u00a9\7\33\2\2\u00a9\u00aa\7"+
+		"!\2\2\u00aa\u00ab\5\32\16\2\u00ab\u00ac\7)\2\2\u00ac\u00ad\5\20\t\2\u00ad"+
+		"\u00d7\3\2\2\2\u00ae\u00af\5\24\13\2\u00af\u00b0\7\34\2\2\u00b0\u00b2"+
+		"\3\2\2\2\u00b1\u00ae\3\2\2\2\u00b2\u00b3\3\2\2\2\u00b3\u00b1\3\2\2\2\u00b3"+
+		"\u00b4\3\2\2\2\u00b4\u00b5\3\2\2\2\u00b5\u00b6\5\32\16\2\u00b6\u00b7\7"+
+		"+\2\2\u00b7\u00d7\3\2\2\2\u00b8\u00b9\5\24\13\2\u00b9\u00ba\7\"\2\2\u00ba"+
+		"\u00bb\5\32\16\2\u00bb\u00bc\7*\2\2\u00bc\u00bd\7\34\2\2\u00bd\u00be\5"+
+		"\32\16\2\u00be\u00bf\7+\2\2\u00bf\u00d7\3\2\2\2\u00c0\u00c1\5\24\13\2"+
+		"\u00c1\u00c2\7\34\2\2\u00c2\u00c3\7 \2\2\u00c3\u00c8\5\32\16\2\u00c4\u00c5"+
+		"\7\35\2\2\u00c5\u00c7\5\32\16\2\u00c6\u00c4\3\2\2\2\u00c7\u00ca\3\2\2"+
+		"\2\u00c8\u00c6\3\2\2\2\u00c8\u00c9\3\2\2\2\u00c9\u00cb\3\2\2\2\u00ca\u00c8"+
+		"\3\2\2\2\u00cb\u00cc\7(\2\2\u00cc\u00cd\7+\2\2\u00cd\u00d7\3\2\2\2\u00ce"+
+		"\u00d7\5\22\n\2\u00cf\u00d7\5\30\r\2\u00d0\u00d1\5,\27\2\u00d1\u00d2\7"+
+		"+\2\2\u00d2\u00d7\3\2\2\2\u00d3\u00d4\5\32\16\2\u00d4\u00d5\7+\2\2\u00d5"+
+		"\u00d7\3\2\2\2\u00d6\u009f\3\2\2\2\u00d6\u00a8\3\2\2\2\u00d6\u00b1\3\2"+
+		"\2\2\u00d6\u00b8\3\2\2\2\u00d6\u00c0\3\2\2\2\u00d6\u00ce\3\2\2\2\u00d6"+
+		"\u00cf\3\2\2\2\u00d6\u00d0\3\2\2\2\u00d6\u00d3\3\2\2\2\u00d7\21\3\2\2"+
+		"\2\u00d8\u00d9\7 \2\2\u00d9\u00da\5\4\3\2\u00da\u00db\7(\2\2\u00db\23"+
+		"\3\2\2\2\u00dc\u00dd\7-\2\2\u00dd\25\3\2\2\2\u00de\u00df\7-\2\2\u00df"+
+		"\27\3\2\2\2\u00e0\u00e2\7\27\2\2\u00e1\u00e3\5\32\16\2\u00e2\u00e1\3\2"+
+		"\2\2\u00e2\u00e3\3\2\2\2\u00e3\u00e4\3\2\2\2\u00e4\u00e5\7+\2\2\u00e5"+
+		"\31\3\2\2\2\u00e6\u00e7\b\16\1\2\u00e7\u00e8\5\34\17\2\u00e8\u00e9\5\32"+
+		"\16\17\u00e9\u0118\3\2\2\2\u00ea\u0118\5,\27\2\u00eb\u00ec\7\16\2\2\u00ec"+
+		"\u00ed\7!\2\2\u00ed\u00f2\5\24\13\2\u00ee\u00ef\7\35\2\2\u00ef\u00f1\5"+
+		"\24\13\2\u00f0\u00ee\3\2\2\2\u00f1\u00f4\3\2\2\2\u00f2\u00f0\3\2\2\2\u00f2"+
+		"\u00f3\3\2\2\2\u00f3\u00f5\3\2\2\2\u00f4\u00f2\3\2\2\2\u00f5\u00f6\7)"+
+		"\2\2\u00f6\u0118\3\2\2\2\u00f7\u00f8\7\25\2\2\u00f8\u00f9\7!\2\2\u00f9"+
+		"\u00fe\5\32\16\2\u00fa\u00fb\7\35\2\2\u00fb\u00fd\5\32\16\2\u00fc\u00fa"+
+		"\3\2\2\2\u00fd\u0100\3\2\2\2\u00fe\u00fc\3\2\2\2\u00fe\u00ff\3\2\2\2\u00ff"+
+		"\u0101\3\2\2\2\u0100\u00fe\3\2\2\2\u0101\u0102\7)\2\2\u0102\u0118\3\2"+
+		"\2\2\u0103\u0104\7 \2\2\u0104\u0105\5\4\3\2\u0105\u0106\5\32\16\2\u0106"+
+		"\u0107\7+\2\2\u0107\u0108\7(\2\2\u0108\u0118\3\2\2\2\u0109\u010a\5\24"+
+		"\13\2\u010a\u010b\7\"\2\2\u010b\u010c\5\32\16\2\u010c\u010d\7*\2\2\u010d"+
+		"\u0118\3\2\2\2\u010e\u010f\7!\2\2\u010f\u0110\5\32\16\2\u0110\u0111\7"+
+		")\2\2\u0111\u0118\3\2\2\2\u0112\u0118\5\24\13\2\u0113\u0118\7.\2\2\u0114"+
+		"\u0118\7\30\2\2\u0115\u0118\7\n\2\2\u0116\u0118\7/\2\2\u0117\u00e6\3\2"+
+		"\2\2\u0117\u00ea\3\2\2\2\u0117\u00eb\3\2\2\2\u0117\u00f7\3\2\2\2\u0117"+
+		"\u0103\3\2\2\2\u0117\u0109\3\2\2\2\u0117\u010e\3\2\2\2\u0117\u0112\3\2"+
+		"\2\2\u0117\u0113\3\2\2\2\u0117\u0114\3\2\2\2\u0117\u0115\3\2\2\2\u0117"+
+		"\u0116\3\2\2\2\u0118\u012f\3\2\2\2\u0119\u011a\f\16\2\2\u011a\u011b\5"+
+		"\36\20\2\u011b\u011c\5\32\16\17\u011c\u012e\3\2\2\2\u011d\u011e\f\r\2"+
+		"\2\u011e\u011f\5 \21\2\u011f\u0120\5\32\16\16\u0120\u012e\3\2\2\2\u0121"+
+		"\u0122\f\f\2\2\u0122\u0123\5\"\22\2\u0123\u0124\5\32\16\r\u0124\u012e"+
+		"\3\2\2\2\u0125\u0126\f\13\2\2\u0126\u0127\5$\23\2\u0127\u0128\5\32\16"+
+		"\f\u0128\u012e\3\2\2\2\u0129\u012a\f\n\2\2\u012a\u012b\5&\24\2\u012b\u012c"+
+		"\5\32\16\13\u012c\u012e\3\2\2\2\u012d\u0119\3\2\2\2\u012d\u011d\3\2\2"+
+		"\2\u012d\u0121\3\2\2\2\u012d\u0125\3\2\2\2\u012d\u0129\3\2\2\2\u012e\u0131"+
+		"\3\2\2\2\u012f\u012d\3\2\2\2\u012f\u0130\3\2\2\2\u0130\33\3\2\2\2\u0131"+
+		"\u012f\3\2\2\2\u0132\u0133\t\2\2\2\u0133\35\3\2\2\2\u0134\u0135\t\3\2"+
+		"\2\u0135\37\3\2\2\2\u0136\u0137\t\4\2\2\u0137!\3\2\2\2\u0138\u0139\t\5"+
+		"\2\2\u0139#\3\2\2\2\u013a\u013b\7\3\2\2\u013b%\3\2\2\2\u013c\u013d\7\24"+
+		"\2\2\u013d\'\3\2\2\2\u013e\u0142\7\17\2\2\u013f\u0142\7\5\2\2\u0140\u0142"+
+		"\7\6\2\2\u0141\u013e\3\2\2\2\u0141\u013f\3\2\2\2\u0141\u0140\3\2\2\2\u0142"+
+		")\3\2\2\2\u0143\u0146\5.\30\2\u0144\u0146\5\60\31\2\u0145\u0143\3\2\2"+
+		"\2\u0145\u0144\3\2\2\2\u0146+\3\2\2\2\u0147\u0148\5\24\13\2\u0148\u0151"+
+		"\7!\2\2\u0149\u014e\5\32\16\2\u014a\u014b\7\35\2\2\u014b\u014d\5\32\16"+
+		"\2\u014c\u014a\3\2\2\2\u014d\u0150\3\2\2\2\u014e\u014c\3\2\2\2\u014e\u014f"+
+		"\3\2\2\2\u014f\u0152\3\2\2\2\u0150\u014e\3\2\2\2\u0151\u0149\3\2\2\2\u0151"+
+		"\u0152\3\2\2\2\u0152\u0153\3\2\2\2\u0153\u0154\7)\2\2\u0154-\3\2\2\2\u0155"+
+		"\u0156\7\32\2\2\u0156\u0157\5\26\f\2\u0157\u0160\7!\2\2\u0158\u015d\5"+
+		"\62\32\2\u0159\u015a\7\35\2\2\u015a\u015c\5\62\32\2\u015b\u0159\3\2\2"+
+		"\2\u015c\u015f\3\2\2\2\u015d\u015b\3\2\2\2\u015d\u015e\3\2\2\2\u015e\u0161"+
+		"\3\2\2\2\u015f\u015d\3\2\2\2\u0160\u0158\3\2\2\2\u0160\u0161\3\2\2\2\u0161"+
+		"\u0162\3\2\2\2\u0162\u0163\7)\2\2\u0163\u0164\5\22\n\2\u0164/\3\2\2\2"+
+		"\u0165\u0166\5(\25\2\u0166\u0167\5\26\f\2\u0167\u0170\7!\2\2\u0168\u016d"+
+		"\5\62\32\2\u0169\u016a\7\35\2\2\u016a\u016c\5\62\32\2\u016b\u0169\3\2"+
+		"\2\2\u016c\u016f\3\2\2\2\u016d\u016b\3\2\2\2\u016d\u016e\3\2\2\2\u016e"+
+		"\u0171\3\2\2\2\u016f\u016d\3\2\2\2\u0170\u0168\3\2\2\2\u0170\u0171\3\2"+
+		"\2\2\u0171\u0172\3\2\2\2\u0172\u0173\7)\2\2\u0173\u0174\7 \2\2\u0174\u0175"+
+		"\5\4\3\2\u0175\u0176\5\30\r\2\u0176\u0177\7(\2\2\u0177\61\3\2\2\2\u0178"+
+		"\u0179\5(\25\2\u0179\u017a\5\26\f\2\u017a\63\3\2\2\2\37>@GT\\s\177\u0084"+
+		"\u008c\u0098\u009d\u00a6\u00b3\u00c8\u00d6\u00e2\u00f2\u00fe\u0117\u012d"+
+		"\u012f\u0141\u0145\u014e\u0151\u015d\u0160\u016d\u0170";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

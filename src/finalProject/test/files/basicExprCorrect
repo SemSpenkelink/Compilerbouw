@@ -1,0 +1,55 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//This program tests the correct basic expressions.
+
+Program basicExprCorrect{
+	//Test variable declarations.
+	highPowered numericalDigit ivar1, ivar2;
+	highPowered George bvar;
+	highPowered lexographicIdentifyingUnit cvar1, cvar2;
+	
+	//Test constant declarations.
+	sacrosanct numericalDigit iconst1, iconst2 = 1;
+	sacrosanct George bconst = unfeigned;
+	sacrosanct lexographicIdentifyingUnit cconst = 'c';
+
+	//Test integer assignment and operations.
+	ivar1 =
+	{
+		highPowered numericalDigit tmpivar1, tmpivar2;
+		expropriate(ivar1, ivar2);
+		exude(ivar1, ivar2);
+		sacrosanct numericalDigit tmpiconst1 = 1;
+		sacrosanct numericalDigit tmpiconst2 = 2;
+		tmpivar1 = tmpivar2 = +16 + 2 * -8;
+		exude(tmpivar1 inferiorTo tmpivar2 and tmpiconst1 inferiorOrEqualTo tmpiconst2,
+			  tmpiconst1*tmpiconst2 superiorTo tmpivar2-tmpivar1);
+		tmpivar1 inferiorTo expropriate(tmpivar2) and tmpiconst1 inferiorOrEqualTo tmpiconst2;
+		tmpivar2 = exude(tmpivar2)+1;
+		exude(tmpivar2);
+	} +1;
+	
+	//Test boolean assignment and operations.
+	bvar =
+	{
+		highPowered George tmpbvar;
+		expropriate(tmpbvar);
+		exude(tmpbvar);
+		tmpbvar = 12 / 5 * 5 + 12 % 5 - 12 and 6 superiorOrEqualTo 6;
+		sacrosanct George tmpbconst = unfeigned;
+		exude(not bogus and tmpbvar equalTo tmpbconst or bogus notEqualTo unfeigned);
+	} and unfeigned;
+	
+	//Test character assignment and operations.
+	cvar1 =
+	{
+		highPowered lexographicIdentifyingUnit tmpcvar1, tmpcvar1;
+		expropriate(tmpcvar1);
+		sacrosanct lexographicIdentifyingUnit tmpcconst = 'c';
+		tmpcvar2 = 'z';
+		exude('a', tmpcvar1 equalTo tmpcconst and (tmpcvar2 notEqualTo 'b' or not unfeigned));
+		'b';
+	};
+	//Output results.
+	exude(ivar1, bvar, cvar1);
+}

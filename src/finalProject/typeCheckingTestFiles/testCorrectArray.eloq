@@ -8,6 +8,7 @@ program arrayTest{
 	
 	//1D array declaration
 	hodgePodge x = George [0..2];
+	hodgePodge y = George [5..6];
 	
 	//Assign array
 	highPowered a, b = x;
@@ -15,6 +16,12 @@ program arrayTest{
 	a = {bogus,bogus,bogus};
 	
 	//const array
-	sacrosanct y = x << {bogus,bogus,bogus};
+	sacrosanct e = x << {bogus,bogus,bogus};
 	highPowered c = x << {unfeigned, unfeigned, unfeigned};
+	
+	highPowered d = y << {bogus, unfeigned};
+	z = d[5];
+	z = e[0];
+	
+	d = {unfeigned, bogus};
 }

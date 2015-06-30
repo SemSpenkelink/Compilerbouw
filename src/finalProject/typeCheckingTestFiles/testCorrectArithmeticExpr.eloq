@@ -2,11 +2,12 @@
 //Authors: Thijs van Ede & Anirudh Ekambaranathan
 //This program contains a correct mathematical expression
 
-Program expression {
+Program testCorrectArithmicExpr{
 	highPowered numericalDigit x = 10;
 	highPowered George bool = bogus;
 	
-	//Correct arithmetic expressions with parentheses
+	//Correct arithmetic expressions with parentheses, addition, substraction, multiplication, and division.
 	x = x+5/3-(2*(3+4));
-	bool = bool or x inferiorTo 2*x;
+	//Correct logic expression with not, or, and, <, <=, >=, >, ==, and <>.
+	bool = not bool or x inferiorTo 2*x and bool or (x inferiorTo x+1 and x inferiorOrEqualTo 0 or x superiorOrEqualTo 0 and x superiorTo x-1 or bool equalTo bogus and unfeigned);
 }

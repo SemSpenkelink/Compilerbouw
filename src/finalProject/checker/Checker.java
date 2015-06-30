@@ -355,11 +355,13 @@ public class Checker extends EloquenceBaseListener {
 	 * exit node of expression to the exit node of assignment.
 	 */
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
-		if(checkScope(ctx.target()) && checkNotNull(ctx.expression())){
-			checkType(ctx.expression(), getType(ctx.target()));
-			checkMutable(ctx.target());
-			setType(ctx, this.scope.type(ctx.target().getText()));
-			setOffset(ctx, scope.offset(ctx.target().getText()));
+		for(TargetContext target : ctx.target()){
+			if(checkScope(target) && checkNotNull(ctx.expression())){
+				checkType(ctx.expression(), getType(target));
+				checkMutable(target);
+				setType(ctx, this.scope.type(ctx.target(0).getText()));
+				setOffset(ctx, scope.offset(ctx.target(0).getText()));
+			}
 		}
 		
 		/** CFG creation. */
@@ -406,6 +408,9 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
 		if(checkScope(ctx.target())){
+			if(ctx.expression().size() > ((Type.Array)getType(ctx.target())).getUpper() - ((Type.Array)getType(ctx.target())).getLower()+1)
+				addError(ctx, "Number of elements to assign is too high, maximum number of elements = '%d', tried to add '%d' elements.",
+						((Type.Array)getType(ctx.target())).getUpper() - ((Type.Array)getType(ctx.target())).getLower()+1, ctx.expression().size());
 			Type type = getType(ctx.expression(0));
 			for(ExpressionContext expr : ctx.expression()){
 				if(expr.equals(ctx.expression(0)))
@@ -513,6 +518,24 @@ public class Checker extends EloquenceBaseListener {
 		constructNodes(ctx);
 		entry.get(ctx).addEdge(entry.get(ctx.functionID()));
 		exit.get(ctx.functionID()).addEdge(exit.get(ctx));
+	}
+	
+	/**
+	 * Set type of statExpr to that of its child expression.
+	 * Set entry to itself.
+	 * 
+	 * CFG creation:
+	 * Create entry and exit nodes, link the entry node to the entry node of expression.
+	 * Link the exit node of expression to the exit node of statExpr.
+	 */
+	@Override public void exitStatExpr(finalProject.grammar.EloquenceParser.StatExprContext ctx) {
+		setType(ctx, getType(ctx.expression()));
+		setEntry(ctx, ctx);
+		
+		/** CFG creation. */
+		constructNodes(ctx);
+		entry.get(ctx).addEdge(entry.get(ctx.expression()));
+		exit.get(ctx.expression()).addEdge(exit.get(ctx));
 	}
 	
 	/**

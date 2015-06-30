@@ -7,7 +7,8 @@ program testArrayFail{
 	//1D array declaration
 	hodgePodge x = George [0..2];
 	
+	highpowered y = x;
 	//Try to assign a value that is too large
-	x = {unfeigned,bogus,unfeigned,bogus,unfeigned,bogus};
+	y = {unfeigned,bogus,unfeigned,bogus,unfeigned,bogus};
 
 }
