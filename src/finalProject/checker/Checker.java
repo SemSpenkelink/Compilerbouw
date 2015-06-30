@@ -1029,8 +1029,8 @@ public class Checker extends EloquenceBaseListener {
 			arguments.add(getType(param));
 		}
 		addSymbol(ctx.newID());
-		this.scope.put(ctx.newID().getText(), null, false, arguments);
-		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
+		this.scope.put(ctx.newID().ID().getText(), null, false, arguments);
+		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
 		for(StatContext stat : ctx.statBlockBody().body().stat())
 			if(stat.getText().toLowerCase().contains("relinquish"))
 				addError(ctx, "No return statements are allowed.");
@@ -1076,8 +1076,8 @@ public class Checker extends EloquenceBaseListener {
 			arguments.add(getType(param));
 		}
 		addSymbol(ctx.newID());
-		this.scope.put(ctx.newID().getText(), getType(ctx.type()), false, arguments);
-		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
+		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), false, arguments);
+		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
 		setEntry(ctx, entry(ctx.returnStat()));
 
 		/** CFG creation. */
@@ -1095,8 +1095,8 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
 		setType(ctx, getType(ctx.type()));
-		this.scope.put(ctx.newID().getText(), getType(ctx.type()), true, null);
-		setOffset(ctx.newID(), scope.offset(ctx.newID().getText()));
+		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), true, null);
+		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
 	}
 	
 	
