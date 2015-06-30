@@ -21,12 +21,12 @@ public class EloquenceCheckerTest {
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
 
-//	@Test
+	@Test
 	public void testArray() throws IOException, ParseException {
 		check(parse("testCorrectArray"));
 	}
 	
-//	@Test
+	@Test
 	public void testArrayFail() throws IOException, ParseException {
 		checkFail("testFailArray");
 		checkFail("testFailArray2");
@@ -34,33 +34,33 @@ public class EloquenceCheckerTest {
 		checkFail("testFailArray4");
 	}
 
-//	@Test
+	@Test
 	public void testArithmeticExpression() throws IOException, ParseException {
 		check(parse("testCorrectArithmeticExpr"));
 	}
 	
-//	@Test
+	@Test
 	public void testArithmethicExpressionFail() throws IOException, ParseException {
 		checkFail("testFailArithmeticExpr");
 	}
 	
-//	@Test
+	@Test
 	public void testDeclarations() throws IOException, ParseException{
 		check(parse("testCorrectDeclarations"));
 	}
 	
 	@Test
 	public void testDeclarationsFail() throws IOException, ParseException{
-//		checkFail("testFailDeclarations");
+		checkFail("testFailDeclarations");
 		checkFail("testFailDeclarations2");
 	}
 	
-//	@Test
+	@Test
 	public void testFunction() throws IOException, ParseException{
 		check(parse("testCorrectFunction"));
 	}
 	
-//	@Test
+	@Test
 	public void testFunctionFail() throws IOException, ParseException{
 		checkFail("testFailFunc");
 		checkFail("testFailFunc2");
@@ -73,45 +73,45 @@ public class EloquenceCheckerTest {
 		checkFail("testFailFunc9");
 	}
 	
-//	@Test
+	@Test
 	public void testMutable() throws IOException, ParseException{
 		check(parse("testCorrectMutable"));		
 	}
 	
-//	@Test
+	@Test
 	public void testMutableFail() throws IOException, ParseException{
 		checkFail("testFailMutable");		
 	}
 	
-//	@Test
+	@Test
 	public void testWhile() throws IOException, ParseException{
 		check(parse("testCorrectWhileStat"));
 	}
 	
-//	@Test
+	@Test
 	public void testWhileFail() throws IOException, ParseException{
 		checkFail("testFailWhileStat");
 		checkFail("testFailWhileStat2");
 		checkFail("testFailWhileStat3");
 	}
 	
-//	@Test
+	@Test
 	public void testIf() throws IOException, ParseException{
 		check(parse("testCorrectIf"));
 	}
 	
-//	@Test
+	@Test
 	public void testIfFail() throws IOException, ParseException{
 		checkFail("testFailIf");
 		checkFail("testFailIf2");
 	}
 	
-//	@Test
+	@Test
 	public void testScope() throws IOException, ParseException{
 		check(parse("testCorrectScope"));
 	}
 	
-//	@Test
+	@Test
 	public void testScopeFail() throws IOException, ParseException{
 		checkFail("testFailScope");
 	}

@@ -1,6 +1,6 @@
 //Test program used to check the type checking system of the programming language Eloquence.
 //Authors: Thijs van Ede & Anirudh Ekambaranathan
-//This program tests the correct basic expressions.
+//This program tests spelling and context free syntax errors in basic expressions.
 
 Program basicExprSpellingContextFreeSyntaxError{
 	highPowered numericalDigit a, b;

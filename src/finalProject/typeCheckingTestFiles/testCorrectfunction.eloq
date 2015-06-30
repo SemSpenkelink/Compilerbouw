@@ -11,11 +11,17 @@ program funcTest{
 	}
 	
 	//int function	
-	numericaldigit func2(numericalDigit one){
-		relinquish one*2;
+	numericaldigit func2(numericalDigit two){
+		relinquish two*2;
 	}
 	
 	func1(5);
+	
+	numericaldigit func3(numericalDigit three){
+		assuming(three inferiorOrEqualTo 0)
+			relinquish 0;
+		relinquish funn3(three-1);
+	}
 	
 	x = func2(x);
 	x = func2(5);
