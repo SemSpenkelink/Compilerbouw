@@ -347,13 +347,6 @@ public class EloquenceBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArrayMulExpr(@NotNull EloquenceParser.ArrayMulExprContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitDeclVar(@NotNull EloquenceParser.DeclVarContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -397,11 +390,4 @@ public class EloquenceBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExprArray(@NotNull EloquenceParser.ExprArrayContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitArraySingleExpr(@NotNull EloquenceParser.ArraySingleExprContext ctx) { return visitChildren(ctx); }
 }

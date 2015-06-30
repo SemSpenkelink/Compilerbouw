@@ -581,18 +581,6 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArrayMulExpr(@NotNull EloquenceParser.ArrayMulExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitArrayMulExpr(@NotNull EloquenceParser.ArrayMulExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterDeclVar(@NotNull EloquenceParser.DeclVarContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -672,18 +660,6 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExprArray(@NotNull EloquenceParser.ExprArrayContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterArraySingleExpr(@NotNull EloquenceParser.ArraySingleExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitArraySingleExpr(@NotNull EloquenceParser.ArraySingleExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

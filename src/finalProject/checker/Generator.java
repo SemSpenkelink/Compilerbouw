@@ -9,7 +9,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.ArrayElemContext;
-import finalProject.grammar.EloquenceParser.ArrayExpressionContext;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
 import finalProject.grammar.EloquenceParser.ParametersContext;
@@ -299,13 +298,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
 		visitChildren(ctx.target());
-		//We need the offset of the target. We'll store this in reg1
-		emit(OpCode.loadI, offset(ctx.target()),reg1);
-		//The array starts two places further, the first two are used for config
-		emit(OpCode.addI, reg1, new Num(8),reg1);
-		//Reg 2 now contains the offset of where the first value should be placed.
-		 
-		visit(ctx.arrayExpression());
+		
 		
 		
 		return null; }
@@ -477,19 +470,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		emit(OpCode.loadAO,arp,reg1,reg(ctx));
 		emit(OpCode.out, new Str("Test: "), reg1);
-		return null; }
-	
-	@Override public Op visitArrayMulExpr(EloquenceParser.ArrayMulExprContext ctx) {
-		visitChildren(ctx);
-		for(ExpressionContext exp : ctx.expression()){
-			emit(OpCode.storeAO, reg(exp), arp,reg1);
-			emit(OpCode.addI, reg1, new Num(4), reg1);
-		}
-		return null; }
-	
-	@Override public Op visitArraySingleExpr(EloquenceParser.ArraySingleExprContext ctx) { 
-		visitChildren(ctx);
-		emit(OpCode.storeAO, reg(ctx.expression()), arp,reg1);
 		return null; }
 	
 	@Override public Op visitUnary(EloquenceParser.UnaryContext ctx) { return visitChildren(ctx); }

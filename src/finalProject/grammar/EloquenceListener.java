@@ -539,18 +539,6 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitStatBlockBody(@NotNull EloquenceParser.StatBlockBodyContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code arrayMulExpr}
-	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayMulExpr(@NotNull EloquenceParser.ArrayMulExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code arrayMulExpr}
-	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayMulExpr(@NotNull EloquenceParser.ArrayMulExprContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code declVar}
 	 * labeled alternative in {@link EloquenceParser#decl}.
 	 * @param ctx the parse tree
@@ -632,16 +620,4 @@ public interface EloquenceListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExprArray(@NotNull EloquenceParser.ExprArrayContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code arraySingleExpr}
-	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterArraySingleExpr(@NotNull EloquenceParser.ArraySingleExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code arraySingleExpr}
-	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitArraySingleExpr(@NotNull EloquenceParser.ArraySingleExprContext ctx);
 }

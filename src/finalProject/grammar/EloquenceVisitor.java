@@ -324,13 +324,6 @@ public interface EloquenceVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatBlockBody(@NotNull EloquenceParser.StatBlockBodyContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code arrayMulExpr}
-	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayMulExpr(@NotNull EloquenceParser.ArrayMulExprContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code declVar}
 	 * labeled alternative in {@link EloquenceParser#decl}.
 	 * @param ctx the parse tree
@@ -378,11 +371,4 @@ public interface EloquenceVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprArray(@NotNull EloquenceParser.ExprArrayContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code arraySingleExpr}
-	 * labeled alternative in {@link EloquenceParser#arrayExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArraySingleExpr(@NotNull EloquenceParser.ArraySingleExprContext ctx);
 }

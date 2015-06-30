@@ -31,8 +31,8 @@ arrayElem
 	;
 	
 arrayDecl
-	: VAR newID (COMMA newID)* ASSIGN target																#varArrayDecl
-	| CONST ARRAY newID (COMMA newID)* ASSIGN target SETARRAY LBRACE expression (COMMA expression)* RBRACE	#constArrayDecl
+	: VAR newID (COMMA newID)* ASSIGN target (SETARRAY LBRACE expression (COMMA expression)* RBRACE)?		#varArrayDecl
+	| CONST newID (COMMA newID)* ASSIGN target SETARRAY LBRACE expression (COMMA expression)* RBRACE	#constArrayDecl
 	;	
 
 	
@@ -80,11 +80,6 @@ expression
 	| TRUE											#exprTrue
 	| FALSE											#exprFalse
 	| CHARACTER										#exprChar
-	;
-	
-arrayExpression
-	: LSQBRACKET expression (COMMA expression)* RSQBRACKET						#arrayMulExpr
-	| expression																#arraySingleExpr
 	;
 	
 unary
