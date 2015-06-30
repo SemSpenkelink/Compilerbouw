@@ -1,14 +1,15 @@
 program basicArray{
 	hodgePodge x = numericalDigit [4..6];
-	highpowered a,b = x;
-//	b[5] = 25;
+	highpowered b = x << {5,10,15};
+	highpowered a = x;
+	b[5] = 25;
 
-	b = {[5,10,15]};
-	exude(b[4]);
-	
-	godforsaken function(){
-		a[5] = 2;
-	}
+	a = {6,7,8};
+//	a[4] = 6;
+//	a[5] = 7;
+	exude(a[4]);
+	exude(a[5]);
+	exude(b[6]);
 	
 
 /*
