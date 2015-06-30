@@ -1,9 +1,26 @@
 program functions{
 	highpowered numericalDigit x = 1;
-	godforsaken function(numericalDigit y){
-		x = y;
+	highpowered george a = unfeigned;
+	
+	
+	godforsaken function2(){
+		a = bogus;
 	}
 	
-	function(3);
+	godforsaken function(numericalDigit y, numericalDigit z){
+		
+		throughout(a){
+			assuming(a){
+				z = 1 + y;
+				x = z;
+				function2();
+			}
+		}
+	}
+	
+	
+	
+	
+	function(3,4);
 	exude(x);
 }

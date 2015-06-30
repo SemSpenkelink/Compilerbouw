@@ -280,17 +280,19 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatAssign(EloquenceParser.StatAssignContext ctx) { 
-/*		visitChildren(ctx);
-		
+		System.out.println(" \n Stat assign, before children");
+		visitChildren(ctx);
+		System.out.println(" \n visitStatAssign = empty \n offset of target: " + offset(ctx.target(0)));
+		for(TargetContext target : ctx.target()){
 			if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
-				emit(OpCode.c2c, reg(ctx.expression()),reg(ctx.target()));
-				emit(OpCode.storeAI, reg(ctx.target()), arp, offset(ctx.target()));
+				emit(OpCode.c2c, reg(ctx.expression()),reg(target));
+				emit(OpCode.storeAI, reg(target), arp, offset(target));
 			}
 			else{
-				emit(OpCode.i2i, reg(ctx.expression()),reg(ctx.target()));
-				emit(OpCode.storeAI, reg(ctx.target()), arp, offset(ctx.target())); //TODO offset of ID
+				emit(OpCode.i2i, reg(ctx.expression()),reg(target));
+				emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
 			}
-*/		
+		}
 		return null; }
 	
 	@Override public Op visitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
@@ -545,15 +547,17 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		System.out.println("\n Start void func");
 		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));
 		
-		//visit(ctx.newID());
+		visit(ctx.newID());
 		
 		Label funcEnd = createLabel(ctx, "funcEnd");
 		emit(OpCode.jumpI, funcEnd);
 		emit(funcAddr.get(ctx.newID().ID().getText()),OpCode.nop);
+		
 		for(ParametersContext p : ctx.parameters()){
-			emit(OpCode.pop, reg(ctx.newID().ID()));
-			System.out.println("Offset ID: " + offset(ctx.newID().ID()));
-			emit(OpCode.storeAI, reg(ctx.newID().ID()),arp, offset(ctx.newID().ID()));
+			visitChildren(p);
+			emit(OpCode.pop, reg4);
+			emit(OpCode.i2i, reg4 , reg(p.newID().ID()));
+			emit(OpCode.storeAI, reg(p.newID().ID()),arp, offset(p.newID().ID()));
 		}
 		visitChildren(ctx.statBlockBody());
 		
