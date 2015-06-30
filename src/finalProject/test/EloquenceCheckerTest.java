@@ -20,18 +20,6 @@ public class EloquenceCheckerTest {
 	private final static String EXT = ".eloq";
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
-	
-	public void testBasic() throws IOException, ParseException {
-		ParseTree tree = parse("basic");
-		Result result = check(tree);
-		ParseTree body = tree.getChild(3).getChild(1);
-		ParseTree assX = body.getChild(1);
-		assertEquals(assX.getChild(2), result.getEntry(body));
-		assertEquals(assX.getChild(2), result.getEntry(assX));
-		assertEquals(Type.INT, result.getType(assX.getChild(0)));
-		assertEquals(Type.INT, result.getType(assX.getChild(2)));
-		assertEquals(0, result.getOffset(assX.getChild(0)));
-	}
 
 	@Test
 	public void testArray() throws IOException, ParseException {

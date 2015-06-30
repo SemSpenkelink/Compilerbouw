@@ -5,6 +5,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+
 /** Node in a Control Flow Graph. */
 public class Node {
 	/** Node number; used to distinguish nodes. */
@@ -13,19 +15,22 @@ public class Node {
 	private String id;
 	/** Set of nodes to which there is an edge from this node. */
 	private final Set<Node> edges;
+	/** Context of node */
+	private ParseTree context;
 
 	/** Creates a node with a given number.
 	 * The number is also used as ID. 
 	 */
-	public Node(int nr) {
-		this(nr, null);
+	public Node(int nr, ParseTree ctx) {
+		this(nr, null, ctx);
 	}
 
 	/** Creates a node with a given number and ID. */
-	public Node(int nr, String id) {
+	public Node(int nr, String id, ParseTree ctx) {
 		this.nr = nr;
 		this.id = id == null ? "" + nr : id;
 		this.edges = new LinkedHashSet<>();
+		this.context = ctx;
 	}
 
 	/** Returns the number of this node. */
@@ -41,6 +46,16 @@ public class Node {
 	/** Returns the node identifier. */
 	public String getId() {
 		return this.id;
+	}
+	
+	/** Sets the context of this node. */
+	public void setContext(ParseTree ctx){
+		this.context = ctx;
+	}
+	
+	/** Returns the context of this node. */
+	public ParseTree getContext(){
+		return this.context;
 	}
 
 	/** Adds an outgoing edge to a given target node. */

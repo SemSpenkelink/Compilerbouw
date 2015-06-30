@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jdk.nashorn.internal.ir.SetSplitState;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -56,6 +54,7 @@ public class Checker extends EloquenceBaseListener {
 		if (hasErrors()) {
 			throw new ParseException(getErrors());
 		}
+		this.result.setCFG(cfg);
 		return this.result;
 	}
 	
@@ -1210,7 +1209,7 @@ public class Checker extends EloquenceBaseListener {
 	 * a further indicator.
 	 */
 	private Node addNode(ParserRuleContext node, String text) {
-		return this.cfg.addNode(node.getStart().getLine() + ": " + text);
+		return this.cfg.addNode(node.getStart().getLine() + ": " + text, node);
 	}
 	
 	/**

@@ -13,6 +13,8 @@ public class Result {
 	private final ParseTreeProperty<Type> types = new ParseTreeProperty<>();
 	/** Mapping from variables to coordinates. */
 	private final ParseTreeProperty<Integer> offsets = new ParseTreeProperty<>();
+	/** Control flow graph. */
+	private Graph cfg;
 
 	/** Adds an association from parse tree node to the flow graph entry. */
 	public void setEntry(ParseTree node, ParserRuleContext entry) {
@@ -47,5 +49,15 @@ public class Result {
 	/** Returns the type associated with a given parse tree node. */
 	public Type getType(ParseTree node) {
 		return this.types.get(node);
+	}
+	
+	/** Sets the control flow graph. */
+	public void setCFG(Graph graph){
+		this.cfg = graph;
+	}
+	
+	/** Returns the control flow graph. */
+	public Graph getCFG(){
+		return this.cfg;
 	}
 }

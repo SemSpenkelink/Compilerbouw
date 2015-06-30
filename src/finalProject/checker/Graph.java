@@ -23,8 +23,8 @@ public class Graph implements Iterable<Node> {
 	 * The new node number equals the number of nodes at the
 	 * time of invocation.
 	 */
-	public Node addNode() {
-		Node result = new Node(this.nodes.size());
+	public Node addNode(ParseTree context) {
+		Node result = new Node(this.nodes.size(), context);
 		this.nodes.add(result);
 		return result;
 	}
@@ -33,8 +33,8 @@ public class Graph implements Iterable<Node> {
 	 * The new node number equals the number of nodes at the
 	 * time of invocation.
 	 */
-	public Node addNode(String id) {
-		Node result = new Node(this.nodes.size(), id);
+	public Node addNode(String id, ParseTree context) {
+		Node result = new Node(this.nodes.size(), id, context);
 		this.nodes.add(result);
 		return result;
 	}
@@ -53,6 +53,29 @@ public class Graph implements Iterable<Node> {
 	/** Returns the number of nodes in this graph. */
 	public int size() {
 		return this.nodes.size();
+	}
+	
+	/** Returns the set of nodes comprising the given context. */
+	public Set<Node> getNodes(ParseTree context){
+		Set<Node> result = new LinkedHashSet<Node>();
+		for(Node node : nodes){
+			if(node.getContext().equals(context))
+				result.add(node);
+		}
+		return result;
+	}
+	
+	/** Returns the set of nodes edging to other contexts. */
+	public Set<Node> getExitNodes(ParseTree context){
+		Set<Node> contextNodes = getNodes(context);
+		Set<Node> exitNodes = new LinkedHashSet<Node>();
+		for(Node node : contextNodes){
+			Set<Node> edges = node.getEdges();
+			for(Node edge : edges)
+				if(!edge.getContext().equals(context))
+					exitNodes.add(node);
+		}
+		return exitNodes;
 	}
 
 	@Override
@@ -84,18 +107,5 @@ public class Graph implements Iterable<Node> {
 			return false;
 		}
 		return true;
-	}
-
-	/** Builds a simple CFG and prints it out. */
-	public static void main(String[] args) {
-		Graph g = new Graph();
-		Node n0 = g.addNode("First");
-		Node n1 = g.addNode();
-		Node n2 = g.addNode("Last");
-		n0.addEdge(n1);
-		n1.addEdge(n2);
-		n2.addEdge(n0);
-		n2.addEdge(n2);
-		System.out.println(g);
 	}
 }
