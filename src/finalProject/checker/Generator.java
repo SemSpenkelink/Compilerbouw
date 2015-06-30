@@ -369,7 +369,19 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx.ID()));
 		return visitChildren(ctx); }
 	
-	@Override public Op visitReturnStat(EloquenceParser.ReturnStatContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitReturnStat(EloquenceParser.ReturnStatContext ctx) { 
+		System.out.println("RETURN STAT RETURN STAT RETURN STAT RETURN STAT RETURN STAT");
+		visitChildren(ctx);
+		if(ctx.expression() != null){
+			emit(OpCode.pop, reg3);
+			emit(OpCode.push, reg(ctx.expression()));
+			emit(OpCode.jump, reg3);
+		} else{
+			emit(OpCode.pop, reg3);
+			emit(OpCode.jump, reg3);
+		}
+		
+		return null; }
 	
 	@Override public Op visitExprComp(EloquenceParser.ExprCompContext ctx) { 
 		visitChildren(ctx);
@@ -444,7 +456,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.i2c, reg1, reg(ctx));
 		return visitChildren(ctx); }
 	
-	@Override public Op visitExprFunc(EloquenceParser.ExprFuncContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitExprFunc(EloquenceParser.ExprFuncContext ctx) { 
+		visitChildren(ctx);
+		emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
+		return null; }
 	
 	@Override public Op visitExprOr(EloquenceParser.ExprOrContext ctx) {
 		visitChildren(ctx);
@@ -540,6 +555,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		emit(OpCode.jumpI, funcAddr.get(ctx.target().getText())); //TODO
 		emit(funcContinue, OpCode.nop);
+		emit(OpCode.pop, reg(ctx));
+//		emit(OpCode.loadI, new Num(5), reg(ctx));
 		return null; }
 	
 	@Override public Op visitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
@@ -566,7 +583,29 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(funcEnd, OpCode.nop);
 		return null; }
 	
-	@Override public Op visitReturnFunc(EloquenceParser.ReturnFuncContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
+		System.out.println("\n Start void func");
+		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));
+		
+		visit(ctx.newID());
+		
+		Label funcEnd = createLabel(ctx, "funcEnd");
+		emit(OpCode.jumpI, funcEnd);
+		emit(funcAddr.get(ctx.newID().ID().getText()),OpCode.nop);
+		
+		for(ParametersContext p : ctx.parameters()){
+			visitChildren(p);
+			emit(OpCode.pop, reg4);
+			emit(OpCode.i2i, reg4 , reg(p.newID().ID()));
+			emit(OpCode.storeAI, reg(p.newID().ID()),arp, offset(p.newID().ID()));
+		}
+		visit(ctx.body());
+		visit(ctx.returnStat());
+	//	emit(OpCode.pop, reg3);
+	//	emit(OpCode.jump, reg3);
+		emit(funcEnd, OpCode.nop);
+		return null;
+		}
 	
 	@Override public Op visitParameters(EloquenceParser.ParametersContext ctx) { return visitChildren(ctx); }
 }
