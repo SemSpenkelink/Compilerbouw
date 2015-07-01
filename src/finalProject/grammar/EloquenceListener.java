@@ -119,30 +119,6 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code statIf}
-	 * labeled alternative in {@link EloquenceParser#stat}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatIf(EloquenceParser.StatIfContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code statIf}
-	 * labeled alternative in {@link EloquenceParser#stat}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatIf(EloquenceParser.StatIfContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code statWhile}
-	 * labeled alternative in {@link EloquenceParser#stat}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatWhile(EloquenceParser.StatWhileContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code statWhile}
-	 * labeled alternative in {@link EloquenceParser#stat}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatWhile(EloquenceParser.StatWhileContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code statAssign}
 	 * labeled alternative in {@link EloquenceParser#stat}.
 	 * @param ctx the parse tree
@@ -389,6 +365,18 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitExprOr(EloquenceParser.ExprOrContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code statWhile}
+	 * labeled alternative in {@link EloquenceParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatWhile(EloquenceParser.StatWhileContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code statWhile}
+	 * labeled alternative in {@link EloquenceParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatWhile(EloquenceParser.StatWhileContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code statIn}
 	 * labeled alternative in {@link EloquenceParser#expression}.
 	 * @param ctx the parse tree
@@ -460,6 +448,18 @@ public interface EloquenceListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExprFalse(EloquenceParser.ExprFalseContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code statIf}
+	 * labeled alternative in {@link EloquenceParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatIf(EloquenceParser.StatIfContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code statIf}
+	 * labeled alternative in {@link EloquenceParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatIf(EloquenceParser.StatIfContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code exprArray}
 	 * labeled alternative in {@link EloquenceParser#expression}.

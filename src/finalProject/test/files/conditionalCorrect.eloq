@@ -2,10 +2,13 @@
 //Authors: Thijs van Ede & Anirudh Ekambaranathan
 //This program tests the correct conditional expressions.
 
+//Sample input:		1 5 4
+//Expected output:	
+
 Program conditionalCorrect{
 	//Variable declarations.
 	highPowered numericalDigit ivar1, ivar2;
-	highPowered George bvar;
+	highPowered George bvar = unfeigned;
 	highPowered lexographicIdentifyingUnit cvar1, cvar2;
 	
 	//Constant declarations.
@@ -13,46 +16,43 @@ Program conditionalCorrect{
 	sacrosanct George bconst = unfeigned;
 	sacrosanct lexographicIdentifyingUnit cconst = 'c';
 	
-	//Testing of normal if condition
-	assuming(bvar)
-		ivar1 = ivar1+1;
-		
-	//Testing of if condition with brackets
-	assuming(bvar){
-		ivar1 = ivar1+1;
-	}
 	
-	//Testing of if else condition
-	assuming(bvar)
-		ivar1 = ivar1+1;
-	contrariwise
-		ivar1 = ivar1-1;
-		
-	//Testing of if else condition with brackets if
-	assuming(bvar){
-		ivar1 = ivar1+1;
-	}contrariwise
-		ivar1 = ivar1-1;
-		
-	//Testing of if else conditions with brackets else
-	assuming(bvar)
-		ivar1 = ivar1+1;
-	contrariwise{
-		ivar1 = ivar1-1;
-	}
+	//Testing scope of declarations
+	ivar1 =
+	{
+		expropriate(ivar1);
+		assuming(ivar1 superiorTo 10){
+			ivar2 =
+			{
+				assuming(iconst1 equalTo iconst2)
+					iconst1;
+				contrariwise
+					iconst1+iconst2;;
+			};
+		}contrariwise{
+			ivar2 =
+			{
+				assuming(iconst1 equalTo iconst2)
+					iconst1+iconst2;
+				contrariwise
+					iconst1;;
+			};
+		};
+		assuming(assuming(
+			{
+				highPowered numericalDigit ivar3;
+				expropriate(ivar3);
+				bvar and ivar1 inferiorTo expropriate(ivar2);
+			}
+			){
+				ivar3 = ivar3+1;
+			}contrariwise
+				ivar3 = ivar3-1; superiorTo 5)
+			4;
+		contrariwise
+			0;;
+	} + 5;
 	
-	//Testing of if else conditions with brackets both
-	assuming(bvar){
-		ivar1 = ivar1+1;
-	}contrariwise{
-		ivar1 = ivar1-1;
-	}
 	
-	ivar1 = {
-		highPowered George bvar = unfeigned;
-		assuming(bvar and ivar1 inferiorTo expropriate(ivar2)){
-			5;
-		}contrariwise
-			6;
-	};
+
 }

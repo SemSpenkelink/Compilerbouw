@@ -77,20 +77,6 @@ public interface EloquenceVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code statIf}
-	 * labeled alternative in {@link EloquenceParser#stat}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStatIf(EloquenceParser.StatIfContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code statWhile}
-	 * labeled alternative in {@link EloquenceParser#stat}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStatWhile(EloquenceParser.StatWhileContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code statAssign}
 	 * labeled alternative in {@link EloquenceParser#stat}.
 	 * @param ctx the parse tree
@@ -235,6 +221,13 @@ public interface EloquenceVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprOr(EloquenceParser.ExprOrContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code statWhile}
+	 * labeled alternative in {@link EloquenceParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatWhile(EloquenceParser.StatWhileContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code statIn}
 	 * labeled alternative in {@link EloquenceParser#expression}.
 	 * @param ctx the parse tree
@@ -276,6 +269,13 @@ public interface EloquenceVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprFalse(EloquenceParser.ExprFalseContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code statIf}
+	 * labeled alternative in {@link EloquenceParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatIf(EloquenceParser.StatIfContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exprArray}
 	 * labeled alternative in {@link EloquenceParser#expression}.

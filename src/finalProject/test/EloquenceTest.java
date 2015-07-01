@@ -28,6 +28,11 @@ public class EloquenceTest {
 		check(parse("basicExprRuntimeError"));					//TODO should fail on runtime
 	}
 	
+	@Test
+	public void conditionalTest() throws ParseException, IOException{
+		check(parse("conditionalCorrect"));
+	}
+	
 	private void checkFail(String filename) throws IOException {
 		Checker checker = new Checker();
 		try {

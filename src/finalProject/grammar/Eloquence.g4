@@ -37,9 +37,7 @@ arrayDecl
 
 	
 stat
-	: IF LPAR expression RPAR stat (ELSE stat)?							#statIf
-	| WHILE LPAR expression RPAR stat									#statWhile
-	| (target ASSIGN)+ expression SEMI									#statAssign
+	: (target ASSIGN)+ expression SEMI									#statAssign
 	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI 	#statAssignArray		//Assign a single expression to an array
 	| target ASSIGN LBRACE expression (COMMA expression)* RBRACE SEMI 	#statAssignArrayMult	//Assign multiple values to a n-dimensional array
 	| statBlockBody														#statBlock
@@ -67,6 +65,8 @@ expression
 	: functionID									#exprFunc
 	| IN LPAR target (COMMA target)* RPAR			#statIn
 	| OUT LPAR expression (COMMA expression)* RPAR	#statOut
+	| IF LPAR expression RPAR stat (ELSE stat)?		#statIf
+	| WHILE LPAR expression RPAR stat				#statWhile
 	| LBRACE body expression SEMI RBRACE			#exprCompound
 	| unary expression								#exprUnary		
 	| expression multiply expression				#exprMult

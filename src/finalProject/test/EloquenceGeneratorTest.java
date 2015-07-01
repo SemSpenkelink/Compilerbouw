@@ -21,10 +21,9 @@ public class EloquenceGeneratorTest {
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
 
-
 	@Test
 	public void testPrime() throws IOException, ParseException {
-		Program prog = compile("basicExprCorrect");
+		Program prog = compile("conditionalCorrect1");
 		
 		Machine vm = new Machine();
 		Simulator sim = new Simulator(prog, vm);

@@ -300,6 +300,7 @@ public class Checker extends EloquenceBaseListener {
 			setType(ctx, getType(ctx.stat(0)));
 		else
 			setType(ctx, null);
+		setEntry(ctx, ctx);
 		symbolTable.closeScope();
 		
 		/** CFG creation. */
@@ -335,6 +336,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitStatWhile(EloquenceParser.StatWhileContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
 		setType(ctx, null);
+		setEntry(ctx, ctx);
 		symbolTable.closeScope();
 
 		/** CFG creation. */
