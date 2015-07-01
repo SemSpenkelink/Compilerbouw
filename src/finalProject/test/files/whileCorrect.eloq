@@ -8,7 +8,7 @@ highpowered george a = unfeigned;
 
 throughout(a equalTo unfeigned){
 	a = bogus;
-}
+};
 
 //exude(a);
 

@@ -18,7 +18,12 @@ Program conditionalCorrect{
 	
 	
 	//Testing scope of declarations
-	ivar1 =
+	ivar1 = assuming(expropriate(ivar1) superiorTo 3){
+				iconst1;
+			}contrariwise{
+				2;
+			}
+/*	ivar1 =
 	{
 		expropriate(ivar1);
 		assuming(ivar1 superiorTo 10){
@@ -52,7 +57,7 @@ Program conditionalCorrect{
 		contrariwise
 			0;;
 	} + 5;
-	
+*/
 	
 
 }
