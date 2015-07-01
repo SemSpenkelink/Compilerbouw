@@ -38,8 +38,8 @@ arrayDecl
 	
 stat
 	: (target ASSIGN)+ expression SEMI									#statAssign
-	| target LSQBRACKET expression RSQBRACKET ASSIGN expression SEMI 	#statAssignArray		//Assign a single expression to an array
-	| target ASSIGN LBRACE expression (COMMA expression)* RBRACE SEMI 	#statAssignArrayMult	//Assign multiple values to a n-dimensional array
+	| (target LSQBRACKET expression RSQBRACKET ASSIGN)+ expression SEMI 	#statAssignArray		//Assign a single expression to an array
+	| (target ASSIGN)+ LBRACE expression (COMMA expression)* RBRACE SEMI 	#statAssignArrayMult	//Assign multiple values to a n-dimensional array
 	| statBlockBody														#statBlock
 	| returnStat														#statReturn
 	| functionID SEMI													#statVoid

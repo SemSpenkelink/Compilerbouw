@@ -403,9 +403,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
-		
+	for(TargetContext target : ctx.target()){
 			//Start by computing the begin value of the array. We'll store that in reg1
-			emit(OpCode.loadAI, arp, offset(ctx.target()), reg1);
+			emit(OpCode.loadAI, arp, offset(target), reg1);
 			//Now we need the index value. This is stored in expression(0). We'll store it in reg2
 	//		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(0).getText())),reg2);
 			emit(OpCode.i2i, reg(ctx.expression(0)), reg2);
@@ -415,12 +415,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.multI, reg1, new Num(4), reg1);
 			//Add 8
 			emit(OpCode.addI, reg1, new Num(8),reg1); //This is the address where the value needs to be stored.
-			emit(OpCode.addI, reg1, offset(ctx.target()),reg1);
+			emit(OpCode.addI, reg1, offset(target),reg1);
 			//The the target value
 		//	emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(2).getText())), reg2);
 			 emit(OpCode.storeAO, reg(ctx.expression(1)), arp,reg1);
 			//Debug
 			//	emit(OpCode.out, new Str("test"), reg1);
+	}
 		return null; }
 	
 	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
@@ -428,17 +429,18 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		System.out.println("\n Visit Mult array assign");
-		//Start by computing the begin value of the array. We'll store that in reg1
-		emit(OpCode.loadI, offset(ctx.target()), reg1);
-		//Add 8 to not overwrite the starting and ending value
-		emit(OpCode.addI, reg1, new Num(4),reg1); //This is the address where the value needs to be stored.
-	
-		//The the target value
-		 for(int i = 0; i < ctx.expression().size();i++){
-			 emit(OpCode.addI, reg1, new Num(4),reg1);
-			 emit(OpCode.storeAO, reg(ctx.expression(i)), arp,reg1);
-		 }
+		for(TargetContext target : ctx.target()){
+			//Start by computing the begin value of the array. We'll store that in reg1
+			emit(OpCode.loadI, offset(target), reg1);
+			//Add 8 to not overwrite the starting and ending value
+			emit(OpCode.addI, reg1, new Num(4),reg1); //This is the address where the value needs to be stored.
 		
+			//The the target value
+			 for(int i = 0; i < ctx.expression().size();i++){
+				 emit(OpCode.addI, reg1, new Num(4),reg1);
+				 emit(OpCode.storeAO, reg(ctx.expression(i)), arp,reg1);
+			 }
+		}
 		return null; }
 	
 	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {//TODO add these lables
