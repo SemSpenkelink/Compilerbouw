@@ -47,6 +47,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	private final Reg reg2 = new Reg("r2");
 	private final Reg reg3 = new Reg("r3");
 	private final Reg reg4 = new Reg("r4");
+	private final Reg reg5 = new Reg("r5");
+	private final Reg reg6 = new Reg("r6");
 	
 	/** A mapping from function Ids to their labels*/
 	Map<String, Label> funcAddr = new HashMap<String,Label>();
@@ -327,26 +329,73 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		}
 		visitChildren(ctx);
-		
-		if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
-			emit(OpCode.c2c, reg(ctx.expression()),reg(ctx));
-			emit(OpCode.storeAI, reg(ctx), arp, offset(ctx));
-		}
-		else{
-			System.out.println("Stat ASSIGN afterChildren");
-			emit(OpCode.i2i, reg(ctx.expression()),reg(ctx));
-			emit(OpCode.storeAI, reg(ctx), arp, offset(ctx)); 
-		}
-		
-		for(TargetContext target : ctx.target()){
+		if(checkResult.getType(ctx) != null){
 			if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
-				emit(OpCode.c2c, reg(ctx.expression()),reg(target));
-				emit(OpCode.storeAI, reg(target), arp, offset(target));
+				emit(OpCode.c2c, reg(ctx.expression()),reg(ctx));
+				emit(OpCode.storeAI, reg(ctx), arp, offset(ctx));
 			}
-			else{
-				System.out.println("Stat ASSIGN i2i");
-				emit(OpCode.i2i, reg(ctx.expression()),reg(target));
-				emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
+			else if(checkResult.getType(ctx.expression()).equals(Type.INT) || checkResult.getType(ctx.expression()).equals(Type.BOOL)){
+				System.out.println("Stat ASSIGN afterChildren");
+				emit(OpCode.i2i, reg(ctx.expression()),reg(ctx));
+				emit(OpCode.storeAI, reg(ctx), arp, offset(ctx)); 
+			} else if(!checkResult.getType(ctx.target(0)).equals(Type.INT) ||
+					!checkResult.getType(ctx.target(0)).equals(Type.BOOL) ||
+					!checkResult.getType(ctx.target(0)).equals(Type.CHAR)
+					){
+				
+				for(TargetContext target : ctx.target()){
+					System.out.println("\nAssign two arrays");
+					emit(OpCode.loadAI, arp, offset(target), reg1);	//Reg1 now contains lower bound
+					emit(OpCode.loadI, new Num(4), reg2);
+					emit(OpCode.loadI, offset(target), reg3);
+					emit(OpCode.add, reg2,reg3,reg2);
+					emit(OpCode.loadAO, arp, reg2, reg2); //Reg2 now contains the upper bound
+					emit(OpCode.sub, reg2,reg1,reg1); //Reg1 contains the length of the array
+					emit(OpCode.addI, reg1, new Num(1), reg1); //Reg1 now contains the length of the array
+					emit(OpCode.loadI, new Num(0), reg2);	//Reg2: A counter to iterate over the array
+					
+					//Offset of target + 8
+					emit(OpCode.loadI, offset(target),reg3);
+					emit(OpCode.addI,reg3, new Num(8),reg3);	//reg3 contains the offset of target + 8
+					
+					emit(OpCode.loadI, offset(ctx.expression()),reg4);
+					emit(OpCode.addI,reg4, new Num(8),reg4); //Offset of expression + 8
+					
+					
+					Label arrayLoop = createLabel(ctx, "arrayLoop");
+					Label arrayLoopEnd = createLabel(ctx, "arrayLoopEnd");
+					
+					emit(arrayLoop, OpCode.nop);	//Start of the array	
+				
+					emit(OpCode.loadAO,arp,reg4,reg5);//Load the expression value into reg5
+					emit(OpCode.storeAO,reg5,arp,reg3);
+					
+					emit(OpCode.addI,reg3,new Num(4),reg3);	//Update the offsets
+					emit(OpCode.addI,reg4,new Num(4),reg4);
+					
+					emit(OpCode.addI, reg2,new Num(1),reg2);	//Update the counter
+					
+					emit(OpCode.cmp_LT,reg2,reg1,reg6);
+					emit(OpCode.cbr, reg6, arrayLoop,arrayLoopEnd);
+					
+					emit(arrayLoopEnd, OpCode.nop);
+				
+			
+				}
+				
+				
+			}
+			
+			for(TargetContext target : ctx.target()){
+				if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
+					emit(OpCode.c2c, reg(ctx.expression()),reg(target));
+					emit(OpCode.storeAI, reg(target), arp, offset(target));
+				}
+				else{
+					System.out.println("Stat ASSIGN i2i");
+					emit(OpCode.i2i, reg(ctx.expression()),reg(target));
+					emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
+				}
 			}
 		}
 		return null; }
