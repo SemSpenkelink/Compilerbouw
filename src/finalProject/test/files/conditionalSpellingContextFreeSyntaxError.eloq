@@ -1,0 +1,52 @@
+//Test program used to check the type checking system of the programming language Eloquence.
+//Authors: Thijs van Ede & Anirudh Ekambaranathan
+//This program tests the spelling and context free syntax errors in conditional expressions.
+
+Program conditionalCorrect{
+
+	//Variable declarations.
+	highPowered numericalDigit ivar1, ivar2;
+	highPowered George bvar = unfeigned;
+	highPowered lexographicIdentifyingUnit cvar1, cvar2;
+	
+	//Constant declarations.
+	sacrosanct numericalDigit iconst1, iconst2 = 1;
+	sacrosanct George bconst = unfeigned;
+	sacrosanct lexographicIdentifyingUnit cconst = 'c';
+	
+	if(iconst1 equalTo iconst2)													//assuming as if
+		out(iconst1);															//exude as out
+	else amusing(iconst1 superiorTo iconst2)									//contrariwise as else, assuming spelled wrong
+		exude(iconst1);
+	contrarywise assuming(iconst1 inferiorTo iconst2)							//contrariwise spelled wrong
+		exude(iconst2);															//not enough semicolons
+	
+	assuming(unfegned){															//unfeigned spelled wrong
+		exude(unfeigned);
+	};
+	
+	assuming(expropriate(ivar1) superirOrEqualTo expropriate(ivar2)){			//superiorOrEqualTo spelled wrong
+		exude(ivar1)															//No semicolon used
+	}contrariwise assuming(ivar1 inferiorOrEqualTo exude(ivar2))
+		exude(ivar2);;;
+
+	
+	assuming(
+	{
+		highPowered numericalDigit ivar3 = 5;
+		ivar3 superior 3;														//superiorTo spelled wrong
+	})contrariwise;																//no body after if
+																				//no body after while
+
+	ivar1 = assuming() + 5;														//using incomplete if statement as part of expression.
+	
+	//Correct use
+	cvar1 =
+	{
+		assuming(cconst notEqualTo 'd' and 'e' notEqualTo expropriate(cvar2))
+			exude(cvar2);
+		contrariwise assuming(cconst equalTo cconst)
+			'e';;;
+	};
+	exude(ivar1, bvar, cvar1);
+}

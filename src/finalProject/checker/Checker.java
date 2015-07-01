@@ -296,7 +296,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
-		if(ctx.ELSE() == null || getType(ctx.stat(0)).equals(getType(ctx.stat(1))))
+		if(ctx.ELSE() != null && getType(ctx.stat(0)).equals(getType(ctx.stat(1))))
 			setType(ctx, getType(ctx.stat(0)));
 		else
 			setType(ctx, null);

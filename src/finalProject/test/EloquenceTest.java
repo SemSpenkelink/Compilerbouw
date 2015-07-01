@@ -31,6 +31,9 @@ public class EloquenceTest {
 	@Test
 	public void conditionalTest() throws ParseException, IOException{
 		check(parse("conditionalCorrect"));
+		checkFail("conditionalSpellingContextFreeSyntaxError");
+		checkFail("conditionalContextError");
+		check(parse("conditionalContextError"));
 	}
 	
 	private void checkFail(String filename) throws IOException {

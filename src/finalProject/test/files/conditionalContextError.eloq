@@ -18,40 +18,50 @@ Program conditionalCorrect{
 	sacrosanct lexographicIdentifyingUnit cconst = 'c';
 	
 	//Testing basic expressions in combination with conditional statement
-	if(iconst1 equalTo iconst2)													//assuming as if
-		out(iconst1);															//exude as out
-	else amusing(iconst1 superiorTo iconst2)									//contrariwise as else, assuming spelled wrong
+	assuming(iconst1 equalTo iconst2)
 		exude(iconst1);
-	contrarywise assuming(iconst1 inferiorTo iconst2)							//contrariwise spelled wrong
-		exude(iconst2);															//not enough semicolons
+	contrariwise assuming(iconst1 superiorTo iconst2)
+		exude(iconst1);
+	contrariwise assuming(iconst1 inferiorTo iconst2)
+		exude(iconst2);;;;
 	
 	//Testing no else
-	assuming(unfegned){															//unfeigned spelled wrong
+	assuming(unfeigned){
 		exude(unfeigned);
 	};
 	
 	//Testing conditional statement in combination with read and write expressions.
-	assuming(expropriate(ivar1) superirOrEqualTo expropriate(ivar2)){			//superiorOrEqualTo spelled wrong
-		exude(ivar1)															//No semicolon used
-	}contrariwise assuming(ivar1 inferiorOrEqualTo exude(ivar2))
+	assuming(expropriate(ivar1) + expropriate(ivar2)){						//Condition expression not of type boolean but integer
+		exude(ivar1);
+	}contrariwise assuming(cconst)											//Condition expression not of type boolean but char
 		exude(ivar2);;;
 
+	ivar1 = assuming(unfeigned)												//If and else have different types: Trying to assign void to integer
+				ivar1;
+			contrariwise
+				bvar;;
+				
+	ivar1  = assuming(unfeigned)											//No else part: Trying to assign void to integer.
+				ivar1;;
+	
 	
 	//Testing scope of declarations
 	assuming(
 	{
 		highPowered numericalDigit ivar3 = 5;
-		ivar3 superior 3;														//superiorTo spelled wrong
+		ivar3 superiorTo 3;
 	}){
 		highPowered numericalDigit ivar4 = 4;
 		ivar2 = ivar3;
 		ivar1 = ivar4;
 	}contrariwise{
-		ivar2 = ivar3;
+		ivar2 = ivar4;														//Trying to assign value out of scope.
 	};
+	
+	ivar2 = ivar3;															//Trying to assign value out of scope.
 
-	//Testing assignment of if statement as expression for integers.
-	ivar1 =
+	//Trying to assign integer value to boolean
+	bvar =
 	{
 		expropriate(ivar1);
 		assuming(ivar1 superiorTo 10){
@@ -88,8 +98,8 @@ Program conditionalCorrect{
 	} + 5;
 	exude(ivar1);
 	
-	//Testing assignment of if statement as expression for Booleans.
-	bvar =
+	//Trying to assign boolean value to char
+	cvar1 =
 	{
 		//Using two conditional statements as expressions including
 		//definitions within if condition statement.
@@ -116,7 +126,8 @@ Program conditionalCorrect{
 			bvar or ivar2 inferiorOrEqualTo 4;;
 	} or bogus;
 	
-	cvar1 =
+	//Trying to assign char value to integer
+	ivar1 =
 	{
 		assuming(cconst notEqualTo 'd' and 'e' notEqualTo expropriate(cvar2))
 			exude(cvar2);

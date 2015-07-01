@@ -16,7 +16,7 @@ Program conditionalCorrect{
 	sacrosanct numericalDigit iconst1, iconst2 = 1;
 	sacrosanct George bconst = unfeigned;
 	sacrosanct lexographicIdentifyingUnit cconst = 'c';
-	
+/*	
 	//Testing basic expressions in combination with conditional statement
 	assuming(iconst1 equalTo iconst2)
 		exude(iconst1);
@@ -104,6 +104,8 @@ Program conditionalCorrect{
 			{
 				highPowered George bvar2 = bogus;
 				assuming(not bvar2)
+					bvar2 = unfeigned;
+				contrariwise
 					bvar2 = unfeigned;;
 			} and ivar2 inferiorOrEqualTo 100
 			)
@@ -115,13 +117,13 @@ Program conditionalCorrect{
 		contrariwise
 			bvar or ivar2 inferiorOrEqualTo 4;;
 	} or bogus;
-	
+*/	
 	cvar1 =
 	{
 		assuming(cconst notEqualTo 'd' and 'e' notEqualTo expropriate(cvar2))
 			exude(cvar2);
-		contrariwise assuming(cconst equalTo cconst)
-			'e';;;
+		contrariwise
+			'e';;
 	};
 	exude(ivar1, bvar, cvar1);
 }
