@@ -22,7 +22,7 @@ Program conditionalCorrect{
 				iconst1;
 			}contrariwise{
 				2;
-			}
+			};
 /*	ivar1 =
 	{
 		expropriate(ivar1);
