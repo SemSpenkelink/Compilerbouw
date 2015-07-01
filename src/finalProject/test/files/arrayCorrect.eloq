@@ -5,12 +5,14 @@ program arrayCorrect{
 	
 	highPowered a,c = x;
 //	highpowered b = y;
+
 	
 	a[0] = unfeigned;
 	a[1] = bogus;
 	c = a;
+	//c[1] = unfeigned;
 	
-	assuming(c equalTo a){
+	assuming(c notEqualTo a){
 		exude(c[0],c[1]);
 	};
 	

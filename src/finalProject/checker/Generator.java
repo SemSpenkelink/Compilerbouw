@@ -572,7 +572,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 					!checkResult.getType(ctx.expression(0)).equals(Type.BOOL) ||
 					!checkResult.getType(ctx.expression(0)).equals(Type.CHAR)
 					){
-			System.out.println("COMPARING ARRAYS");
 				emit(OpCode.loadAI, arp, offset(ctx.expression(0)), reg1);	//Reg1 now contains lower bound
 				emit(OpCode.loadI, new Num(4), reg2);
 				emit(OpCode.loadI, offset(ctx.expression(0)), reg3);
@@ -635,6 +634,71 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			}else
 			emit(OpCode.cmp_EQ, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 		} else if(ctx.compare().NE() != null){
+
+			if(!checkResult.getType(ctx.expression(0)).equals(Type.INT) ||
+					!checkResult.getType(ctx.expression(0)).equals(Type.BOOL) ||
+					!checkResult.getType(ctx.expression(0)).equals(Type.CHAR)
+					){
+				emit(OpCode.loadAI, arp, offset(ctx.expression(0)), reg1);	//Reg1 now contains lower bound
+				emit(OpCode.loadI, new Num(4), reg2);
+				emit(OpCode.loadI, offset(ctx.expression(0)), reg3);
+				
+				emit(OpCode.add, reg2,reg3,reg2);
+				emit(OpCode.loadAO, arp, reg2, reg2); //Reg2 now contains the upper bound
+				emit(OpCode.sub, reg2,reg1,reg1); //Reg1 contains the length of the array
+				emit(OpCode.addI, reg1, new Num(1), reg1); //Reg1 now contains the length of the array1
+				
+				emit(OpCode.loadAI, arp, offset(ctx.expression(1)), reg2);	//Reg2 now contains lower bound of array2
+				emit(OpCode.loadI, new Num(4), reg3);
+				emit(OpCode.loadI, offset(ctx.expression(1)), reg4);
+				
+				emit(OpCode.add, reg3,reg4,reg3);
+				emit(OpCode.loadAO, arp, reg3, reg3); //Reg3 now contains the upper bound
+				emit(OpCode.sub, reg3,reg2,reg2); //Reg2 contains the length of the array
+				emit(OpCode.addI, reg2, new Num(1), reg2); //Reg2 now contains the length of the array2
+				
+				
+				Label equalLength = createLabel(ctx,"equalLength");
+				Label arrayLoop = createLabel(ctx, "arrayLoop");
+				Label arrayLoopEnd = createLabel(ctx, "arrayLoopEnd");
+				Label equalValue = createLabel(ctx,"equalValue");
+				
+				emit(OpCode.cmp_NE, reg1, reg2, reg(ctx));			//Are the arrays of equal length?
+				
+				emit(OpCode.cbr,reg(ctx),arrayLoopEnd ,equalLength);
+				emit(equalLength,OpCode.nop);
+				
+				emit(OpCode.loadI, new Num(0), reg2);	//Reg2: A counter to iterate over the array
+				
+				//Offset of target + 8
+				emit(OpCode.loadI, offset(ctx.expression(0)),reg3);
+				emit(OpCode.addI,reg3, new Num(8),reg3);	//reg3 contains the offset of array1 + 8
+				
+				emit(OpCode.loadI, offset(ctx.expression(1)),reg4);
+				emit(OpCode.addI,reg4, new Num(8),reg4); //Offset of array2 + 8
+				
+				
+				emit(arrayLoop, OpCode.nop);	//Start of the array loop
+			
+				emit(OpCode.loadAO,arp,reg4,reg5);//Load the array2 value into reg5
+				emit(OpCode.loadAO,arp,reg3,reg6);
+				emit(OpCode.cmp_NE, reg5, reg6, reg(ctx));			//Are the arrays of equal value?
+				emit(OpCode.cbr,reg(ctx),arrayLoopEnd ,equalValue);
+				emit(equalValue,OpCode.nop);
+				
+				emit(OpCode.addI,reg3,new Num(4),reg3);	//Update the offsets
+				emit(OpCode.addI,reg4,new Num(4),reg4);
+				
+				emit(OpCode.addI, reg2,new Num(1),reg2);	//Update the counter
+				
+				emit(OpCode.cmp_LT,reg2,reg1,reg6);
+				emit(OpCode.cbr, reg6, arrayLoop,arrayLoopEnd);
+				
+				emit(arrayLoopEnd, OpCode.nop);
+				
+				
+				
+			}else
 			emit(OpCode.cmp_NE, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 		}
 		
