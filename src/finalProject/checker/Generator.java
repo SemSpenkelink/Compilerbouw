@@ -130,7 +130,16 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitBody(EloquenceParser.BodyContext ctx) { 
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
-		return visitChildren(ctx); }
+		
+		visitChildren(ctx);
+		if(ctx.stat().size()>0){
+			if(checkResult.getType(ctx).equals(Type.CHAR)){
+				emit(OpCode.c2c, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx));
+			}else if(checkResult.getType(ctx) != null){
+				emit(OpCode.i2i, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx));
+			}
+		}
+		return null; }
 	
 	@Override public Op visitDeclVar(EloquenceParser.DeclVarContext ctx) { 
 		visitChildren(ctx);
@@ -273,6 +282,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			if(checkResult.getType(ctx).equals(Type.CHAR)){
 				emit(OpCode.c2c, reg(ctx.stat(1)), reg(ctx));
 			}else if(checkResult.getType(ctx) != null){
+				System.out.println("ENTERIFELSE");
 				emit(OpCode.i2i, reg(ctx.stat(1)), reg(ctx));
 			}
 		}
@@ -307,17 +317,26 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		System.out.println("Stat ASSIGN");
 		if(labels.get(ctx) != null){
 			emit(labels.get(ctx), OpCode.nop);
-			System.out.println("Label name: "+ctx.getText());
 		}
-		else
-			System.out.println("No LABEL");
 		visitChildren(ctx);
+		
+		if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
+			emit(OpCode.c2c, reg(ctx.expression()),reg(ctx));
+			emit(OpCode.storeAI, reg(ctx), arp, offset(ctx));
+		}
+		else{
+			System.out.println("Stat ASSIGN afterChildren");
+			emit(OpCode.i2i, reg(ctx.expression()),reg(ctx));
+			emit(OpCode.storeAI, reg(ctx), arp, offset(ctx)); 
+		}
+		
 		for(TargetContext target : ctx.target()){
 			if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
 				emit(OpCode.c2c, reg(ctx.expression()),reg(target));
 				emit(OpCode.storeAI, reg(target), arp, offset(target));
 			}
 			else{
+				System.out.println("Stat ASSIGN i2i");
 				emit(OpCode.i2i, reg(ctx.expression()),reg(target));
 				emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
 			}
@@ -366,10 +385,17 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {//TODO add these lables
-		visitChildren(ctx);
 		
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
+		visitChildren(ctx);
+		
+		
+		if(checkResult.getType(ctx).equals(Type.CHAR)){
+			emit(OpCode.c2c, reg(ctx.statBlockBody()), reg(ctx));
+		}else if(checkResult.getType(ctx) != null){
+			emit(OpCode.i2i, reg(ctx.statBlockBody()), reg(ctx));
+		}
 		
 		return null; }
 	
@@ -378,6 +404,14 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
+		
+		if(checkResult.getType(ctx).equals(Type.CHAR)){
+			emit(OpCode.c2c, reg(ctx.expression()), reg(ctx));
+		}else if(checkResult.getType(ctx) != null){
+			emit(OpCode.i2i, reg(ctx.expression()), reg(ctx));
+		}
+		
+		
 		return null;
 	}
 	
@@ -425,7 +459,15 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			System.out.println("Emit LABEL");
 			emit(labels.get(ctx), OpCode.nop);
 		}
-		return visitChildren(ctx); }
+		
+		visitChildren(ctx);
+		
+		if(checkResult.getType(ctx).equals(Type.CHAR)){
+			emit(OpCode.c2c, reg(ctx.body()), reg(ctx));
+		}else if(checkResult.getType(ctx) != null){
+			emit(OpCode.i2i, reg(ctx.body()), reg(ctx));
+		}
+		return null; }
 	
 	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) {
 		visitChildren(ctx);
