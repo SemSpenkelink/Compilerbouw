@@ -338,20 +338,39 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {//TODO add these lables
+		visitChildren(ctx);
+		
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		
-		return visitChildren(ctx); }
+		return null; }
+	
+	@Override public Op visitStatExpr(EloquenceParser.StatExprContext ctx) {
+		visitChildren(ctx);
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
+		return null;
+	}
 	
 	@Override public Op visitStatReturn(EloquenceParser.StatReturnContext ctx) { 
+		visitChildren(ctx);
+		
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { 
+		visitChildren(ctx);
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
-		return visitChildren(ctx); }
+		
+		for(TargetContext target : ctx.target()){
+			emit(OpCode.in,new Str(target.getText() + "?") ,reg(target));
+			emit(OpCode.storeAI, reg(target), arp, offset(target));
+			emit(OpCode.i2i, reg(target), reg(ctx));
+		}
+		
+		return null; }
 	
 	@Override public Op visitStatOut(EloquenceParser.StatOutContext ctx) { 
 		if(labels.get(ctx) != null)
@@ -360,6 +379,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		visitChildren(ctx);
 		for(ExpressionContext out : ctx.expression()){
 			emit(OpCode.out, new Str("Output: ") , reg(out));
+			emit(OpCode.i2i, reg(out), reg(ctx));
 		}
 		
 		return null; }
@@ -375,6 +395,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return visitChildren(ctx); }
 	
 	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) {
+		visitChildren(ctx);
 		emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));
 			return null;  }
 	
@@ -462,7 +483,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitExprTrue(EloquenceParser.ExprTrueContext ctx) { 
-		emit(OpCode.loadI, new Num(1), reg(ctx));
+		emit(OpCode.loadI, new Num(-1), reg(ctx));
 		return visitChildren(ctx); }
 	
 	//TODO check whether this is correct
@@ -473,10 +494,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprFunc(EloquenceParser.ExprFuncContext ctx) { 
 		visitChildren(ctx);
-		if(checkResult.getType(ctx.functionID()).equals(Type.INT))
-			emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
-		else
+		if(checkResult.getType(ctx.functionID()).equals(Type.CHAR))
 			emit(OpCode.c2c, reg(ctx.functionID()), reg(ctx));
+		else
+			emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
 		return null; }
 	
 	@Override public Op visitExprOr(EloquenceParser.ExprOrContext ctx) {
@@ -512,10 +533,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprId(EloquenceParser.ExprIdContext ctx) { 
 		visitChildren(ctx);
-		if(checkResult.getType(ctx.target()).equals(Type.INT))
-			emit(OpCode.i2i, reg(ctx.target()),reg(ctx));
-		else
+		
+		if(checkResult.getType(ctx.target()).equals(Type.CHAR))
 			emit(OpCode.c2c, reg(ctx.target()),reg(ctx));
+		else
+			emit(OpCode.i2i, reg(ctx.target()),reg(ctx));
 		return null; }
 	
 	@Override public Op visitExprFalse(EloquenceParser.ExprFalseContext ctx) {
@@ -591,7 +613,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(funcAddr.get(ctx.newID().ID().getText()),OpCode.nop);
 		
 		for(ParametersContext p : ctx.parameters()){
-			visitChildren(p);
+			visit(p);
 			emit(OpCode.pop, reg(p.newID().ID()));
 			emit(OpCode.storeAI, reg(p.newID().ID()),arp, offset(p.newID().ID()));
 		}
@@ -613,7 +635,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(funcAddr.get(ctx.newID().ID().getText()),OpCode.nop);
 		
 		for(ParametersContext p : ctx.parameters()){
-			visitChildren(p);
+			visit(p);
 			emit(OpCode.pop, reg(p.newID().ID()));
 			emit(OpCode.storeAI, reg(p.newID().ID()),arp, offset(p.newID().ID()));
 		}

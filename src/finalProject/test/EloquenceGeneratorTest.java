@@ -16,7 +16,7 @@ import pp.iloc.model.Program;
 
 @SuppressWarnings("javadoc")
 public class EloquenceGeneratorTest {
-	private final static String BASE_DIR = "src/finalProject/generatorTestFiles";
+	private final static String BASE_DIR = "src/finalProject/test/files";
 	private final static String EXT = ".eloq";
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
@@ -24,7 +24,7 @@ public class EloquenceGeneratorTest {
 
 	@Test
 	public void testPrime() throws IOException, ParseException {
-		Program prog = compile("functions");
+		Program prog = compile("conditionalCorrect");
 		
 		Machine vm = new Machine();
 		Simulator sim = new Simulator(prog, vm);

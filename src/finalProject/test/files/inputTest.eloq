@@ -1,0 +1,13 @@
+program inputTest{
+
+
+highPowered numericalDigit tmpivar1, tmpivar2;
+		expropriate(tmpivar1, tmpivar2);
+		exude(tmpivar1, tmpivar2);
+		sacrosanct numericalDigit tmpiconst1 = 1;
+		sacrosanct numericalDigit tmpiconst2 = 2;
+
+exude(tmpivar1 inferiorTo tmpivar2 and tmpiconst1 inferiorOrEqualTo tmpiconst2,
+			  tmpiconst1*tmpiconst2 superiorTo tmpivar2-tmpivar1);
+
+}
