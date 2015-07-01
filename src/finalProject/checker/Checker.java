@@ -749,9 +749,12 @@ public class Checker extends EloquenceBaseListener {
 	 * Link the exit of functionID to its own exit node.
 	 */
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
-		checkNotNull(ctx.functionID());
-		checkScope(ctx.functionID().target());
-		setType(ctx, getType(ctx.functionID()));
+		if(checkNotNull(ctx.functionID())){
+			checkScope(ctx.functionID().target());
+			setType(ctx, getType(ctx.functionID()));
+		}else{
+			setType(ctx, Type.INT);
+		}
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -766,8 +769,13 @@ public class Checker extends EloquenceBaseListener {
 	 * Create entry and exit nodes, link them sequentially with its body and expression.
 	 */
 	@Override public void exitExprCompound(finalProject.grammar.EloquenceParser.ExprCompoundContext ctx) {
-		setType(ctx, getType(ctx.expression()));
-		setEntry(ctx, entry(ctx.expression()));
+		if(checkNotNull(ctx.expression())){
+			setType(ctx, getType(ctx.expression()));
+			setEntry(ctx, entry(ctx.expression()));
+		}else{
+			setType(ctx, Type.INT); //Default type.
+			setEntry(ctx, ctx);
+		}
 		
 		/** CFG creation. */
 		constructNodes(ctx);
