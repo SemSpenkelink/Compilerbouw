@@ -242,21 +242,39 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		Label body = createLabel(ctx, "ifBody");
 		Label ifContinue = createLabel(ctx, "continue");
-		labels.put(ctx.stat(0), body);
+	//	labels.put(ctx.stat(0), body);
 		//visitChildren(ctx);
 		visit(ctx.expression());
 		
 		if(ctx.ELSE() == null){ //There is no else
 			emit(OpCode.cbr, reg(ctx.expression()), body, ifContinue);
+			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
+			if(checkResult.getType(ctx).equals(Type.CHAR)){
+				emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
+			}else if(checkResult.getType(ctx) != null){
+				emit(OpCode.i2i, reg(ctx.stat(0)), reg(ctx));
+			}
 			emit(OpCode.jumpI, ifContinue);
 		} else {			
 			Label elseBody = createLabel(ctx, "elseBody");
-			labels.put(ctx.stat(1), elseBody);
+		//	labels.put(ctx.stat(1), elseBody);
 			emit(OpCode.cbr, reg(ctx.expression()), body, elseBody);
+			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
+			if(checkResult.getType(ctx).equals(Type.CHAR)){
+				emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
+			}else if(checkResult.getType(ctx) != null){
+				emit(OpCode.i2i, reg(ctx.stat(0)), reg(ctx));
+			}
 			emit(OpCode.jumpI, ifContinue);
+			emit(elseBody, OpCode.nop);
 			visit(ctx.stat(1));
+			if(checkResult.getType(ctx).equals(Type.CHAR)){
+				emit(OpCode.c2c, reg(ctx.stat(1)), reg(ctx));
+			}else if(checkResult.getType(ctx) != null){
+				emit(OpCode.i2i, reg(ctx.stat(1)), reg(ctx));
+			}
 		}
 		
 		emit(ifContinue, OpCode.nop);
@@ -272,12 +290,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		Label whileBody = createLabel(ctx.stat(), "whileBody");
-		labels.put(ctx.stat(), whileBody);
+	//	labels.put(ctx.stat(), whileBody);
 		System.out.println("LABEL CONTEXT: "+ctx.stat().getText());
 		Label whileContinue = createLabel(ctx, "whileContinue");
 		
 		visit(ctx.expression());
 		emit(OpCode.cbr, reg(ctx.expression()), whileBody, whileContinue);
+		emit(whileBody, OpCode.nop);
 		visit(ctx.stat());
 		emit(OpCode.jumpI, labels.get(ctx));
 		emit(whileContinue, OpCode.nop);
@@ -355,24 +374,26 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatExpr(EloquenceParser.StatExprContext ctx) {
-		visitChildren(ctx);
+		
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
+		visitChildren(ctx);
 		return null;
 	}
 	
 	@Override public Op visitStatReturn(EloquenceParser.StatReturnContext ctx) { 
-		visitChildren(ctx);
+		
 		
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
+		visitChildren(ctx);
 		return null; }
 	
 	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { 
-		visitChildren(ctx);
+		
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
-		
+		visitChildren(ctx);
 		for(TargetContext target : ctx.target()){
 			emit(OpCode.in,new Str(target.getText() + "?") ,reg(target));
 			emit(OpCode.storeAI, reg(target), arp, offset(target));
