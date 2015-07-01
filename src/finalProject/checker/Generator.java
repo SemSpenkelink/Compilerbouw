@@ -133,10 +133,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		visitChildren(ctx);
 		if(ctx.stat().size()>0){
-			if(checkResult.getType(ctx).equals(Type.CHAR)){
-				emit(OpCode.c2c, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx));
-			}else if(checkResult.getType(ctx) != null){
-				emit(OpCode.i2i, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx));
+			if(checkResult.getType(ctx) != null){
+				if(checkResult.getType(ctx).equals(Type.CHAR)){
+					emit(OpCode.c2c, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx));
+				}else if(checkResult.getType(ctx) != null){
+					emit(OpCode.i2i, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx));
+				}
 			}
 		}
 		return null; }
@@ -390,11 +392,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		
-		
-		if(checkResult.getType(ctx).equals(Type.CHAR)){
-			emit(OpCode.c2c, reg(ctx.statBlockBody()), reg(ctx));
-		}else if(checkResult.getType(ctx) != null){
-			emit(OpCode.i2i, reg(ctx.statBlockBody()), reg(ctx));
+		if(checkResult.getType(ctx) != null){
+			if(checkResult.getType(ctx).equals(Type.CHAR)){
+				emit(OpCode.c2c, reg(ctx.statBlockBody()), reg(ctx));
+			}else if(checkResult.getType(ctx) != null){
+				emit(OpCode.i2i, reg(ctx.statBlockBody()), reg(ctx));
+			}
 		}
 		
 		return null; }
@@ -405,13 +408,14 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		
-		if(checkResult.getType(ctx).equals(Type.CHAR)){
-			emit(OpCode.c2c, reg(ctx.expression()), reg(ctx));
-		}else if(checkResult.getType(ctx) != null){
-			emit(OpCode.i2i, reg(ctx.expression()), reg(ctx));
+		if(checkResult.getType(ctx) != null){
+			if(checkResult.getType(ctx).equals(Type.CHAR)){
+				emit(OpCode.c2c, reg(ctx.expression()), reg(ctx));
+			}else if(checkResult.getType(ctx) != null){
+				emit(OpCode.i2i, reg(ctx.expression()), reg(ctx));
+			}
+		
 		}
-		
-		
 		return null;
 	}
 	
@@ -461,11 +465,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		visitChildren(ctx);
-		
-		if(checkResult.getType(ctx).equals(Type.CHAR)){
-			emit(OpCode.c2c, reg(ctx.body()), reg(ctx));
-		}else if(checkResult.getType(ctx) != null){
-			emit(OpCode.i2i, reg(ctx.body()), reg(ctx));
+		if(checkResult.getType(ctx) != null){
+			if(checkResult.getType(ctx).equals(Type.CHAR)){
+				emit(OpCode.c2c, reg(ctx.body()), reg(ctx));
+			}else if(checkResult.getType(ctx) != null){
+				emit(OpCode.i2i, reg(ctx.body()), reg(ctx));
+			}
 		}
 		return null; }
 	

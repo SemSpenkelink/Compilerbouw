@@ -1,11 +1,15 @@
 program whileCorrect{
 
-//highpowered numericalDigit x = 1;
-//highpowered numericalDigit y = x;
+
 highpowered george a = unfeigned;
 highpowered george b = unfeigned;
 
-
+highpowered numericalDigit c = 1;
+highpowered numericalDigit d = 1;
+highpowered numericalDigit e = 1;
+highpowered numericalDigit f = 1;
+highpowered numericalDigit g = 1;
+highpowered numericalDigit h = 1;
 
 throughout(a equalTo unfeigned){
 	throughout(b equalTo unfeigned){
@@ -25,8 +29,21 @@ throughout(a equalTo unfeigned){
 
 exude(a,b);
 
-//throughout()
+	throughout(c inferiorTo 10){
+		throughout(d inferiorTo x){
+			throughout(e inferiorTo){
+				throughout(f inferiorTo){
+					throughout(g inferiorTo){
+						throughout(h inferiorTo){
+						
+						}
+					}
+				}
+			}
+			y = y + 1;
+		};
+		x = x + 1;
+	};
 
-
-
+	exude(x,y);
 }
