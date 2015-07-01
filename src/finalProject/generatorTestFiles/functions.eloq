@@ -1,6 +1,6 @@
 program functions{
 	highpowered numericalDigit x = 1;
-	highpowered george a = unfeigned;
+/*	highpowered george a = unfeigned;
 	
 	
 	godforsaken function2(){
@@ -17,10 +17,16 @@ program functions{
 			}
 		}
 	}
+*/
+	numericaldigit func2(numericalDigit a,numericalDigit b){
+		relinquish a*b;
+	}
 	
+	x = func2(4,4);
 	
+	assuming(x equalTo 16)
+		x = 13;
 	
-	
-	function(3,4);
+//	function(3,4);
 	exude(x);
 }
