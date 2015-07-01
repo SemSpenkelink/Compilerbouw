@@ -11,6 +11,11 @@ highpowered numericalDigit f = 1;
 highpowered numericalDigit g = 1;
 highpowered numericalDigit h = 1;
 
+
+/*
+Testing a nested while statement using a character comparison. The  body contains an if statement.
+The value of a should and b should be bogus.
+*
 throughout(a equalTo unfeigned){
 	throughout(b equalTo unfeigned){
 		
@@ -29,21 +34,29 @@ throughout(a equalTo unfeigned){
 
 exude(a,b);
 
+
+/*
+	6 Nested while loops. The values of c,d,e,f,g,h, get incremented after every iteration of the
+	corresponding loop. The values should equal to 10, 9,8,7,6,5 respectively. 
+*/
 	throughout(c inferiorTo 10){
-		throughout(d inferiorTo x){
-			throughout(e inferiorTo){
-				throughout(f inferiorTo){
-					throughout(g inferiorTo){
-						throughout(h inferiorTo){
-						
-						}
-					}
-				}
-			}
-			y = y + 1;
+		throughout(d inferiorTo c){
+			throughout(e inferiorTo d){
+				throughout(f inferiorTo e){
+					throughout(g inferiorTo f){
+						throughout(h inferiorTo g){
+							h = h + 1;
+						};
+						g = g + 1;
+					};
+					f = f + 1;
+				};
+				e = e + 1;
+			};
+			d = d + 1;
 		};
-		x = x + 1;
+		c = c + 1;
 	};
 
-	exude(x,y);
+	exude(c,d,e,f,g,h);
 }
