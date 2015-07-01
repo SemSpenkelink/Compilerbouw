@@ -18,21 +18,21 @@ Program conditionalCorrect{
 	sacrosanct lexographicIdentifyingUnit cconst = 'c';
 	
 	//Testing basic expressions in combination with conditional statement
-	assuming(iconst1 equalTo iconst2)
+	if(iconst1 equalTo iconst2)													//assuming as if
+		out(iconst1);															//exude as out
+	else amusing(iconst1 superiorTo iconst2)									//contrariwise as else, assuming spelled wrong
 		exude(iconst1);
-	contrariwise assuming(iconst1 superiorTo iconst2)
-		exude(iconst1);
-	contrariwise assuming(iconst1 inferiorTo iconst2)
-		exude(iconst2);;;;
+	contrarywise assuming(iconst1 inferiorTo iconst2)							//contrariwise spelled wrong
+		exude(iconst2);															//not enough semicolons
 	
 	//Testing no else
-	assuming(unfeigned){
+	assuming(unfegned){															//unfeigned spelled wrong
 		exude(unfeigned);
 	};
 	
 	//Testing conditional statement in combination with read and write expressions.
-	assuming(expropriate(ivar1) superiorOrEqualTo expropriate(ivar2)){
-		exude(ivar1);
+	assuming(expropriate(ivar1) superirOrEqualTo expropriate(ivar2)){			//superiorOrEqualTo spelled wrong
+		exude(ivar1)															//No semicolon used
 	}contrariwise assuming(ivar1 inferiorOrEqualTo exude(ivar2))
 		exude(ivar2);;;
 
@@ -41,7 +41,7 @@ Program conditionalCorrect{
 	assuming(
 	{
 		highPowered numericalDigit ivar3 = 5;
-		ivar3 superiorTo 3;
+		ivar3 superior 3;														//superiorTo spelled wrong
 	}){
 		highPowered numericalDigit ivar4 = 4;
 		ivar2 = ivar3;

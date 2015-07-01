@@ -384,13 +384,14 @@ public class Checker extends EloquenceBaseListener {
 	 * the second expression to the exit of the stat assign array.
 	 */
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
-		if(checkScope(ctx.target())){
-			checkType(ctx.expression(0), Type.INT);
-			checkType(ctx.expression(1), ((Type.Array)getType(ctx.target())).getElemType());
-			checkMutable(ctx.target());
-		}
-		setType(ctx, getType(ctx.target()));
-		setEntry(ctx, entry(ctx.target()));
+		for(TargetContext target : ctx.target())
+			if(checkScope(target)){
+				checkType(ctx.expression(0), Type.INT);
+				checkType(ctx.expression(1), ((Type.Array)getType(target)).getElemType());
+				checkMutable(target);
+			}
+		setType(ctx, getType(ctx.target(0)));
+		setEntry(ctx, entry(ctx.target(0)));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -409,22 +410,23 @@ public class Checker extends EloquenceBaseListener {
 	 * Create entry and exit nodes, link the nodes to the expressions sequentially.
 	 */
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
-		if(checkScope(ctx.target())){
-			if(ctx.expression().size() > ((Type.Array)getType(ctx.target())).getUpper() - ((Type.Array)getType(ctx.target())).getLower()+1)
-				addError(ctx, "Number of elements to assign is too high, maximum number of elements = '%d', tried to add '%d' elements.",
-						((Type.Array)getType(ctx.target())).getUpper() - ((Type.Array)getType(ctx.target())).getLower()+1, ctx.expression().size());
-			Type type = getType(ctx.expression(0));
-			for(ExpressionContext expr : ctx.expression()){
-				if(expr.equals(ctx.expression(0)))
-					continue;
-				checkType(expr, type);
+		for(TargetContext target : ctx.target())
+			if(checkScope(target)){
+				if(ctx.expression().size() > ((Type.Array)getType(target)).getUpper() - ((Type.Array)getType(target)).getLower()+1)
+					addError(ctx, "Number of elements to assign is too high, maximum number of elements = '%d', tried to add '%d' elements.",
+							((Type.Array)getType(target)).getUpper() - ((Type.Array)getType(target)).getLower()+1, ctx.expression().size());
+				Type type = getType(ctx.expression(0));
+				for(ExpressionContext expr : ctx.expression()){
+					if(expr.equals(ctx.expression(0)))
+						continue;
+					checkType(expr, type);
+				}
+				
+				checkType(ctx.expression(0), ((Type.Array)getType(target)).getElemType());
+				checkMutable(target);
 			}
-			
-			checkType(ctx.expression(0), ((Type.Array)getType(ctx.target())).getElemType());
-			checkMutable(ctx.target());
-		}
-		setType(ctx, getType(ctx.target()));
-		setEntry(ctx, entry(ctx.target()));
+		setType(ctx, getType(ctx.target(0)));
+		setEntry(ctx, entry(ctx.target(0)));
 
 		/** CFG creation. */
 		constructNodes(ctx);
