@@ -261,10 +261,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.cbr, reg(ctx.expression()), body, ifContinue);
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
-			if(checkResult.getType(ctx).equals(Type.CHAR)){
-				emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
-			}else if(checkResult.getType(ctx) != null){
-				emit(OpCode.i2i, reg(ctx.stat(0)), reg(ctx));
+			if(checkResult.getType(ctx) != null){
+				if(checkResult.getType(ctx).equals(Type.CHAR)){
+					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
+				}else if(checkResult.getType(ctx) != null){
+					emit(OpCode.i2i, reg(ctx.stat(0)), reg(ctx));
+				}
 			}
 			emit(OpCode.jumpI, ifContinue);
 		} else {			
@@ -273,19 +275,23 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.cbr, reg(ctx.expression()), body, elseBody);
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
-			if(checkResult.getType(ctx).equals(Type.CHAR)){
-				emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
-			}else if(checkResult.getType(ctx) != null){
-				emit(OpCode.i2i, reg(ctx.stat(0)), reg(ctx));
+			if(checkResult.getType(ctx) != null){
+				if(checkResult.getType(ctx).equals(Type.CHAR)){
+					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
+				}else if(checkResult.getType(ctx) != null){
+					emit(OpCode.i2i, reg(ctx.stat(0)), reg(ctx));
+				}
 			}
 			emit(OpCode.jumpI, ifContinue);
 			emit(elseBody, OpCode.nop);
 			visit(ctx.stat(1));
-			if(checkResult.getType(ctx).equals(Type.CHAR)){
-				emit(OpCode.c2c, reg(ctx.stat(1)), reg(ctx));
-			}else if(checkResult.getType(ctx) != null){
-				System.out.println("ENTERIFELSE");
-				emit(OpCode.i2i, reg(ctx.stat(1)), reg(ctx));
+			if(checkResult.getType(ctx) != null){
+				if(checkResult.getType(ctx).equals(Type.CHAR)){
+					emit(OpCode.c2c, reg(ctx.stat(1)), reg(ctx));
+				}else if(checkResult.getType(ctx) != null){
+					System.out.println("ENTERIFELSE");
+					emit(OpCode.i2i, reg(ctx.stat(1)), reg(ctx));
+				}
 			}
 		}
 		

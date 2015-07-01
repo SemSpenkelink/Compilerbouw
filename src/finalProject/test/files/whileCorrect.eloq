@@ -37,14 +37,16 @@ exude(a,b);
 
 /*
 	6 Nested while loops. The values of c,d,e,f,g,h, get incremented after every iteration of the
-	corresponding loop. The values should equal to 10, 9,8,7,6,5 respectively. 
+	corresponding loop. The values should equal to 10, 10,9,8,7,6 respectively. 
 */
 	throughout(c inferiorTo 10){
-		throughout(d inferiorTo c){
-			throughout(e inferiorTo d){
-				throughout(f inferiorTo e){
-					throughout(g inferiorTo f){
+		highpowered numericalDigit scopeTest = 0;
+		throughout(d inferiorOrEqualTo c){
+			throughout(d superiorTo e){
+				throughout(e superiorTo f){
+					throughout(f superiorTo g){
 						throughout(h inferiorTo g){
+							scopeTest = scopeTest + 1;
 							h = h + 1;
 						};
 						g = g + 1;
@@ -56,6 +58,12 @@ exude(a,b);
 			d = d + 1;
 		};
 		c = c + 1;
+		
+		assuming(c equalTo 9){
+		 	exude(c);
+		};
+		
+		
 	};
 
 	exude(c,d,e,f,g,h);
