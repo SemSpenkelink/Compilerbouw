@@ -3,7 +3,7 @@
 //This program tests the correct basic expressions.
 
 //Sample input:		0 1 bogus 'c' 2 1 2 0 bogus 'c'
-//Expected output:	1 bogus unfeigned 0 1 unfeigned bogus c a unfeigned 2 1 2 unfeigned unfeigned 0 0 bogus unfeigned a unfeigned 1 unfeigned b
+//Expected output:	1 bogus unfeigned 0 1 unfeigned bogus c a unfeigned 2 1 2 bogus unfeigned 0 1 bogus unfeigned a unfeigned 2 unfeigned b
 
 Program basicExprCorrect{
 	//Test variable declarations.
