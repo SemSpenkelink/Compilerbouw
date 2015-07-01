@@ -62,7 +62,7 @@ Program basicExprCorrect{
 		highPowered George tmpbvar;
 		expropriate(tmpbvar);
 		exude(tmpbvar);
-		tmpbvar = 12 / 5 * 5 + 12 % 5 - 12 and 6 superiorOrEqualTo 6;
+		tmpbvar = 12 / 5 * 5 + 12 % 5 - 12 equalTo 2 and 6 superiorOrEqualTo 6;
 		sacrosanct George tmpbconst = unfeigned;
 		exude(not bogus and tmpbvar equalTo tmpbconst or bogus notEqualTo unfeigned);
 	} and unfeigned;
@@ -70,7 +70,7 @@ Program basicExprCorrect{
 	//Test compound character assignment and operations.
 	cvar1 =
 	{
-		highPowered lexographicIdentifyingUnit tmpcvar1, tmpcvar1;
+		highPowered lexographicIdentifyingUnit tmpcvar1, tmpcvar2;
 		expropriate(tmpcvar1);
 		sacrosanct lexographicIdentifyingUnit tmpcconst = 'c';
 		tmpcvar2 = 'z';

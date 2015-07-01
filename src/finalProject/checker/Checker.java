@@ -485,10 +485,11 @@ public class Checker extends EloquenceBaseListener {
 		for(ExpressionContext expr : ctx.expression())
 			checkNotNull(expr);
 		if(ctx.expression().size() == 1){
-			setType(ctx, this.scope.type(ctx.expression(0).getText()));
+			setType(ctx, getType(ctx.expression(0)));
 			setEntry(ctx, entry(ctx.expression(0)));	
 		}else
 			setType(ctx, null);
+		
 		
 		/** CFG creation. */
 		constructNodes(ctx);		

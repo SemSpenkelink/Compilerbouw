@@ -1,7 +1,58 @@
 //Test program used to check the type checking system of the programming language Eloquence.
 //Authors: Thijs van Ede & Anirudh Ekambaranathan
-//This program tests the correct basic expressions.
+//This program tests the correct conditional expressions.
 
 Program conditionalCorrect{
+	//Variable declarations.
+	highPowered numericalDigit ivar1, ivar2;
+	highPowered George bvar;
+	highPowered lexographicIdentifyingUnit cvar1, cvar2;
 	
+	//Constant declarations.
+	sacrosanct numericalDigit iconst1, iconst2 = 1;
+	sacrosanct George bconst = unfeigned;
+	sacrosanct lexographicIdentifyingUnit cconst = 'c';
+	
+	//Testing of normal if condition
+	assuming(bvar)
+		ivar1 = ivar1+1;
+		
+	//Testing of if condition with brackets
+	assuming(bvar){
+		ivar1 = ivar1+1;
+	}
+	
+	//Testing of if else condition
+	assuming(bvar)
+		ivar1 = ivar1+1;
+	contrariwise
+		ivar1 = ivar1-1;
+		
+	//Testing of if else condition with brackets if
+	assuming(bvar){
+		ivar1 = ivar1+1;
+	}contrariwise
+		ivar1 = ivar1-1;
+		
+	//Testing of if else conditions with brackets else
+	assuming(bvar)
+		ivar1 = ivar1+1;
+	contrariwise{
+		ivar1 = ivar1-1;
+	}
+	
+	//Testing of if else conditions with brackets both
+	assuming(bvar){
+		ivar1 = ivar1+1;
+	}contrariwise{
+		ivar1 = ivar1-1;
+	}
+	
+	ivar1 = {
+		highPowered George bvar = unfeigned;
+		assuming(bvar and ivar1 inferiorTo expropriate(ivar2)){
+			5;
+		}contrariwise
+			6;
+	};
 }
