@@ -1,13 +1,13 @@
 program arrayCorrect{
 
 	hodgePodge x = george [0..1];
-	hodgePodge y = numericalDigit [5..10];
+//	hodgePodge y = numericalDigit [5..10];
 	
 	highPowered a,c = x;
-	highpowered b = y;
+//	highpowered b = y;
 	
 	a[0] = unfeigned;
-	a[1] = unfeigned;
+	a[1] = bogus;
 	c = a;
 	
 	assuming(c equalTo a){

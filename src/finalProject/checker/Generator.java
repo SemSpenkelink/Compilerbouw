@@ -572,22 +572,25 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 					!checkResult.getType(ctx.expression(0)).equals(Type.BOOL) ||
 					!checkResult.getType(ctx.expression(0)).equals(Type.CHAR)
 					){
-			
+			System.out.println("COMPARING ARRAYS");
 				emit(OpCode.loadAI, arp, offset(ctx.expression(0)), reg1);	//Reg1 now contains lower bound
 				emit(OpCode.loadI, new Num(4), reg2);
 				emit(OpCode.loadI, offset(ctx.expression(0)), reg3);
+				
 				emit(OpCode.add, reg2,reg3,reg2);
 				emit(OpCode.loadAO, arp, reg2, reg2); //Reg2 now contains the upper bound
 				emit(OpCode.sub, reg2,reg1,reg1); //Reg1 contains the length of the array
 				emit(OpCode.addI, reg1, new Num(1), reg1); //Reg1 now contains the length of the array1
 				
-				emit(OpCode.loadAI, arp, offset(ctx.expression(1)), reg2);	//Reg2 now contains lower bound
+				emit(OpCode.loadAI, arp, offset(ctx.expression(1)), reg2);	//Reg2 now contains lower bound of array2
 				emit(OpCode.loadI, new Num(4), reg3);
 				emit(OpCode.loadI, offset(ctx.expression(1)), reg4);
+				
 				emit(OpCode.add, reg3,reg4,reg3);
 				emit(OpCode.loadAO, arp, reg3, reg3); //Reg3 now contains the upper bound
 				emit(OpCode.sub, reg3,reg2,reg2); //Reg2 contains the length of the array
-				emit(OpCode.addI, reg1, new Num(1), reg2); //Reg2 now contains the length of the array2
+				emit(OpCode.addI, reg2, new Num(1), reg2); //Reg2 now contains the length of the array2
+				
 				
 				Label equalLength = createLabel(ctx,"equalLength");
 				Label arrayLoop = createLabel(ctx, "arrayLoop");
@@ -595,6 +598,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				Label equalValue = createLabel(ctx,"equalValue");
 				
 				emit(OpCode.cmp_EQ, reg1, reg2, reg(ctx));			//Are the arrays of equal length?
+				
 				emit(OpCode.cbr,reg(ctx),equalLength,arrayLoopEnd);
 				emit(equalLength,OpCode.nop);
 				
