@@ -359,7 +359,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			//Start by computing the begin value of the array. We'll store that in reg1
 			emit(OpCode.loadAI, arp, offset(ctx.target()), reg1);
 			//Now we need the index value. This is stored in expression(0). We'll store it in reg2
-			emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(0).getText())),reg2);
+	//		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(0).getText())),reg2);
+			emit(OpCode.i2i, reg(ctx.expression(0)), reg2);
 			//Subtract the index by the begin value.
 			emit(OpCode.sub, reg2, reg1, reg1);
 			//Multiply by four to get the offset
