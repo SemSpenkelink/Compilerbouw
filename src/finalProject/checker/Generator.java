@@ -329,15 +329,26 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		}
 		visitChildren(ctx);
-		if(checkResult.getType(ctx) != null){
+		if(checkResult.getType(ctx.expression()) != null){
 			if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
 				emit(OpCode.c2c, reg(ctx.expression()),reg(ctx));
 				emit(OpCode.storeAI, reg(ctx), arp, offset(ctx));
+				
+				for(TargetContext target : ctx.target()){System.out.println("Stat ASSIGN i2i");
+					emit(OpCode.c2c, reg(ctx.expression()),reg(target));
+					emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
+				}
 			}
 			else if(checkResult.getType(ctx.expression()).equals(Type.INT) || checkResult.getType(ctx.expression()).equals(Type.BOOL)){
 				System.out.println("Stat ASSIGN afterChildren");
 				emit(OpCode.i2i, reg(ctx.expression()),reg(ctx));
 				emit(OpCode.storeAI, reg(ctx), arp, offset(ctx)); 
+				
+				for(TargetContext target : ctx.target()){System.out.println("Stat ASSIGN i2i");
+					emit(OpCode.i2i, reg(ctx.expression()),reg(target));
+					emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
+				}
+				
 			} else if(!checkResult.getType(ctx.target(0)).equals(Type.INT) ||
 					!checkResult.getType(ctx.target(0)).equals(Type.BOOL) ||
 					!checkResult.getType(ctx.target(0)).equals(Type.CHAR)
@@ -384,20 +395,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				}
 				
 				
-			} else{
-			
-					for(TargetContext target : ctx.target()){
-						if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
-							emit(OpCode.c2c, reg(ctx.expression()),reg(target));
-							emit(OpCode.storeAI, reg(target), arp, offset(target));
-						}
-						else{
-							System.out.println("Stat ASSIGN i2i");
-							emit(OpCode.i2i, reg(ctx.expression()),reg(target));
-							emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
-						}
-					}
-				}
+			}
 		}
 		return null; }
 	

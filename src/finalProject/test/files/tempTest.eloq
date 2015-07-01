@@ -1,0 +1,6 @@
+program tempTest{
+
+	highpowered numericaldigit e,f,g;
+	e = f = g= 2;
+	exude(e,f,g);
+}

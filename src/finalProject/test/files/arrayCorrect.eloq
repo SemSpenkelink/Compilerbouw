@@ -3,10 +3,17 @@ program arrayCorrect{
 	hodgePodge x = george [0..1];
 	hodgePodge y = numericalDigit [5..10];
 	
-	highPowered a = x;
+	highPowered a,c = x;
 	highpowered b = y;
 	
-	a[0] = bogus;
+	a[0] = unfeigned;
+	a[1] = unfeigned;
+	c = a;
+	
+
+	exude(c[0],c[1]);
+		
+/*	a[0] = bogus;
 	a[1] = unfeigned; 
 	
 	highpowered numericalDigit i = 5;
@@ -16,4 +23,5 @@ program arrayCorrect{
 	};
 	
 	exude(b[8], a[1]);
+*/
 }
