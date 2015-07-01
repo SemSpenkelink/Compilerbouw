@@ -384,19 +384,20 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				}
 				
 				
-			}
+			} else{
 			
-			for(TargetContext target : ctx.target()){
-				if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
-					emit(OpCode.c2c, reg(ctx.expression()),reg(target));
-					emit(OpCode.storeAI, reg(target), arp, offset(target));
+					for(TargetContext target : ctx.target()){
+						if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
+							emit(OpCode.c2c, reg(ctx.expression()),reg(target));
+							emit(OpCode.storeAI, reg(target), arp, offset(target));
+						}
+						else{
+							System.out.println("Stat ASSIGN i2i");
+							emit(OpCode.i2i, reg(ctx.expression()),reg(target));
+							emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
+						}
+					}
 				}
-				else{
-					System.out.println("Stat ASSIGN i2i");
-					emit(OpCode.i2i, reg(ctx.expression()),reg(target));
-					emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
-				}
-			}
 		}
 		return null; }
 	
