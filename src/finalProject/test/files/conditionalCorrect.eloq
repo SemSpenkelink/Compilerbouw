@@ -3,21 +3,51 @@
 //This program tests the correct conditional expressions.
 
 //Sample input:		1 5 4
-//Expected output:	
+//Expected output:	9
 
 Program conditionalCorrect{
 	//Variable declarations.
 	highPowered numericalDigit ivar1, ivar2;
-	highPowered George bvar = unfeigned;
-	highPowered lexographicIdentifyingUnit cvar1, cvar2;
+//	highPowered George bvar = unfeigned;
+//	highPowered lexographicIdentifyingUnit cvar1, cvar2;
 	
 	//Constant declarations.
 	sacrosanct numericalDigit iconst1, iconst2 = 1;
-	sacrosanct George bconst = unfeigned;
-	sacrosanct lexographicIdentifyingUnit cconst = 'c';
+//	sacrosanct George bconst = unfeigned;
+//	sacrosanct lexographicIdentifyingUnit cconst = 'c';
 	
+	//Testing basic expressions in combination with conditional statement
+/*	assuming(iconst1 equalTo iconst2)
+		exude(iconst1);
+	contrariwise assuming(iconst1 superiorTo iconst2)
+		exude(iconst1);
+	contrariwise assuming(iconst1 inferiorTo iconst2)
+		exude(iconst2);;;;
 	
+	assuming(unfeigned){
+		exude(unfeigned);
+	};
+*/	
+	assuming(expropriate(ivar1) superiorOrEqualTo expropriate(ivar2)){
+		exude(ivar1);
+	}contrariwise assuming(ivar1 inferiorOrEqualTo ivar2)
+		exude(ivar2);;;
+
+/*	
 	//Testing scope of declarations
+	assuming(
+	{
+		highPowered numericalDigit ivar3 = 5;
+		ivar3 superiorTo 10;
+	}){
+		highPowered numericalDigit ivar4 = 4;
+		ivar2 = ivar3;
+		ivar1 = ivar4;
+	}contrariwise{
+		ivar2 = ivar3;
+	};
+
+	//Testing assignment of if statement as expression.
 	ivar1 =
 	{
 		expropriate(ivar1);
@@ -38,6 +68,7 @@ Program conditionalCorrect{
 					iconst1;;
 			};
 		};
+		//Testing comparisson using if statement as expression.
 		assuming(assuming(
 			{
 				highPowered numericalDigit ivar3;
@@ -52,4 +83,7 @@ Program conditionalCorrect{
 		contrariwise
 			0;;
 	} + 5;
+	exude(ivar1);
+
+*/	
 }

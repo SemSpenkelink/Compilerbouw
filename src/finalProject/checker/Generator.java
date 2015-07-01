@@ -519,7 +519,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.cmp_EQ, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 		} else if(ctx.compare().NE() != null){
 			emit(OpCode.cmp_NE, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
-		} 
+		}
 		
 		return null; }
 	
