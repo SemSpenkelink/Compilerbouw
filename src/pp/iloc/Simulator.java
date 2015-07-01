@@ -230,7 +230,7 @@ public class Simulator {
 			c.setReg(2, c.reg(0) == c.reg(1));
 			break;
 		case cmp_GE:
-			c.setReg(2, c.reg(0) < c.reg(1));
+			c.setReg(2, c.reg(0) >= c.reg(1));
 			break;
 		case cmp_GT:
 			c.setReg(2, c.reg(0) > c.reg(1));

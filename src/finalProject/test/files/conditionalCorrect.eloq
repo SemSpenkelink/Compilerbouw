@@ -6,18 +6,19 @@
 //Expected output:	9
 
 Program conditionalCorrect{
+
 	//Variable declarations.
 	highPowered numericalDigit ivar1, ivar2;
-//	highPowered George bvar = unfeigned;
-//	highPowered lexographicIdentifyingUnit cvar1, cvar2;
+	highPowered George bvar = unfeigned;
+	highPowered lexographicIdentifyingUnit cvar1, cvar2;
 	
 	//Constant declarations.
 	sacrosanct numericalDigit iconst1, iconst2 = 1;
-//	sacrosanct George bconst = unfeigned;
-//	sacrosanct lexographicIdentifyingUnit cconst = 'c';
+	sacrosanct George bconst = unfeigned;
+	sacrosanct lexographicIdentifyingUnit cconst = 'c';
 	
 	//Testing basic expressions in combination with conditional statement
-/*	assuming(iconst1 equalTo iconst2)
+	assuming(iconst1 equalTo iconst2)
 		exude(iconst1);
 	contrariwise assuming(iconst1 superiorTo iconst2)
 		exude(iconst1);
@@ -27,13 +28,13 @@ Program conditionalCorrect{
 	assuming(unfeigned){
 		exude(unfeigned);
 	};
-*/	
+	
 	assuming(expropriate(ivar1) superiorOrEqualTo expropriate(ivar2)){
 		exude(ivar1);
 	}contrariwise assuming(ivar1 inferiorOrEqualTo ivar2)
 		exude(ivar2);;;
 
-/*	
+	
 	//Testing scope of declarations
 	assuming(
 	{
@@ -85,5 +86,5 @@ Program conditionalCorrect{
 	} + 5;
 	exude(ivar1);
 
-*/	
+	
 }
