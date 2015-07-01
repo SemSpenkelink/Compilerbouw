@@ -10,8 +10,10 @@ program arrayCorrect{
 	a[1] = unfeigned;
 	c = a;
 	
-
-	exude(c[0],c[1]);
+	assuming(c equalTo a){
+		exude(c[0],c[1]);
+	};
+	
 		
 /*	a[0] = bogus;
 	a[1] = unfeigned; 
