@@ -373,8 +373,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 					emit(OpCode.addI,reg4, new Num(8),reg4); //Offset of expression + 8
 					
 					
-					Label arrayLoop = createLabel(ctx, "arrayLoop");
-					Label arrayLoopEnd = createLabel(ctx, "arrayLoopEnd");
+					Label arrayLoop = createLabel(target, "arrayLoop");
+					Label arrayLoopEnd = createLabel(target, "arrayLoopEnd");
 					
 					emit(arrayLoop, OpCode.nop);	//Start of the array	
 				

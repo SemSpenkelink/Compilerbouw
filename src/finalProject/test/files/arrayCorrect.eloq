@@ -3,16 +3,16 @@ program arrayCorrect{
 	hodgePodge x = george [0..1];
 //	hodgePodge y = numericalDigit [5..10];
 	
-	highPowered a,c = x;
+	highPowered a,c,d = x;
 //	highpowered b = y;
 
 	
 	a[0] = unfeigned;
 	a[1] = bogus;
-	c = a;
+	c = d= a;
 	//c[1] = unfeigned;
 	
-	assuming(c notEqualTo a){
+	assuming(c EqualTo d){
 		exude(c[0],c[1]);
 	};
 	
