@@ -127,7 +127,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitProgram(EloquenceParser.ProgramContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitBody(EloquenceParser.BodyContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitBody(EloquenceParser.BodyContext ctx) { 
+		if(labels.get(ctx) != null)
+			emit(labels.get(ctx), OpCode.nop);
+		return visitChildren(ctx); }
 	
 	@Override public Op visitDeclVar(EloquenceParser.DeclVarContext ctx) { 
 		visitChildren(ctx);
@@ -268,8 +271,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(whileLoop, OpCode.nop);
 		}
 		
-		Label whileBody = createLabel(ctx, "whileBody");
+		Label whileBody = createLabel(ctx.stat(), "whileBody");
 		labels.put(ctx.stat(), whileBody);
+		System.out.println("LABEL CONTEXT: "+ctx.stat().getText());
 		Label whileContinue = createLabel(ctx, "whileContinue");
 		
 		visit(ctx.expression());
@@ -281,8 +285,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatAssign(EloquenceParser.StatAssignContext ctx) { 
-		if(labels.get(ctx) != null)
+		System.out.println("Stat ASSIGN");
+		if(labels.get(ctx) != null){
 			emit(labels.get(ctx), OpCode.nop);
+			System.out.println("Label name: "+ctx.getText());
+		}
+		else
+			System.out.println("No LABEL");
 		visitChildren(ctx);
 		for(TargetContext target : ctx.target()){
 			if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
@@ -390,8 +399,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return visitChildren(ctx); }
 	
 	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { 
-		if(labels.get(ctx) != null)
+		System.out.println("VISIT STATBLOCKBODY CTX = " + ctx.getText());
+		if(labels.get(ctx) != null){
+			System.out.println("Emit LABEL");
 			emit(labels.get(ctx), OpCode.nop);
+		}
 		return visitChildren(ctx); }
 	
 	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) {
@@ -604,7 +616,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
 	//	label(ctx.newID());
 		System.out.println("\n Start void func");
-		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));
+		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));//Label for starting the function
 		
 		visit(ctx.newID());
 		
