@@ -838,7 +838,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		visitChildren(ctx);
 		
 		//Check for index out of bounds exception
-		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1); //reg1: index
+	//	emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1); //reg1: index
+		emit(OpCode.i2i, reg(ctx.expression()),reg1);
+		
 		emit(OpCode.i2i,reg1,reg_error);
 		emit(OpCode.loadAI, arp, offset(ctx.target()),reg2); //reg2: lower bound
 		emit(OpCode.loadI, offset(ctx.target()),reg3);
@@ -861,7 +863,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(leCont, OpCode.nop);
 		
 		//We need the index, this is in expression. We'll store the index in reg1
-		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1);
+//		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1);
+		emit(OpCode.i2i, reg(ctx.expression()),reg1);
 		
 		//We also need the starting value of the array. We'll put this in reg2
 		emit(OpCode.loadAI, arp, offset(ctx.target()),reg2);
@@ -871,7 +874,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.addI,reg1,offset(ctx.target()),reg1);
 		
 		emit(OpCode.loadAO,arp,reg1,reg(ctx));
-		emit(OpCode.out, new Str("Test: "), reg1);
 		return null; }
 	
 	@Override public Op visitUnary(EloquenceParser.UnaryContext ctx) { return visitChildren(ctx); }

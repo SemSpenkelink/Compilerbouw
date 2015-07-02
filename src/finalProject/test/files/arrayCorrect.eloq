@@ -16,7 +16,7 @@ program arrayCorrect{
 	highpowered g	= arrayNum2 << {1,2,3,4,5}; 
 	
 	/*Declaring constant arrays. */
-	sacrosanct 	g 	= arrayGeorge << {unfeigned,bogus};
+	sacrosanct 	h 	= arrayGeorge << {unfeigned,bogus};
 	
 	/*Assigning values to arrays by means of indices. */
 	a[0] = unfeigned;
@@ -30,8 +30,12 @@ program arrayCorrect{
 	d = {1,2,3};
 	
 	/*Assigning multiple arrays values. */
-	e[0] = f[1] = 'a';
-	e[1] = f[0] = 'b';
+	e[10] = 'a';
+	f[11] = 'a';
+	e[11] = 'b';
+	f[10] = 'b';
+//	e[10] = f[11] = 'a';
+//	e[11] = f[10] = 'b';
 	
 	/*Assigning multiple values to multiple arrays. */
 	a = b = {bogus,unfeigned};
@@ -56,11 +60,16 @@ program arrayCorrect{
 	
 	assuming(c equalTo d){
 		exude(bogus);
-	}
+	};
 	
-	/*Using expressions as indices. */
+	/*Using expressions as indices. c[((i+2)*2)/2 - 2 + 5] equalTo c[(2 + i)*(i + 2) - 2 - 2 + 5]*/
+	highpowered numericalDigit i = 0;
 	
+	assuming(c[((i+2)*2)/2 - 2 + 5] equalTo c[(2 + i)*(i + 2) - 2 - 2 + 5]){
+		exude(unfeigned);
+	};
 	
-	
+	/*Using arrays in expressions. */
+	exude(c[((i+2)*2)/2 - 2 + 5] - 2);
 
 }
