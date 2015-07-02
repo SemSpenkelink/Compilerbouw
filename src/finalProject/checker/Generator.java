@@ -11,7 +11,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
-import finalProject.grammar.EloquenceParser.ArrayElemContext;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
 import finalProject.grammar.EloquenceParser.ParametersContext;
@@ -49,9 +48,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	private final Reg reg4 = new Reg("r4");
 	private final Reg reg5 = new Reg("r5");
 	private final Reg reg6 = new Reg("r6");
+	private final Reg reg_error = new Reg("reg_error");
 	
 	/** A mapping from function Ids to their labels*/
 	Map<String, Label> funcAddr = new HashMap<String,Label>();
+	
+	Map<String, Label> runtimeErrors = new HashMap<String,Label>();
 
 	public Program generate(ParseTree tree, Result checkResult) {
 		this.prog = new Program();
@@ -127,7 +129,20 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		this.regs.put(node, reg);
 	}
 	
-	@Override public Op visitProgram(EloquenceParser.ProgramContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitProgram(EloquenceParser.ProgramContext ctx) { 
+		Label indexOutOfBounds = createLabel(ctx, "indexOutOfBounds");
+		runtimeErrors.put("indexOutOfBounds", indexOutOfBounds);
+		visitChildren(ctx);
+		Label programEnd = createLabel(ctx, "programEnd");
+		emit(OpCode.jumpI, programEnd);
+		
+	
+		emit(indexOutOfBounds, OpCode.nop);
+		emit(OpCode.out, new Str("Error: Array index out of bounds "), reg_error);
+		emit(OpCode.jumpI, programEnd);
+		
+		emit(programEnd,OpCode.nop);
+		return null; }
 	
 	@Override public Op visitBody(EloquenceParser.BodyContext ctx) { 
 		if(labels.get(ctx) != null)
@@ -812,9 +827,31 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) { 
-		System.out.println("\n VisitExprArray before children");
 		visitChildren(ctx);
-		System.out.println("\n VisitExprArray after children");
+		
+		//Check for index out of bounds exception
+		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1); //reg1: index
+		emit(OpCode.i2i,reg1,reg_error);
+		emit(OpCode.loadAI, arp, offset(ctx.target()),reg2); //reg2: lower bound
+		emit(OpCode.loadI, offset(ctx.target()),reg3);
+		emit(OpCode.addI, reg3, new Num(4),reg3);
+		emit(OpCode.loadAO,arp,reg3,reg3);//reg3: upper bound
+		
+		Label indexOutOfBounds = runtimeErrors.get("indexOutOfBounds");
+			if(indexOutOfBounds == null)
+				System.out.println("Index out of bounds array = null");
+			
+		
+		Label geCont = createLabel(ctx, "greaterThanLowerBound");
+		Label leCont = createLabel(ctx, "lessThanUpperBound");
+		emit(OpCode.cmp_GE, reg1,reg2,reg4);
+		emit(OpCode.cbr,reg4, geCont,indexOutOfBounds);
+		emit(geCont, OpCode.nop);
+		
+		emit(OpCode.cmp_LE, reg1,reg3,reg4);
+		emit(OpCode.cbr, reg4,leCont,indexOutOfBounds);
+		emit(leCont, OpCode.nop);
+		
 		//We need the index, this is in expression. We'll store the index in reg1
 		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1);
 		

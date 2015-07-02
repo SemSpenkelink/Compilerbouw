@@ -7,13 +7,13 @@ program arrayCorrect{
 //	highpowered b = y;
 
 	
-	a[0] = unfeigned;
-	a[1] = bogus;
-	c = d= a;
+//	a[0] = unfeigned;
+//	a[1] = bogus;
+	c = d= a = {unfeigned,bogus};
 	//c[1] = unfeigned;
 	
-	assuming(c EqualTo d){
-		exude(c[0],c[1]);
+	assuming((c EqualTo d) and (d equalTo a)){
+		exude(c[0],c[2]);
 	};
 	
 		
