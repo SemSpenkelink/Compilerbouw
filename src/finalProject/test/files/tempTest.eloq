@@ -5,11 +5,11 @@ program tempTest{
 	highpowered numericalDigit x = 1;
 	
 	numericalDigit rec(numericalDigit i){
-		assuming(i equalTo 10){
-			relinquish i;
+		relinquish assuming(i equalTo 10){
+			i;
 		}contrariwise{
 			i = i + 1;
-			relinquish rec(i);
+			rec(i);
 		};
 	}
 
