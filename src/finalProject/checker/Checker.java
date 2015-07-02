@@ -64,7 +64,7 @@ public class Checker extends EloquenceBaseListener {
 		this.result.setFunctionDeclarations(scope.getFunctionDeclarations());
 		System.out.println("Function arguments: " + this.result.getFunctionArguments().toString());
 		System.out.println("Function declarations: ");
-		for(ParseTree node : this.result.getFunctionDeclarations().get("func2"))
+		for(ParseTree node : this.result.getFunctionDeclarations().get("func"))
 			System.out.println(node.getText());
 		return this.result;
 	}

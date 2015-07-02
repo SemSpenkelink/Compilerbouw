@@ -1,6 +1,8 @@
 package finalProject.checker;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -896,6 +898,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitFunctionID(EloquenceParser.FunctionIDContext ctx) { 
 		visitChildren(ctx);
+		
+		List<ParseTree> vars = checkResult.getFunctionDeclarations().get(ctx.target().getText());
+		for(int i = 0; i < vars.size();i++){
+			emit(OpCode.loadAI, arp, offset(vars.get(i)), reg1);
+			emit(OpCode.push, reg1);
+		}
+		
 		Label funcContinue = createLabel(ctx, "funcContinue");
 	//	emit(OpCode.jumpI, label(ctx.target()));
 	
@@ -909,6 +918,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.jumpI, funcAddr.get(ctx.target().getText())); 
 		emit(funcContinue, OpCode.nop);
 		emit(OpCode.pop, reg(ctx));
+		
+		for(int i = vars.size()-1; i >= 0;i--){
+			emit(OpCode.pop, reg(vars.get(i)));
+			emit(OpCode.storeAI, reg(vars.get(i)), arp, offset(vars.get(i)));
+		}
+		
 		return null; }
 	
 	@Override public Op visitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
@@ -924,8 +939,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		for(ParametersContext p : ctx.parameters()){
 			visit(p);
-			emit(OpCode.pop, reg(p.newID().ID()));
-			emit(OpCode.storeAI, reg(p.newID().ID()),arp, offset(p.newID().ID()));
 		}
 		visitChildren(ctx.statBlockBody());
 		
@@ -946,8 +959,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		for(ParametersContext p : ctx.parameters()){
 			visit(p);
-			emit(OpCode.pop, reg(p.newID().ID()));
-			emit(OpCode.storeAI, reg(p.newID().ID()),arp, offset(p.newID().ID()));
 		}
 		visit(ctx.body());
 		visit(ctx.returnStat());
@@ -955,5 +966,14 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null;
 		}
 	
-	@Override public Op visitParameters(EloquenceParser.ParametersContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitParamVal(EloquenceParser.ParamValContext ctx) { 
+		visitChildren(ctx);
+		emit(OpCode.pop, reg(ctx.newID().ID()));
+		emit(OpCode.storeAI, reg(ctx.newID().ID()),arp, offset(ctx.newID().ID()));
+		return null; }
+
+	@Override public Op visitParamRef(EloquenceParser.ParamRefContext ctx) { 
+		visitChildren(ctx);
+		emit(OpCode.loadAI, arp,offset(ctx.target()),reg(ctx.target()));
+		return null; }
 }

@@ -1,31 +1,66 @@
 program arrayCorrect{
 
-	hodgePodge x = george [0..1];
-//	hodgePodge y = numericalDigit [5..10];
+	/*Three types of arrays. */
+	hodgePodge 	arrayGeorge 	= george [0..1];
+	hodgePodge 	arrayNum 	= numericalDigit [5..10];
+	hodgePodge 	arrayNum2 	= numericalDigit [5..9];
+	hodgePodge 	arrayChar 	= lexographicidentifyingunit [10..15];
 	
-	highPowered a,c,d = x;
-//	highpowered b = y;
+	/*Declaring array variables based on the types declared before. */
+	highPowered a,b = arrayGeorge;
+	highpowered c,d = arrayNum;
+	highpowered e,f = arrayChar;
+	
 
+	/*Declaring arrays and immediately assigning them a value. */
+	highpowered g	= arrayNum2 << {1,2,3,4,5}; 
 	
-//	a[0] = unfeigned;
-//	a[1] = bogus;
-	c = d= a = {unfeigned,bogus};
-	//c[1] = unfeigned;
+	/*Declaring constant arrays. */
+	sacrosanct 	g 	= arrayGeorge << {unfeigned,bogus};
 	
-	assuming((c EqualTo d) and (d equalTo a)){
-		exude(c[0],c[2]);
+	/*Assigning values to arrays by means of indices. */
+	a[0] = unfeigned;
+	a[1] = bogus;
+	
+	b[0] = a[0];
+	b[1] = a[1];
+	
+	/*Assigning multiple values to arrays at the same time. */
+	c = {1,2,3,4,5,6};
+	d = {1,2,3};
+	
+	/*Assigning multiple arrays values. */
+	e[0] = f[1] = 'a';
+	e[1] = f[0] = 'b';
+	
+	/*Assigning multiple values to multiple arrays. */
+	a = b = {bogus,unfeigned};
+	
+	/*Assigning arrays to each other. */
+	e = f; //e and f contains the same value now: [0] = 'a' [1] = 'b'
+	
+	/*Comparing arrays through indices. */
+	assuming((c[5] equalTo d[5]) and (c[6] equalTo d[6]) and (c[7] equalTo d[7])){
+		exude(unfeigned);
 	};
 	
-		
-/*	a[0] = bogus;
-	a[1] = unfeigned; 
-	
-	highpowered numericalDigit i = 5;
-	throughout(i inferiorOrEqualTo 10){
-		b[i] = i;
-		i=i+1;
+	assuming(a[0] equalTo a[1]){
+		exude(bogus);
 	};
 	
-	exude(b[8], a[1]);
-*/
+	
+	/*Comparing entire arrays to each other. */
+	assuming(e equalTo f){
+		exude(unfeigned);
+	};
+	
+	assuming(c equalTo d){
+		exude(bogus);
+	}
+	
+	/*Using expressions as indices. */
+	
+	
+	
+
 }
