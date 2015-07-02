@@ -901,10 +901,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		List<ParseTree> vars = checkResult.getFunctionDeclarations().get(ctx.target().getText());
 		for(int i = 0; i < vars.size();i++){
-			System.out.println("HIER!!!!!! " + vars.get(i).getText());
+	//		System.out.println("HIER!!!!!! " + vars.get(i).getText());
 			emit(OpCode.loadAI, arp, offset(vars.get(i)), reg1);
 			emit(OpCode.push, reg1);
 		}
+		
+		emit(OpCode.loadI, new Num(0),reg1);
+		emit(OpCode.push, reg1);
 		
 		Label funcContinue = createLabel(ctx, "funcContinue");
 	//	emit(OpCode.jumpI, label(ctx.target()));
@@ -975,6 +978,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 
 	@Override public Op visitParamRef(EloquenceParser.ParamRefContext ctx) { 
 		visitChildren(ctx);
-		emit(OpCode.loadAI, arp,offset(ctx.target()),reg(ctx.target()));
+		emit(OpCode.pop, reg(ctx.target()));
 		return null; }
 }

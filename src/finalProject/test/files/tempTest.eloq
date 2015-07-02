@@ -1,12 +1,47 @@
 program tempTest{
 
-godforsaken func(numericalDigit param){
-	highpowered george x = unfeigned;
+	//Testing recursion
+	
+	highpowered numericalDigit x = 1;
+	
+	numericalDigit rec(numericalDigit i){
+		assuming(i equalTo 10){
+			relinquish i;
+		}contrariwise{
+			i = i + 1;
+			relinquish rec(i);
+		};
+	}
+
+	exude(rec(x));
+
+}
+/*
+highpowered numericaldigit test = 10;
+
+godforsaken func3(numericalDigit param){
+	highpowered numericaldigit x = 2;
+	param = param + x;
 	exude(param);
 }
 
-func(2);
+func3(test);
 
+exude(test + 2);
+
+
+
+numericalDigit func4(numericalDigit param){
+	param = param + 2;
+	relinquish param;
+}
+
+test = func4(test);
+
+exude(test);
+
+
+*/
 /*
 	godforsaken func(numericalDigit parameter){
 		highPowered numericalDigit a, b = 5;
@@ -22,4 +57,3 @@ func(2);
 	}
 	
 */
-}
