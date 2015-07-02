@@ -2,5 +2,11 @@ program tempTest{
 
 	highpowered numericaldigit e,f,g;
 	e = f = g= 2;
-	exude(e,f,g);
+	
+	assuming(e notequalTo f){
+		exude(e,f,g);
+	};
+	
+	
+	//exude(e,f,g);
 }

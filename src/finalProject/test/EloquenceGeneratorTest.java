@@ -23,7 +23,7 @@ public class EloquenceGeneratorTest {
 
 	@Test
 	public void testPrime() throws IOException, ParseException {
-		Program prog = compile("arrayCorrect");
+		Program prog = compile("conditionalCorrect");
 		
 		Machine vm = new Machine();
 		Simulator sim = new Simulator(prog, vm);

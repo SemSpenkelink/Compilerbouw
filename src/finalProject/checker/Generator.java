@@ -364,8 +364,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 					emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
 				}
 				
-			} else if(!checkResult.getType(ctx.target(0)).equals(Type.INT) ||
-					!checkResult.getType(ctx.target(0)).equals(Type.BOOL) ||
+			} else if(!checkResult.getType(ctx.target(0)).equals(Type.INT) &&
+					!checkResult.getType(ctx.target(0)).equals(Type.BOOL) &&
 					!checkResult.getType(ctx.target(0)).equals(Type.CHAR)
 					){
 				
@@ -583,8 +583,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.cmp_GT, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 		} else if(ctx.compare().EQ() != null){
 			
-			if(!checkResult.getType(ctx.expression(0)).equals(Type.INT) ||
-					!checkResult.getType(ctx.expression(0)).equals(Type.BOOL) ||
+			if(!checkResult.getType(ctx.expression(0)).equals(Type.INT) &&
+					!checkResult.getType(ctx.expression(0)).equals(Type.BOOL) &&
 					!checkResult.getType(ctx.expression(0)).equals(Type.CHAR)
 					){
 				emit(OpCode.loadAI, arp, offset(ctx.expression(0)), reg1);	//Reg1 now contains lower bound
@@ -646,14 +646,17 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				
 				
 				
-			}else
-			emit(OpCode.cmp_EQ, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+			}else{
+				System.out.println("Comparing, but not arrays");
+				emit(OpCode.cmp_EQ, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+			}
 		} else if(ctx.compare().NE() != null){
 
-			if(!checkResult.getType(ctx.expression(0)).equals(Type.INT) ||
-					!checkResult.getType(ctx.expression(0)).equals(Type.BOOL) ||
+			if(!checkResult.getType(ctx.expression(0)).equals(Type.INT) &&
+					!checkResult.getType(ctx.expression(0)).equals(Type.BOOL) &&
 					!checkResult.getType(ctx.expression(0)).equals(Type.CHAR)
 					){
+				System.out.println("\n\nType of thing: "+ checkResult.getType(ctx.expression(0)));
 				emit(OpCode.loadAI, arp, offset(ctx.expression(0)), reg1);	//Reg1 now contains lower bound
 				emit(OpCode.loadI, new Num(4), reg2);
 				emit(OpCode.loadI, offset(ctx.expression(0)), reg3);
@@ -713,8 +716,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				
 				
 				
-			}else
-			emit(OpCode.cmp_NE, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+			}else{
+				System.out.println("\n\nComparing, but not arrays.");
+				emit(OpCode.cmp_NE, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
+			
+			}
 		}
 		
 		return null; }
