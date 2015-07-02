@@ -7,6 +7,6 @@ program whileLoop{
 	throughout(x inferiorTo 10){
 		exude(x);
 		x = x + 1;
-	}
+	};
 
 }

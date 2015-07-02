@@ -9,12 +9,12 @@ Program if {
 	
 	//Testing a basic if without braces. The condition is an equality 
 	assuming(x equalTo 10)
-		x = x+1;
+		x = x+1;;
 	
 	//Testing an if with a 'less than' condition (with braces). 
 	assuming (x inferiorTo 12){
 		x= x+2;
-	}
+	};
 	
 	//Testing an if with an else attached to it
 	assuming(x equalTo 12){
@@ -23,7 +23,7 @@ Program if {
 		y = y+1;
 	}contrariwise{
 		x = x+1;
-	}
+	};
 	
 	//Testing an if with a compound condition. The last statement of the compound condition has to be a comparison.
 	assuming({
@@ -34,7 +34,7 @@ Program if {
 	}){
 		// if body
 		x = x+1;
-	}
+	};
 	
 	//Testing nested if conditions
 	assuming({ x superiorTo 5;	}){
@@ -47,8 +47,8 @@ Program if {
 				x = x + 1;
 			} contrariwise {
 				x = x + 2;
-			}
-		}
-	}
+			};;
+		};
+	};
 	
 }

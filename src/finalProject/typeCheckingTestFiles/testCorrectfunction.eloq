@@ -19,8 +19,8 @@ program funcTest{
 	
 	numericaldigit func3(numericalDigit three){
 		assuming(three inferiorOrEqualTo 0)
-			relinquish 0;
-		relinquish funn3(three-1);
+			relinquish 0;;
+		relinquish func3(three-1);
 	}
 	
 	x = func2(x);
