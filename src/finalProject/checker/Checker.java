@@ -512,7 +512,7 @@ public class Checker extends EloquenceBaseListener {
 			checkNotNull(expr);
 		if(ctx.expression().size() == 1){
 			setType(ctx, getType(ctx.expression(0)));
-			setEntry(ctx, entry(ctx.expression(0)));	
+//			setEntry(ctx, entry(ctx.expression(0)));	
 		}else
 			setType(ctx, null);
 		
@@ -995,6 +995,27 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, entry(ctx.returnFunc()));
 	}
 
+	//TODO explain
+	@Override public void enterFunctionID(finalProject.grammar.EloquenceParser.FunctionIDContext ctx) {
+		if(!functionDeclarations.isEmpty()){
+			List<Type> arguments = new ArrayList<Type>();
+			List<ParametersContext> params;
+			ParseTree tmp = ctx;
+			while(!(tmp instanceof finalProject.grammar.EloquenceParser.VoidFuncContext)
+					&& !(tmp instanceof finalProject.grammar.EloquenceParser.ReturnFuncContext)){
+				tmp = tmp.getParent();
+			}
+			if(tmp instanceof finalProject.grammar.EloquenceParser.VoidFuncContext)
+				params = ((finalProject.grammar.EloquenceParser.VoidFuncContext)tmp).parameters();
+			else
+				params = ((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).parameters();
+			for(ParametersContext param : params){
+				arguments.add(getType(param));
+			}
+			this.scope.put(tmp.getChild(1).getChild(0).getText(), null, false, arguments, functionDeclarations.peek());
+		}
+	}
+	
 	/**
 	 * Check if the function is defined.
 	 * Check if the number of parameters given matches the number of parameters required.
@@ -1019,11 +1040,13 @@ public class Checker extends EloquenceBaseListener {
 				checkType(ctx.expression(index), argumentTypes.get(index));
 			}
 		}
-		setType(ctx, getType(ctx.target()));
+		setType(ctx, this.scope.type(ctx.target().getText()));
 		setEntry(ctx, ctx);
 
 		/** CFG creation. */
 		constructNodes(ctx);
+		entry.get(ctx).addEdge(exit.get(ctx));
+		/*
 		if(ctx.expression().size() >= 1 && checkScope(ctx.target())){
 			entry.get(ctx).addEdge(entry.get(ctx.expression(0)));
 			exit.get(ctx.expression(ctx.expression().size()-1)).addEdge(entryFunc.get(ctx.target().getText()));
@@ -1032,6 +1055,7 @@ public class Checker extends EloquenceBaseListener {
 			exit.get(ctx.expression(index-1)).addEdge(entry.get(ctx.expression(index)));
 		if(checkScope(ctx.target()))
 			exitFunc.get(ctx.target().getText()).addEdge(exit.get(ctx));
+			*/
 	}
 	
 	/**

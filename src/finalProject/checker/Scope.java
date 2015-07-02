@@ -46,17 +46,16 @@ public class Scope {
 	 */
 	public boolean put(String id, Type type, boolean mutable, List<Type> arguments, List<ParseTree> declarations) {
 		boolean result = !this.types.containsKey(id);
-		if (result) {
-			this.types.put(id, type);
-			this.offsets.put(id, this.size);
-			this.mutable.put(id, mutable);
-			this.functionArguments.put(id, arguments);
-			this.functionDeclarations.put(id, declarations);
-			if(type != null)
-				this.size += type.size();
-			else
-				this.size += Machine.INT_SIZE;
-		}
+		this.types.put(id, type);
+		this.offsets.put(id, this.size);
+		this.mutable.put(id, mutable);
+		this.functionArguments.put(id, arguments);
+		this.functionDeclarations.put(id, declarations);
+		if(type != null)
+			this.size += type.size();
+		else
+			this.size += Machine.INT_SIZE;
+		
 		return result;
 	}
 
