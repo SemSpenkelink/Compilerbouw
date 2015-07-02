@@ -562,9 +562,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		if(ctx.expression() != null){
-			emit(OpCode.pop, reg3);
-			emit(OpCode.push, reg(ctx.expression()));
-			emit(OpCode.jump, reg3);
+			emit(OpCode.pop, reg3);		//Pop return label
+			emit(OpCode.pop,reg1);		//Pop return value of 1
+			emit(OpCode.push, reg(ctx.expression()));	//Push actual return value
+			emit(OpCode.jump, reg3);	//Jump to return label
 		} else{
 			System.out.println("\nReturn statement expression is NULL");
 			emit(OpCode.pop, reg3);
@@ -900,10 +901,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitFunctionID(EloquenceParser.FunctionIDContext ctx) { 
 		visitChildren(ctx);
-		
+		System.out.println("Function ID VISIT");
 		List<ParseTree> vars = checkResult.getFunctionDeclarations().get(ctx.target().getText());
 		for(int i = 0; i < vars.size();i++){
-	//		System.out.println("HIER!!!!!! " + vars.get(i).getText());
+			System.out.println("HIER!!!!!! " + vars.get(i).getText());
 			emit(OpCode.loadAI, arp, offset(vars.get(i)), reg1);
 			emit(OpCode.push, reg1);
 		}
@@ -954,7 +955,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
-		System.out.println("\n Start void func");
+		System.out.println("\n Start return func");
 		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));
 		
 		visit(ctx.newID());

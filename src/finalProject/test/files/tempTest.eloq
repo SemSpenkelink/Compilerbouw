@@ -2,7 +2,7 @@ program tempTest{
 
 	//Testing recursion
 	
-	highpowered numericalDigit x = 1;
+	highpowered numericalDigit x = 0;
 	
 	numericalDigit rec(numericalDigit i){
 		relinquish assuming(i equalTo 10){
