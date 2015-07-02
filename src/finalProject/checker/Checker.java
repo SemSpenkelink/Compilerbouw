@@ -124,7 +124,7 @@ public class Checker extends EloquenceBaseListener {
 			checkType(ctx.expression(), getType(ctx.variable()));
 		}
 		setType(ctx, getType(ctx.variable()));
-		setEntry(ctx, entry(ctx.variable()));
+		//setEntry(ctx, entry(ctx.variable()));
 		
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -154,7 +154,7 @@ public class Checker extends EloquenceBaseListener {
 			}
 		}
 		setType(ctx, getType(ctx.type()));
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 	}
 	
 	/**
@@ -169,7 +169,7 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem().NUM(0).getText()), Integer.parseInt(ctx.arrayElem().NUM(1).getText()), getType(ctx.type())));
 		this.scope.put(ctx.newID().ID().getText(), getType(ctx), false, null, null);
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().getText()));
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 		
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -198,7 +198,7 @@ public class Checker extends EloquenceBaseListener {
 			}
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 		
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -237,7 +237,7 @@ public class Checker extends EloquenceBaseListener {
 			}
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -255,7 +255,7 @@ public class Checker extends EloquenceBaseListener {
 	 * Link the exit node of the expression to its own exit node.
 	 */
 	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
-		setEntry(ctx, entry(ctx.variable()));
+		//setEntry(ctx, entry(ctx.variable()));
 		
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -290,7 +290,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) {
 		setType(ctx, getType(ctx.returnStat()));
 		if(getType(ctx.returnStat()) != null)
-			setEntry(ctx, ctx.returnStat());
+			//setEntry(ctx, ctx.returnStat());
 		
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -322,7 +322,7 @@ public class Checker extends EloquenceBaseListener {
 			setType(ctx, getType(ctx.stat(0)));
 		else
 			setType(ctx, null);
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 		symbolTable.closeScope();
 		
 		/** CFG creation. */
@@ -358,7 +358,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitStatWhile(EloquenceParser.StatWhileContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
 		setType(ctx, null);
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 		symbolTable.closeScope();
 
 		/** CFG creation. */
@@ -413,7 +413,7 @@ public class Checker extends EloquenceBaseListener {
 				checkMutable(target);
 			}
 		setType(ctx, getType(ctx.target(0)));
-		setEntry(ctx, entry(ctx.target(0)));
+		//setEntry(ctx, entry(ctx.target(0)));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -448,7 +448,7 @@ public class Checker extends EloquenceBaseListener {
 				checkMutable(target);
 			}
 		setType(ctx, getType(ctx.target(0)));
-		setEntry(ctx, entry(ctx.target(0)));
+		//setEntry(ctx, entry(ctx.target(0)));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -467,7 +467,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		setType(ctx, getType(ctx.statBlockBody()));
-		//setEntry(ctx, entry(ctx.body().stat(0)));
+		////setEntry(ctx, entry(ctx.body().stat(0)));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -489,7 +489,7 @@ public class Checker extends EloquenceBaseListener {
 				checkMutable(target);
 		if(ctx.target().size() == 1){
 			setType(ctx, this.scope.type(ctx.target(0).getText()));
-			setEntry(ctx, entry(ctx.target(0)));
+			//setEntry(ctx, entry(ctx.target(0)));
 		}else{
 			setType(ctx, null);
 		}
@@ -512,7 +512,7 @@ public class Checker extends EloquenceBaseListener {
 			checkNotNull(expr);
 		if(ctx.expression().size() == 1){
 			setType(ctx, getType(ctx.expression(0)));
-//			setEntry(ctx, entry(ctx.expression(0)));	
+//			//setEntry(ctx, entry(ctx.expression(0)));	
 		}else
 			setType(ctx, null);
 		
@@ -557,7 +557,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitStatExpr(finalProject.grammar.EloquenceParser.StatExprContext ctx) {
 		setType(ctx, getType(ctx.expression()));
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 		
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -603,7 +603,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) {
 		if(ctx.expression() != null){
 			setType(ctx, getType(ctx.expression()));
-			setEntry(ctx, ctx.expression());
+			//setEntry(ctx, ctx.expression());
 		}else
 			setType(ctx, null);
 
@@ -627,8 +627,8 @@ public class Checker extends EloquenceBaseListener {
 		if(checkScope(ctx)){
 			setOffset(ctx, this.scope.offset(ctx.getText()));
 			setOffset(ctx.getChild(0), this.scope.offset(ctx.getText()));
-			setEntry(ctx, ctx);
-			setEntry(ctx.getChild(0), ctx);
+			//setEntry(ctx, ctx);
+			//setEntry(ctx.getChild(0), ctx);
 			setType(ctx, this.scope.type(ctx.ID().getText()));
 		}
 	}
@@ -658,7 +658,7 @@ public class Checker extends EloquenceBaseListener {
 			checkType(ctx.expression(0), getType(ctx.expression(1)));
 		}		
 		setType(ctx, Type.BOOL);
-		setEntry(ctx, entry(ctx.expression(0)));
+		//setEntry(ctx, entry(ctx.expression(0)));
 		
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -681,7 +681,7 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(0), Type.INT);
 		checkType(ctx.expression(1), Type.INT);
 		setType(ctx, Type.INT);
-		setEntry(ctx, entry(ctx.expression(0)));
+		//setEntry(ctx, entry(ctx.expression(0)));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -710,7 +710,7 @@ public class Checker extends EloquenceBaseListener {
 		}
 		checkType(ctx.expression(), type);
 		setType(ctx, type);
-		setEntry(ctx, entry(ctx.expression()));
+		//setEntry(ctx, entry(ctx.expression()));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -727,7 +727,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitExprNum(EloquenceParser.ExprNumContext ctx) {
 		setType(ctx, Type.INT);
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -743,7 +743,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitExprTrue(EloquenceParser.ExprTrueContext ctx) {
 		setType(ctx, Type.BOOL);
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -759,7 +759,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitExprChar(EloquenceParser.ExprCharContext ctx) {
 		setType(ctx, Type.CHAR);
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -797,10 +797,10 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitExprCompound(finalProject.grammar.EloquenceParser.ExprCompoundContext ctx) {
 		if(checkNotNull(ctx.expression())){
 			setType(ctx, getType(ctx.expression()));
-			setEntry(ctx, entry(ctx.expression()));
+			//setEntry(ctx, entry(ctx.expression()));
 		}else{
 			setType(ctx, Type.INT); //Default type.
-			setEntry(ctx, ctx);
+			//setEntry(ctx, ctx);
 		}
 		
 		/** CFG creation. */
@@ -824,7 +824,7 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(0), Type.BOOL);
 		checkType(ctx.expression(1), Type.BOOL);
 		setType(ctx, Type.BOOL);
-		setEntry(ctx, entry(ctx.expression(0)));
+		//setEntry(ctx, entry(ctx.expression(0)));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -845,7 +845,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitExprArray(finalProject.grammar.EloquenceParser.ExprArrayContext ctx) {
 		checkType(ctx.expression(), Type.INT);
 		setType(ctx, ((Type.Array)getType(ctx.target())).getElemType());
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -867,7 +867,7 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(0), Type.INT);
 		checkType(ctx.expression(1), Type.INT);
 		setType(ctx, Type.INT);
-		setEntry(ctx, entry(ctx.expression(0)));
+		//setEntry(ctx, entry(ctx.expression(0)));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -890,7 +890,7 @@ public class Checker extends EloquenceBaseListener {
 		checkType(ctx.expression(0), Type.BOOL);
 		checkType(ctx.expression(1), Type.BOOL);
 		setType(ctx, Type.BOOL);
-		setEntry(ctx, entry(ctx.expression(0)));
+		//setEntry(ctx, entry(ctx.expression(0)));
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -916,7 +916,7 @@ public class Checker extends EloquenceBaseListener {
 			setType(ctx, type);
 			setOffset(ctx, this.scope.offset(id));
 			setOffset(ctx.target(), this.scope.offset(id));
-			setEntry(ctx, ctx);
+			//setEntry(ctx, ctx);
 		}
 
 		/** CFG creation. */
@@ -933,7 +933,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitExprFalse(EloquenceParser.ExprFalseContext ctx) {
 		setType(ctx, Type.BOOL);
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -950,7 +950,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitExprPar(finalProject.grammar.EloquenceParser.ExprParContext ctx) {
 		setType(ctx, getType(ctx.expression()));
-		setEntry(ctx, entry(ctx.expression()));
+		//setEntry(ctx, entry(ctx.expression()));
 		
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -992,7 +992,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitFuncReturn(EloquenceParser.FuncReturnContext ctx) {
 		setType(ctx, getType(ctx.returnFunc()));
-		setEntry(ctx, entry(ctx.returnFunc()));
+		//setEntry(ctx, entry(ctx.returnFunc()));
 	}
 
 	//TODO explain
@@ -1041,7 +1041,7 @@ public class Checker extends EloquenceBaseListener {
 			}
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
-		setEntry(ctx, ctx);
+		//setEntry(ctx, ctx);
 
 		/** CFG creation. */
 		constructNodes(ctx);
@@ -1139,7 +1139,7 @@ public class Checker extends EloquenceBaseListener {
 		addSymbol(ctx.newID());
 		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), false, arguments, functionDeclarations.pop());
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
-		setEntry(ctx, entry(ctx.returnStat()));
+		//setEntry(ctx, entry(ctx.returnStat()));
 
 		/** CFG creation. */
 		constructNodes(ctx);
