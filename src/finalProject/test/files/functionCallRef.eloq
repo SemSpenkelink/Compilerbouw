@@ -1,0 +1,21 @@
+program functionCallByRef{
+
+
+
+	godforsaken function(){
+		highpowered numericalDigit x = 0;
+		godforsaken function2(ref x){
+			x = x + 1;
+		}
+		
+		function2(x);
+		exude(x);
+		
+	}
+	
+	
+	
+	
+	function();
+
+}
