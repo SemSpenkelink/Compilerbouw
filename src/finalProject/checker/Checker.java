@@ -62,8 +62,6 @@ public class Checker extends EloquenceBaseListener {
 		this.result.setCFG(cfg);
 		this.result.setFunctionArguments(scope.getFunctionArguments());
 		this.result.setFunctionDeclarations(scope.getFunctionDeclarations());
-		System.out.println("Function arguments: " + this.result.getFunctionArguments().toString());
-		System.out.println("Function declarations: " + this.result.getFunctionDeclarations().toString());
 		return this.result;
 	}
 	
@@ -151,7 +149,7 @@ public class Checker extends EloquenceBaseListener {
 			setOffset(id.ID(), scope.offset(id.getText()));
 			if(!functionDeclarations.isEmpty()){
 				List<ParseTree> declarations = functionDeclarations.pop();
-				declarations.add(id);
+				declarations.add(id.ID());
 				functionDeclarations.push(declarations);
 			}
 		}
@@ -195,7 +193,7 @@ public class Checker extends EloquenceBaseListener {
 			setOffset(id.ID(), scope.offset(id.getText()));
 			if(!functionDeclarations.isEmpty()){
 				List<ParseTree> declarations = functionDeclarations.pop();
-				declarations.add(id);
+				declarations.add(id.ID());
 				functionDeclarations.push(declarations);
 			}
 		}
@@ -234,7 +232,7 @@ public class Checker extends EloquenceBaseListener {
 			setOffset(id.ID(), scope.offset(id.getText()));
 			if(!functionDeclarations.isEmpty()){
 				List<ParseTree> declarations = functionDeclarations.pop();
-				declarations.add(id);
+				declarations.add(id.ID());
 				functionDeclarations.push(declarations);
 			}
 		}

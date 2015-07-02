@@ -901,6 +901,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		List<ParseTree> vars = checkResult.getFunctionDeclarations().get(ctx.target().getText());
 		for(int i = 0; i < vars.size();i++){
+			System.out.println("HIER!!!!!! " + vars.get(i).getText());
 			emit(OpCode.loadAI, arp, offset(vars.get(i)), reg1);
 			emit(OpCode.push, reg1);
 		}
