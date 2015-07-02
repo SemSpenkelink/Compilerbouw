@@ -65,6 +65,18 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterParamVal(@NotNull EloquenceParser.ParamValContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParamVal(@NotNull EloquenceParser.ParamValContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExprMult(@NotNull EloquenceParser.ExprMultContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -156,6 +168,18 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFuncReturn(@NotNull EloquenceParser.FuncReturnContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParamRef(@NotNull EloquenceParser.ParamRefContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParamRef(@NotNull EloquenceParser.ParamRefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -336,18 +360,6 @@ public class EloquenceBaseListener implements EloquenceListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStatAssignArrayMult(@NotNull EloquenceParser.StatAssignArrayMultContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterParameters(@NotNull EloquenceParser.ParametersContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParameters(@NotNull EloquenceParser.ParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

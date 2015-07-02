@@ -53,6 +53,18 @@ public interface EloquenceListener extends ParseTreeListener {
 	 */
 	void exitNewID(@NotNull EloquenceParser.NewIDContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code paramVal}
+	 * labeled alternative in {@link EloquenceParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterParamVal(@NotNull EloquenceParser.ParamValContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code paramVal}
+	 * labeled alternative in {@link EloquenceParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitParamVal(@NotNull EloquenceParser.ParamValContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code exprMult}
 	 * labeled alternative in {@link EloquenceParser#expression}.
 	 * @param ctx the parse tree
@@ -142,6 +154,18 @@ public interface EloquenceListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFuncReturn(@NotNull EloquenceParser.FuncReturnContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code paramRef}
+	 * labeled alternative in {@link EloquenceParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterParamRef(@NotNull EloquenceParser.ParamRefContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code paramRef}
+	 * labeled alternative in {@link EloquenceParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitParamRef(@NotNull EloquenceParser.ParamRefContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link EloquenceParser#voidFunc}.
 	 * @param ctx the parse tree
@@ -310,16 +334,6 @@ public interface EloquenceListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStatAssignArrayMult(@NotNull EloquenceParser.StatAssignArrayMultContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link EloquenceParser#parameters}.
-	 * @param ctx the parse tree
-	 */
-	void enterParameters(@NotNull EloquenceParser.ParametersContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link EloquenceParser#parameters}.
-	 * @param ctx the parse tree
-	 */
-	void exitParameters(@NotNull EloquenceParser.ParametersContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link EloquenceParser#compare}.
 	 * @param ctx the parse tree

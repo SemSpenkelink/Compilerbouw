@@ -38,6 +38,13 @@ public interface EloquenceVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNewID(@NotNull EloquenceParser.NewIDContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code paramVal}
+	 * labeled alternative in {@link EloquenceParser#parameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParamVal(@NotNull EloquenceParser.ParamValContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code exprMult}
 	 * labeled alternative in {@link EloquenceParser#expression}.
 	 * @param ctx the parse tree
@@ -90,6 +97,13 @@ public interface EloquenceVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFuncReturn(@NotNull EloquenceParser.FuncReturnContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code paramRef}
+	 * labeled alternative in {@link EloquenceParser#parameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParamRef(@NotNull EloquenceParser.ParamRefContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link EloquenceParser#voidFunc}.
 	 * @param ctx the parse tree
@@ -189,12 +203,6 @@ public interface EloquenceVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStatAssignArrayMult(@NotNull EloquenceParser.StatAssignArrayMultContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link EloquenceParser#parameters}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParameters(@NotNull EloquenceParser.ParametersContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link EloquenceParser#compare}.
 	 * @param ctx the parse tree

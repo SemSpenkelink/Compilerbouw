@@ -141,7 +141,8 @@ returnFunc
 	;
 
 parameters
-	: type newID
+	: type newID		#paramVal
+	| REF target		#paramRef
 	;
 
 
@@ -168,6 +169,7 @@ NOT:		N O T;
 OR:			O R;
 OUT:		E X U D E;
 PROGRAM: 	P R O G R A M;
+REF:		R E F;
 RETURN:		R E L I N Q U I S H;
 TRUE:		U N F E I G N E D;
 VAR:		H I G H P O W E R E D;
