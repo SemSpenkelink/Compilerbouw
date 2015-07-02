@@ -1,12 +1,15 @@
 program tempTest{
 
-	highpowered numericaldigit e,f,g;
-	e = f = g= 2;
-	
-	assuming(e notequalTo f){
-		exude(e,f,g);
-	};
-	
-	
-	//exude(e,f,g);
+	godforsaken func(numericalDigit parameter){
+		highPowered numericalDigit a, b = 5;
+		highPowered George c = bogus;
+		sacrosanct lexographicIdentifyingUnit char = 'c';
+		
+		numericalDigit func2(numericalDigit param2){
+			sacrosanct numericalDigit d = 1;
+			sacrosanct George e = unfeigned;
+			highPowered lexographicIdentifyingUnit char2 = 'd';
+			relinquish 5;
+		}
+	}
 }

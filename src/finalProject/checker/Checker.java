@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -29,6 +30,9 @@ public class Checker extends EloquenceBaseListener {
 	/** List of errors collected in the latest call of {@link #check}. */
 	private List<String> errors;
 	
+	/** Int indicating whether the treewalker is in a function or not, 0 is not in a function */
+	private Stack<List<ParseTree>> functionDeclarations;
+	
 	/** Control flow graph. */
 	private Graph cfg;
 	/** Entry node of context. */
@@ -49,12 +53,19 @@ public class Checker extends EloquenceBaseListener {
 		this.symbolTable = new SymbolTable();
 		this.result = new Result();
 		this.errors = new ArrayList<>();
+		this.functionDeclarations = new Stack<>();
 		this.cfg = new Graph();
 		new ParseTreeWalker().walk(this, tree);
 		if (hasErrors()) {
 			throw new ParseException(getErrors());
 		}
 		this.result.setCFG(cfg);
+		this.result.setFunctionArguments(scope.getFunctionArguments());
+		this.result.setFunctionDeclarations(scope.getFunctionDeclarations());
+		System.out.println("Function arguments: " + this.result.getFunctionArguments().toString());
+		System.out.println("Function declarations: ");
+		for(ParseTree node : this.result.getFunctionDeclarations().get("func2"))
+			System.out.println(node.getText());
 		return this.result;
 	}
 	
@@ -138,8 +149,13 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitVariable(EloquenceParser.VariableContext ctx){
 		for(NewIDContext id : ctx.newID()){
 			setType(id.ID(), getType(ctx.type()));
-			this.scope.put(id.getText(), getType(ctx.type()), ctx.getParent().getChild(0).getText().toLowerCase().equals("highpowered"), null);
+			this.scope.put(id.getText(), getType(ctx.type()), ctx.getParent().getChild(0).getText().toLowerCase().equals("highpowered"), null, null);
 			setOffset(id.ID(), scope.offset(id.getText()));
+			if(!functionDeclarations.isEmpty()){
+				List<ParseTree> declarations = functionDeclarations.pop();
+				declarations.add(id);
+				functionDeclarations.push(declarations);
+			}
 		}
 		setType(ctx, getType(ctx.type()));
 		setEntry(ctx, ctx);
@@ -155,7 +171,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem().NUM(0).getText()), Integer.parseInt(ctx.arrayElem().NUM(1).getText()), getType(ctx.type())));
-		this.scope.put(ctx.newID().ID().getText(), getType(ctx), false, null);
+		this.scope.put(ctx.newID().ID().getText(), getType(ctx), false, null, null);
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().getText()));
 		setEntry(ctx, ctx);
 		
@@ -177,8 +193,13 @@ public class Checker extends EloquenceBaseListener {
 		for(NewIDContext id : ctx.newID()){
 			setType(id, this.scope.type(ctx.target().getText()));
 			setType(id.ID(), this.scope.type(ctx.target().getText()));
-			this.scope.put(id.getText(), getType(id), true, null);
+			this.scope.put(id.getText(), getType(id), true, null, null);
 			setOffset(id.ID(), scope.offset(id.getText()));
+			if(!functionDeclarations.isEmpty()){
+				List<ParseTree> declarations = functionDeclarations.pop();
+				declarations.add(id);
+				functionDeclarations.push(declarations);
+			}
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setEntry(ctx, ctx);
@@ -211,8 +232,13 @@ public class Checker extends EloquenceBaseListener {
 		for(NewIDContext id : ctx.newID()){
 			setType(id, this.scope.type(ctx.target().getText()));
 			setType(id, this.scope.type(ctx.target().getText()));
-			this.scope.put(id.ID().getText(), getType(id), false, null);
+			this.scope.put(id.ID().getText(), getType(id), false, null, null);
 			setOffset(id.ID(), scope.offset(id.getText()));
+			if(!functionDeclarations.isEmpty()){
+				List<ParseTree> declarations = functionDeclarations.pop();
+				declarations.add(id);
+				functionDeclarations.push(declarations);
+			}
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
 		setEntry(ctx, ctx);
@@ -1017,6 +1043,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void enterVoidFunc(finalProject.grammar.EloquenceParser.VoidFuncContext ctx) {
 		symbolTable.openScope();
+		functionDeclarations.push(new ArrayList<ParseTree>());
 	}
 	
 	/**
@@ -1042,7 +1069,7 @@ public class Checker extends EloquenceBaseListener {
 			arguments.add(getType(param));
 		}
 		addSymbol(ctx.newID());
-		this.scope.put(ctx.newID().ID().getText(), null, false, arguments);
+		this.scope.put(ctx.newID().ID().getText(), null, false, arguments, functionDeclarations.pop());
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
 		for(StatContext stat : ctx.statBlockBody().body().stat())
 			if(stat.getText().toLowerCase().contains("relinquish"))
@@ -1062,6 +1089,7 @@ public class Checker extends EloquenceBaseListener {
 	 */
 	@Override public void enterReturnFunc(finalProject.grammar.EloquenceParser.ReturnFuncContext ctx) {
 		symbolTable.openScope();
+		functionDeclarations.push(new ArrayList<ParseTree>());
 	}
 
 	/**
@@ -1080,7 +1108,7 @@ public class Checker extends EloquenceBaseListener {
 	 * Set the entry node in entryFunc and the exit node in exitFunc.
 	 * @param ctx
 	 */
-	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {	
+	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
 		symbolTable.closeScope();
 		setType(ctx.newID(), getType(ctx.type()));
 		setType(ctx, getType(ctx.type()));
@@ -1089,7 +1117,7 @@ public class Checker extends EloquenceBaseListener {
 			arguments.add(getType(param));
 		}
 		addSymbol(ctx.newID());
-		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), false, arguments);
+		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), false, arguments, functionDeclarations.pop());
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
 		setEntry(ctx, entry(ctx.returnStat()));
 
@@ -1106,10 +1134,20 @@ public class Checker extends EloquenceBaseListener {
 	 * Put the parameters in the scope and set the offset accordingly.
 	 * @param ctx
 	 */
-	@Override public void exitParameters(finalProject.grammar.EloquenceParser.ParametersContext ctx) {
+	@Override public void exitParamVal(finalProject.grammar.EloquenceParser.ParamValContext ctx) {
 		setType(ctx, getType(ctx.type()));
-		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), true, null);
+		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), true, null, null);
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
+		
+	}
+	
+	/**
+	 * Put the parameters in the scope and set the offset accordingly.
+	 * @param ctx
+	 */
+	@Override public void exitParamRef(finalProject.grammar.EloquenceParser.ParamRefContext ctx) {
+		setType(ctx, this.scope.type(ctx.target().getText()));
+		
 	}
 	
 	

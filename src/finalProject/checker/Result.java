@@ -1,5 +1,9 @@
 package finalProject.checker;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
@@ -15,6 +19,10 @@ public class Result {
 	private final ParseTreeProperty<Integer> offsets = new ParseTreeProperty<>();
 	/** Control flow graph. */
 	private Graph cfg;
+	/** Map from function id to list of argument types.*/
+	private Map<String, List<Type>> functionArguments = new LinkedHashMap<>();
+	/** Map from function id to list of argument types.*/
+	private Map<String, List<ParseTree>> functionDeclarations = new LinkedHashMap<>();
 
 	/** Adds an association from parse tree node to the flow graph entry. */
 	public void setEntry(ParseTree node, ParserRuleContext entry) {
@@ -59,5 +67,25 @@ public class Result {
 	/** Returns the control flow graph. */
 	public Graph getCFG(){
 		return this.cfg;
+	}
+	
+	/** Sets the functionArguments map. */
+	public void setFunctionArguments(Map<String, List<Type>> arguments){
+		this.functionArguments = arguments;
+	}
+	
+	/** Returns the functionArguments map. */
+	public Map<String, List<Type>> getFunctionArguments(){
+		return this.functionArguments;
+	}
+	
+	/** Sets the functionDeclarations map. */
+	public void setFunctionDeclarations(Map<String, List<ParseTree>> declarations){
+		this.functionDeclarations = declarations;
+	}
+	
+	/** Returns the functionDeclarations map. */
+	public Map<String, List<ParseTree>> getFunctionDeclarations(){
+		return this.functionDeclarations;
 	}
 }

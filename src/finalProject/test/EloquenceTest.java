@@ -33,7 +33,7 @@ public class EloquenceTest {
 		check(parse("conditionalCorrect"));
 		checkFail("conditionalSpellingContextFreeSyntaxError");
 		checkFail("conditionalContextError");
-		check(parse("conditionalContextError"));
+		check(parse("conditionalRuntimeError"));
 	}
 	
 	private void checkFail(String filename) throws IOException {

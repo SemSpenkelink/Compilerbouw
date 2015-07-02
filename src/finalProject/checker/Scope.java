@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+
 import pp.iloc.eval.Machine;
 
 /** Class combining the information of a single scope level. */
@@ -20,6 +22,8 @@ public class Scope {
 	private final Map<String, Boolean> mutable;
 	/** Map from function id to list of argument types.*/
 	private final Map<String, List<Type>> functionArguments;
+	/** Map from function id to list of declarations in the form of ParseTree nodes.*/
+	private final Map<String, List<ParseTree>> functionDeclarations;
 
 	/** Constructs a fresh, initially empty scope. */
 	public Scope() {
@@ -27,6 +31,7 @@ public class Scope {
 		this.offsets = new LinkedHashMap<>();
 		this.mutable = new LinkedHashMap<>();
 		this.functionArguments = new LinkedHashMap<>();
+		this.functionDeclarations = new LinkedHashMap<>();
 	}
 
 	/** Tests if a given identifier is declared in this scope. */
@@ -39,13 +44,14 @@ public class Scope {
 	 * @return <code>true</code> if the identifier was added;
 	 * <code>false</code> if it was already declared.
 	 */
-	public boolean put(String id, Type type, boolean mutable, List<Type> arguments) {
+	public boolean put(String id, Type type, boolean mutable, List<Type> arguments, List<ParseTree> declarations) {
 		boolean result = !this.types.containsKey(id);
 		if (result) {
 			this.types.put(id, type);
 			this.offsets.put(id, this.size);
 			this.mutable.put(id, mutable);
 			this.functionArguments.put(id, arguments);
+			this.functionDeclarations.put(id, declarations);
 			if(type != null)
 				this.size += type.size();
 			else
@@ -76,5 +82,20 @@ public class Scope {
 	/** Returns the list of argument types of a (presumably declared) identifier.*/
 	public List<Type> arguments(String id){
 		return this.functionArguments.get(id);
+	}
+	
+	/** Returns the list of argument types of a (presumably declared) identifier.*/
+	public Map<String, List<Type>> getFunctionArguments(){
+		return this.functionArguments;
+	}
+	
+	/** Returns the list of declaration nodes of a (presumably declared) identifier. */
+	public List<ParseTree> declarations(String id){
+		return this.functionDeclarations.get(id);
+	}
+	
+	/** Returns the list of argument types of a (presumably declared) identifier.*/
+	public Map<String, List<ParseTree>> getFunctionDeclarations(){
+		return this.functionDeclarations;
 	}
 }
