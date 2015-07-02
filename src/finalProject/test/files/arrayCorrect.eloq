@@ -1,7 +1,7 @@
 program arrayCorrect{
 
 	/*Three types of arrays. */
-	hodgePodge 	arrayGeorge 	= george [0..1];
+	hodgePodge 	arrayGeorge = george [0..1];
 	hodgePodge 	arrayNum 	= numericalDigit [5..10];
 	hodgePodge 	arrayNum2 	= numericalDigit [5..9];
 	hodgePodge 	arrayChar 	= lexographicidentifyingunit [10..15];
