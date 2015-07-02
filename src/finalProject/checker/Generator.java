@@ -280,10 +280,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.cbr, reg(ctx.expression()), body, ifContinue);
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
-			if(checkResult.getType(ctx) != null){
-				if(checkResult.getType(ctx).equals(Type.CHAR)){
+			System.out.println("Register of ifStatement: " + reg(ctx));
+			if(checkResult.getType(ctx.stat(0)) != null){
+				if(checkResult.getType(ctx.stat(0)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
-				}else if(checkResult.getType(ctx) != null){
+				}else if(checkResult.getType(ctx.stat(0)) != null){
 					emit(OpCode.i2i, reg(ctx.stat(0)), reg(ctx));
 				}
 			}
@@ -294,21 +295,20 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.cbr, reg(ctx.expression()), body, elseBody);
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
-			if(checkResult.getType(ctx) != null){
-				if(checkResult.getType(ctx).equals(Type.CHAR)){
+			if(checkResult.getType(ctx.stat(0)) != null){
+				if(checkResult.getType(ctx.stat(0)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
-				}else if(checkResult.getType(ctx) != null){
+				}else if(checkResult.getType(ctx.stat(0)) != null){
 					emit(OpCode.i2i, reg(ctx.stat(0)), reg(ctx));
 				}
 			}
 			emit(OpCode.jumpI, ifContinue);
 			emit(elseBody, OpCode.nop);
 			visit(ctx.stat(1));
-			if(checkResult.getType(ctx) != null){
-				if(checkResult.getType(ctx).equals(Type.CHAR)){
+			if(checkResult.getType(ctx.stat(1)) != null){
+				if(checkResult.getType(ctx.stat(1)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(1)), reg(ctx));
-				}else if(checkResult.getType(ctx) != null){
-					System.out.println("ENTERIFELSE");
+				}else if(checkResult.getType(ctx.stat(1)) != null){
 					emit(OpCode.i2i, reg(ctx.stat(1)), reg(ctx));
 				}
 			}
@@ -460,7 +460,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		return null; }
 	
-	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {//TODO add these lables
+	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
@@ -481,7 +481,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
-		
 		if(checkResult.getType(ctx) != null){
 			if(checkResult.getType(ctx).equals(Type.CHAR)){
 				emit(OpCode.c2c, reg(ctx.expression()), reg(ctx));
@@ -567,6 +566,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.push, reg(ctx.expression()));
 			emit(OpCode.jump, reg3);
 		} else{
+			System.out.println("\nReturn statement expression is NULL");
 			emit(OpCode.pop, reg3);
 			emit(OpCode.jump, reg3);
 		}
