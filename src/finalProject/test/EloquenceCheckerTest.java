@@ -16,7 +16,7 @@ import finalProject.checker.Type;
 
 @SuppressWarnings("javadoc")
 public class EloquenceCheckerTest {
-	private final static String BASE_DIR = "src/finalProject/test/files";
+	private final static String BASE_DIR = "src/finalProject/typeCheckingTestFiles";
 	private final static String EXT = ".eloq";
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
