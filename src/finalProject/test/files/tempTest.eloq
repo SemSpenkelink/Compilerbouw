@@ -9,7 +9,7 @@ program tempTest{
 			i;
 		}contrariwise{
 			i = i + 1;
-			rec(i);
+			2*rec(i);
 		};
 	}
 
