@@ -1,28 +1,29 @@
 program tempTest{
 
-
-
-
-}
-
-/*	//Testing recursion
+//Testing recursion
 	
 	highpowered numericalDigit x = 0;
 	
 	numericalDigit rec(numericalDigit i){
-		relinquish assuming(i equalTo 10){
-			i;
-		}contrariwise{
-			i = i + 1;
-			rec(i);
+		assuming(i equalTo 3){
+			relinquish 0;
 		};
+		
+		i = i + 1;
+		rec(i);
+		relinquish exude(i);
 	}
 
-	exude(rec(x));
+	rec(x);
+
+
+}
+
+	
 
 
 
-*/
+
 /*
 highpowered numericaldigit test = 10;
 

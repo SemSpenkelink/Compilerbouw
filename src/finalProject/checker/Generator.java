@@ -15,6 +15,7 @@ import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
+import finalProject.grammar.EloquenceParser.ParamValContext;
 import finalProject.grammar.EloquenceParser.ParametersContext;
 import finalProject.grammar.EloquenceParser.TargetContext;
 import finalProjectCFG.BottomUpCFGBuilder;
@@ -585,11 +586,14 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		if(ctx.expression() != null){
+			System.out.println("\nReturnStat");
 			emit(OpCode.pop, reg3);						//Pop return label
 			emit(OpCode.pop,reg1);						//Pop return value of 0
 			emit(OpCode.push, reg(ctx.expression()));	//Push actual return value
 			emit(OpCode.jump, reg3);					//Jump to return label
+			System.out.println("");
 		} else{
+			
 			emit(OpCode.pop, reg3);
 			emit(OpCode.jump, reg3);
 		}
@@ -929,22 +933,25 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		Label funcContinue = createLabel(ctx, "funcContinue" + ctx.getText());
 	//	emit(OpCode.jumpI, label(ctx.target()));
-	
+		System.out.println("\nFunction");
 		emit(OpCode.loadI, new Num(funcContinue), reg1);
 		emit(OpCode.push, reg1);
 		
 		for(ExpressionContext e : ctx.expression()){
-			emit(OpCode.push, reg(e));	
+			emit(OpCode.push, reg(e));			//Push the paramaters
 		}
 		
 		emit(OpCode.jumpI, funcAddr.get(ctx.target().getText())); 
 		emit(funcContinue, OpCode.nop);
 		emit(OpCode.pop, reg(ctx));
 		
+		
+		
 		for(int i = vars.size()-1; i >= 0;i--){
 			emit(OpCode.pop, reg(vars.get(i)));
 			emit(OpCode.storeAI, reg(vars.get(i)), arp, offset(vars.get(i)));
 		}
+		
 		
 		return null; }
 	
@@ -969,6 +976,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
+		
 		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));
 		
 		visit(ctx.newID());
@@ -980,6 +988,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		for(ParametersContext p : ctx.parameters()){
 			visit(p);
 		}
+		
+		
 		visit(ctx.body());
 		visit(ctx.returnStat());
 		emit(funcEnd, OpCode.nop);
