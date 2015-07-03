@@ -409,9 +409,16 @@ public class Checker extends EloquenceBaseListener {
 		for(TargetContext target : ctx.target())
 			if(checkScope(target)){
 				checkType(ctx.expression(0), Type.INT);
-				checkType(ctx.expression(1), ((Type.Array)getType(target)).getElemType());
+				checkType(ctx.expression(ctx.expression().size()-1), ((Type.Array)getType(target)).getElemType());
 				checkMutable(target);
 			}
+		for(int index = 0; index < ctx.target().size(); index++){
+			if(checkScope(ctx.target(index))){
+				checkType(ctx.expression(index), Type.INT);
+				checkType(ctx.expression(ctx.expression().size()-1), ((Type.Array)getType(ctx.target(index))).getElemType());
+				checkMutable(ctx.target(index));
+			}
+		}
 		setType(ctx, getType(ctx.target(0)));
 		//setEntry(ctx, entry(ctx.target(0)));
 

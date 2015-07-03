@@ -34,8 +34,8 @@ program arrayCorrect{
 	f[11] = 'a';
 	e[11] = 'b';
 	f[10] = 'b';
-//	e[10] = f[11] = 'a';
-//	e[11] = f[10] = 'b';
+	e[10] = f[11] = 'a';
+	e[11] = f[10] = 'b';
 	
 	/*Assigning multiple values to multiple arrays. */
 	a = b = {bogus,unfeigned};
