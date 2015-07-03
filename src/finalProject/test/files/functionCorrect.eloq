@@ -28,6 +28,7 @@ program functionCorrectTest{
 		relinquish function2Nest();
 		
 	}
+	exude(function2());
 	
 	/*Check the scope and visibility of function names. */
 	

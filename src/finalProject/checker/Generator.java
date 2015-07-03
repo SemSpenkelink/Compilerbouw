@@ -131,6 +131,14 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		this.regs.put(node, reg);
 	}
 	
+	/**	When a program is visited it initially has to visit all its children. All runtime errors are
+	 * handled here as well. A label is created for every type of runtime error, and a value is assigned
+	 * to reg_error. In case of a runtime error, the program jumps to this label. In this case has a label
+	 * indexOutOfBounds, which corresponds to a user indexing an array out of bounds. After jumping to
+	 * the runtime error node, the progrom outputs the error and jumps to the end. The rest of the ILOC code
+	 * is then not created. 
+	 * 
+	 * */
 	@Override public Op visitProgram(EloquenceParser.ProgramContext ctx) { 
 		Label indexOutOfBounds = createLabel(ctx, "indexOutOfBounds");
 		runtimeErrors.put("indexOutOfBounds", indexOutOfBounds);
@@ -146,6 +154,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(programEnd,OpCode.nop);
 		return null; }
 	
+	/** After entering the program, the body is visited. Initially all the children of the body are visited
+	 * The body can contain statements, in such case the body can be part of a compound statement and can thus
+	 * be assigned. The body must hold the value of the last statement of a compound expression. That value
+	 * is stored in the register of the ctx of visitBody.
+	 * 
+	 */
 	@Override public Op visitBody(EloquenceParser.BodyContext ctx) { 
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
@@ -162,6 +176,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		return null; }
 	
+	/**
+	 * Visit variable declarations. This is not declarations of arrays or constants. Since it is possible to
+	 * declare multiple new IDs, the function loops over every new ID and checks if immediately an expression
+	 * is assigned. In case there is no immediate assignment, the it simply loads the value 0 into the reg
+	 * of that ID. Otherwise - there is an assignment - the register of the 
+	 */
 	@Override public Op visitDeclVar(EloquenceParser.DeclVarContext ctx) { 
 		visitChildren(ctx);
 		for(NewIDContext newId : ctx.variable().newID()){
@@ -217,11 +237,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx) { 
 		visitChildren(ctx);
-		System.out.println("\n visitVarArrayDecl");
 		
 		
 		for(NewIDContext newId : ctx.newID()){
-			System.out.println("\n offset: " + offset(newId.ID()));
 			emit(OpCode.storeAI, reg(ctx.target()), arp, offset(newId.ID()));
 			
 			emit(OpCode.loadI, offset(ctx.target()),reg1);	//load offset in reg1
@@ -245,7 +263,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) {
 		visitChildren(ctx);
-		System.out.println("\n visitConstArrayDecl");
 		
 		for(NewIDContext newId : ctx.newID()){
 			emit(OpCode.storeAI, reg(ctx.target()), arp, offset(newId.ID()));
@@ -280,7 +297,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.cbr, reg(ctx.expression()), body, ifContinue);
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
-			System.out.println("Register of ifStatement: " + reg(ctx));
 			if(checkResult.getType(ctx.stat(0)) != null){
 				if(checkResult.getType(ctx.stat(0)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
@@ -328,7 +344,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		Label whileBody = createLabel(ctx.stat(), "whileBody");
 	//	labels.put(ctx.stat(), whileBody);
-		System.out.println("LABEL CONTEXT: "+ctx.stat().getText());
 		Label whileContinue = createLabel(ctx, "whileContinue");
 		
 		visit(ctx.expression());
@@ -341,7 +356,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitStatAssign(EloquenceParser.StatAssignContext ctx) { 
-		System.out.println("Stat ASSIGN");
 		if(labels.get(ctx) != null){
 			emit(labels.get(ctx), OpCode.nop);
 		}
@@ -351,17 +365,17 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				emit(OpCode.c2c, reg(ctx.expression()),reg(ctx));
 				emit(OpCode.storeAI, reg(ctx), arp, offset(ctx));
 				
-				for(TargetContext target : ctx.target()){System.out.println("Stat ASSIGN i2i");
+				for(TargetContext target : ctx.target()){
 					emit(OpCode.c2c, reg(ctx.expression()),reg(target));
 					emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
 				}
 			}
 			else if(checkResult.getType(ctx.expression()).equals(Type.INT) || checkResult.getType(ctx.expression()).equals(Type.BOOL)){
-				System.out.println("Stat ASSIGN afterChildren");
+				
 				emit(OpCode.i2i, reg(ctx.expression()),reg(ctx));
 				emit(OpCode.storeAI, reg(ctx), arp, offset(ctx)); 
 				
-				for(TargetContext target : ctx.target()){System.out.println("Stat ASSIGN i2i");
+				for(TargetContext target : ctx.target()){
 					emit(OpCode.i2i, reg(ctx.expression()),reg(target));
 					emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
 				}
@@ -372,7 +386,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 					){
 				
 				for(TargetContext target : ctx.target()){
-					System.out.println("\nAssign two arrays");
 					emit(OpCode.loadAI, arp, offset(target), reg1);	//Reg1 now contains lower bound
 					emit(OpCode.loadI, new Num(4), reg2);
 					emit(OpCode.loadI, offset(target), reg3);
@@ -445,7 +458,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
-		System.out.println("\n Visit Mult array assign");
 		for(TargetContext target : ctx.target()){
 			//Start by computing the begin value of the array. We'll store that in reg1
 			emit(OpCode.loadI, offset(target), reg1);
@@ -531,9 +543,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return visitChildren(ctx); }
 	
 	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { 
-		System.out.println("VISIT STATBLOCKBODY CTX = " + ctx.getText());
 		if(labels.get(ctx) != null){
-			System.out.println("Emit LABEL");
 			emit(labels.get(ctx), OpCode.nop);
 		}
 		
@@ -567,7 +577,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.push, reg(ctx.expression()));	//Push actual return value
 			emit(OpCode.jump, reg3);	//Jump to return label
 		} else{
-			System.out.println("\nReturn statement expression is NULL");
 			emit(OpCode.pop, reg3);
 			emit(OpCode.jump, reg3);
 		}
@@ -650,7 +659,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				
 				
 			}else{
-				System.out.println("Comparing, but not arrays");
 				emit(OpCode.cmp_EQ, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 			}
 		} else if(ctx.compare().NE() != null){
@@ -659,7 +667,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 					!checkResult.getType(ctx.expression(0)).equals(Type.BOOL) &&
 					!checkResult.getType(ctx.expression(0)).equals(Type.CHAR)
 					){
-				System.out.println("\n\nType of thing: "+ checkResult.getType(ctx.expression(0)));
 				emit(OpCode.loadAI, arp, offset(ctx.expression(0)), reg1);	//Reg1 now contains lower bound
 				emit(OpCode.loadI, new Num(4), reg2);
 				emit(OpCode.loadI, offset(ctx.expression(0)), reg3);
@@ -720,7 +727,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				
 				
 			}else{
-				System.out.println("\n\nComparing, but not arrays.");
 				emit(OpCode.cmp_NE, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 			
 			}
@@ -849,8 +855,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.loadAO,arp,reg3,reg3);//reg3: upper bound
 		
 		Label indexOutOfBounds = runtimeErrors.get("indexOutOfBounds");
-			if(indexOutOfBounds == null)
-				System.out.println("Index out of bounds array = null");
 			
 		
 		Label geCont = createLabel(ctx, "greaterThanLowerBound");
@@ -901,10 +905,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitFunctionID(EloquenceParser.FunctionIDContext ctx) { 
 		visitChildren(ctx);
-		System.out.println("Function ID VISIT");
 		List<ParseTree> vars = checkResult.getFunctionDeclarations().get(ctx.target().getText());
 		for(int i = 0; i < vars.size();i++){
-			System.out.println("HIER!!!!!! " + vars.get(i).getText());
 			emit(OpCode.loadAI, arp, offset(vars.get(i)), reg1);
 			emit(OpCode.push, reg1);
 		}
@@ -935,7 +937,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
 	//	label(ctx.newID());
-		System.out.println("\n Start void func");
 		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));//Label for starting the function
 		
 		visit(ctx.newID());
@@ -955,7 +956,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; }
 	
 	@Override public Op visitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
-		System.out.println("\n Start return func");
 		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));
 		
 		visit(ctx.newID());
