@@ -1,17 +1,18 @@
 program fib{
 	
-	highpowered numericalDigit x = 2;
+	highpowered numericalDigit x = 1;
 	
 	numericalDigit fib(numericalDigit n){
+		exude(n);
 		relinquish assuming(n equalTo 0){
 			0;
 		} contrariwise assuming(n equalTo 1){
 			1;
 		} contrariwise {
-			fib(n-1) + fib(n-2);
+			fib(n-1) ;
 		};;
 	}
 	
-	fib(2);
+	exude(fib(x));
 
 }

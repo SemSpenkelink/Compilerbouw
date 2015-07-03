@@ -1,6 +1,11 @@
 program tempTest{
 
-	//Testing recursion
+
+
+
+}
+
+/*	//Testing recursion
 	
 	highpowered numericalDigit x = 0;
 	
@@ -17,7 +22,7 @@ program tempTest{
 
 
 
-}
+*/
 /*
 highpowered numericaldigit test = 10;
 

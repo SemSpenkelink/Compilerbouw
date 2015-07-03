@@ -293,11 +293,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		//visitChildren(ctx);
 		visit(ctx.expression());
 		
+		System.out.println("\n\n"); 
 		if(ctx.ELSE() == null){ //There is no else
 			emit(OpCode.cbr, reg(ctx.expression()), body, ifContinue);
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
 			if(checkResult.getType(ctx.stat(0)) != null){
+				System.out.println("Only IF stat(0) != null reg ctx: " + reg(ctx));
 				if(checkResult.getType(ctx.stat(0)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
 				}else if(checkResult.getType(ctx.stat(0)) != null){
@@ -312,6 +314,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
 			if(checkResult.getType(ctx.stat(0)) != null){
+				System.out.println("stat(0) != null reg ctx: " + reg(ctx));
 				if(checkResult.getType(ctx.stat(0)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
 				}else if(checkResult.getType(ctx.stat(0)) != null){
@@ -322,6 +325,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(elseBody, OpCode.nop);
 			visit(ctx.stat(1));
 			if(checkResult.getType(ctx.stat(1)) != null){
+				System.out.println("stat(1) != null reg ctx: " + reg(ctx));
 				if(checkResult.getType(ctx.stat(1)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(1)), reg(ctx));
 				}else if(checkResult.getType(ctx.stat(1)) != null){
@@ -493,6 +497,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
+		System.out.println("Type of " + ctx.getText() + " = " + checkResult.getType(ctx));
 		if(checkResult.getType(ctx) != null){
 			if(checkResult.getType(ctx).equals(Type.CHAR)){
 				emit(OpCode.c2c, reg(ctx.expression()), reg(ctx));
@@ -572,10 +577,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		if(ctx.expression() != null){
-			emit(OpCode.pop, reg3);		//Pop return label
-			emit(OpCode.pop,reg1);		//Pop return value of 1
+			emit(OpCode.pop, reg3);						//Pop return label
+			emit(OpCode.pop,reg1);						//Pop return value of 0
 			emit(OpCode.push, reg(ctx.expression()));	//Push actual return value
-			emit(OpCode.jump, reg3);	//Jump to return label
+			emit(OpCode.jump, reg3);					//Jump to return label
 		} else{
 			emit(OpCode.pop, reg3);
 			emit(OpCode.jump, reg3);
