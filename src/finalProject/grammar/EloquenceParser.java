@@ -2768,10 +2768,10 @@ public class EloquenceParser extends Parser {
 		}
 	}
 	public static class ParamRefContext extends ParametersContext {
-		public TargetContext target() {
-			return getRuleContext(TargetContext.class,0);
-		}
 		public TerminalNode REF() { return getToken(EloquenceParser.REF, 0); }
+		public NewIDContext newID() {
+			return getRuleContext(NewIDContext.class,0);
+		}
 		public ParamRefContext(ParametersContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -2831,7 +2831,7 @@ public class EloquenceParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(387); match(REF);
-				setState(388); target();
+				setState(388); newID();
 				}
 				break;
 			default:
@@ -3004,10 +3004,10 @@ public class EloquenceParser extends Parser {
 		"\2\2\u017b\u017c\3\2\2\2\u017c\u017d\7*\2\2\u017d\u017e\7!\2\2\u017e\u017f"+
 		"\5\4\3\2\u017f\u0180\5\30\r\2\u0180\u0181\7)\2\2\u0181\61\3\2\2\2\u0182"+
 		"\u0183\5(\25\2\u0183\u0184\5\26\f\2\u0184\u0188\3\2\2\2\u0185\u0186\7"+
-		"\27\2\2\u0186\u0188\5\24\13\2\u0187\u0182\3\2\2\2\u0187\u0185\3\2\2\2"+
-		"\u0188\63\3\2\2\2\">@GT\\s\177\u0084\u008c\u0098\u009d\u00a4\u00b1\u00bb"+
-		"\u00c3\u00d1\u00dd\u00ed\u00f9\u0105\u0121\u0137\u0139\u014b\u014f\u0158"+
-		"\u015b\u0167\u016a\u0177\u017a\u0187";
+		"\27\2\2\u0186\u0188\5\26\f\2\u0187\u0182\3\2\2\2\u0187\u0185\3\2\2\2\u0188"+
+		"\63\3\2\2\2\">@GT\\s\177\u0084\u008c\u0098\u009d\u00a4\u00b1\u00bb\u00c3"+
+		"\u00d1\u00dd\u00ed\u00f9\u0105\u0121\u0137\u0139\u014b\u014f\u0158\u015b"+
+		"\u0167\u016a\u0177\u017a\u0187";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

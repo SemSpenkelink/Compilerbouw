@@ -142,7 +142,7 @@ returnFunc
 
 parameters
 	: type newID		#paramVal
-	| REF target		#paramRef
+	| REF newID		#paramRef
 	;
 
 
