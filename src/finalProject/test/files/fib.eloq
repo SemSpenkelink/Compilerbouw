@@ -1,10 +1,6 @@
 program fib{
 	
-	highpowered numericalDigit x = 5;
-	highpowered numericalDigit y = 10;
-	highpowered numericalDigit z = 20;
-	highpowered numericalDigit a = 30;
-	highpowered numericalDigit b = 40;
+	highpowered numericalDigit x = 13;
 	
 	numericalDigit fib(numericalDigit n){
 		relinquish assuming(n equalTo 0){

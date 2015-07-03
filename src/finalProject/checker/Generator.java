@@ -13,11 +13,13 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
+import finalProject.grammar.EloquenceParser.ExprFuncContext;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
 import finalProject.grammar.EloquenceParser.ParamValContext;
 import finalProject.grammar.EloquenceParser.ParametersContext;
 import finalProject.grammar.EloquenceParser.TargetContext;
+import finalProject.grammar.EloquenceParser.VoidFuncContext;
 import finalProjectCFG.BottomUpCFGBuilder;
 import pp.iloc.*;
 import pp.iloc.eval.*;
@@ -292,6 +294,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	//	labels.put(ctx.stat(0), body);
 		//visitChildren(ctx);
 		visit(ctx.expression());
+
+		if(ctx.expression() instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression()));
 		
 		System.out.println("\n\n"); 
 		if(ctx.ELSE() == null){ //There is no else
@@ -351,6 +356,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		Label whileContinue = createLabel(ctx, "whileContinue");
 		
 		visit(ctx.expression());
+
+		if(ctx.expression() instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression()));
+		
 		emit(OpCode.cbr, reg(ctx.expression()), whileBody, whileContinue);
 		emit(whileBody, OpCode.nop);
 		visit(ctx.stat());
@@ -497,6 +506,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
+
+		if(ctx.expression() instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression()));
+		
 		System.out.println("Type of " + ctx.getText() + " = " + checkResult.getType(ctx));
 		if(checkResult.getType(ctx) != null){
 			if(checkResult.getType(ctx).equals(Type.CHAR)){
@@ -535,9 +548,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		
 		visitChildren(ctx);
+		
 		for(ExpressionContext out : ctx.expression()){
 			emit(OpCode.out, new Str("Output: ") , reg(out));
 			emit(OpCode.i2i, reg(out), reg(ctx));
+			if(out instanceof ExprFuncContext)
+				emit(OpCode.pop, reg(out));
 		}
 		
 		return null; }
@@ -553,6 +569,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}else if(checkResult.getType(ctx) != null){
 			emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
 		}
+		
 		
 		return null; }
 	
@@ -602,6 +619,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprComp(EloquenceParser.ExprCompContext ctx) { 
 		visitChildren(ctx);
+
+		if(ctx.expression(1) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(1)));
+		if(ctx.expression(0) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(0)));
+		
 		if(ctx.compare().LT() != null){
 			emit(OpCode.cmp_LT, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 		} else if(ctx.compare().LE() != null){
@@ -753,6 +776,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprCompound(EloquenceParser.ExprCompoundContext ctx) { 
 		visitChildren(ctx);
+
+		if(ctx.expression() instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression()));
 		
 		if(checkResult.getType(ctx.expression()).equals(Type.CHAR))
 			emit(OpCode.c2c, reg(ctx.expression()),reg(ctx));
@@ -765,6 +791,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprMult(EloquenceParser.ExprMultContext ctx) { 
 		visitChildren(ctx);
+		
+		if(ctx.expression(1) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(1)));
+		if(ctx.expression(0) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(0)));
 		
 		if(ctx.multiply().MULTIPLY() != null){
 			emit(OpCode.mult, reg(ctx.expression(0)),reg(ctx.expression(1)),reg(ctx));
@@ -781,6 +812,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitExprUnary(EloquenceParser.ExprUnaryContext ctx) { 
 		
 		visitChildren(ctx);
+		
+
+		if(ctx.expression() instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression()));
+		
 		if(ctx.unary().PLUS() != null){
 			emit(OpCode.i2i, reg(ctx.expression()), reg(ctx));
 		} else if(ctx.unary().MINUS() != null){
@@ -816,11 +852,20 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprOr(EloquenceParser.ExprOrContext ctx) {
 		visitChildren(ctx);
+
+		if(ctx.expression(1) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(1)));
+		if(ctx.expression(0) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(0)));
+		
 		emit(OpCode.or, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 	return null; }
 	
 	@Override public Op visitExprPar(EloquenceParser.ExprParContext ctx) { 
 		visitChildren(ctx);
+
+		if(ctx.expression() instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression()));
 		
 		if(checkResult.getType(ctx.expression()).equals(Type.CHAR))
 			emit(OpCode.c2c, reg(ctx.expression()),reg(ctx));
@@ -832,6 +877,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitExprAdd(EloquenceParser.ExprAddContext ctx) {
 		visitChildren(ctx);
 		
+		if(ctx.expression(1) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(1)));
+		if(ctx.expression(0) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(0)));
+		
 		if(ctx.addition().PLUS() != null){
 			emit(OpCode.add,reg(ctx.expression(0)), reg(ctx.expression(1)),reg(ctx));
 		} else if(ctx.addition().MINUS() != null){
@@ -842,6 +892,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprAnd(EloquenceParser.ExprAndContext ctx) {
 		visitChildren(ctx);
+
+		if(ctx.expression(1) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(1)));
+		if(ctx.expression(0) instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression(0)));
+		
 			emit(OpCode.and, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 		return null; }
 	
@@ -860,7 +916,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) { 
 		visitChildren(ctx);
-		
+
+		if(ctx.expression() instanceof ExprFuncContext)
+			emit(OpCode.pop, reg(ctx.expression()));
 		//Check for index out of bounds exception
 	//	emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1); //reg1: index
 		emit(OpCode.i2i, reg(ctx.expression()),reg1);
@@ -920,8 +978,30 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitFuncReturn(EloquenceParser.FuncReturnContext ctx) { return visitChildren(ctx); }
 	
-	@Override public Op visitFunctionID(EloquenceParser.FunctionIDContext ctx) { 
+	@Override public Op visitFunctionID(EloquenceParser.FunctionIDContext ctx) {	
+		
+		ParseTree tmp = ctx;
+		while(!(tmp instanceof finalProject.grammar.EloquenceParser.VoidFuncContext)
+				&& !(tmp instanceof finalProject.grammar.EloquenceParser.ReturnFuncContext)){
+			if(tmp == null)
+				break;
+			tmp = tmp.getParent();
+		}
+		if(tmp != null){
+			if(tmp instanceof finalProject.grammar.EloquenceParser.VoidFuncContext)
+				for(ParametersContext paramCtx : ((finalProject.grammar.EloquenceParser.VoidFuncContext)tmp).parameters()){
+					if(paramCtx instanceof ParamValContext)
+						emit(OpCode.push, reg(((ParamValContext)paramCtx).newID().ID()));
+				}
+			else
+				for(ParametersContext paramCtx : ((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).parameters()){
+					if(paramCtx instanceof ParamValContext)
+						emit(OpCode.push, reg(((ParamValContext)paramCtx).newID().ID()));
+				}
+		}
+		
 		visitChildren(ctx);
+		
 		List<ParseTree> vars = checkResult.getFunctionDeclarations().get(ctx.target().getText());
 		for(int i = 0; i < vars.size();i++){
 			emit(OpCode.loadAI, arp, offset(vars.get(i)), reg1);
@@ -952,6 +1032,25 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.storeAI, reg(vars.get(i)), arp, offset(vars.get(i)));
 		}
 		
+
+		if(tmp != null){
+			if(tmp instanceof finalProject.grammar.EloquenceParser.VoidFuncContext)
+				for(ParametersContext paramCtx : ((finalProject.grammar.EloquenceParser.VoidFuncContext)tmp).parameters()){
+					if(paramCtx instanceof ParamValContext){
+						emit(OpCode.pop, reg(((ParamValContext)paramCtx).newID().ID()));
+						emit(OpCode.storeAI, reg(((ParamValContext)paramCtx).newID().ID()), arp, offset(((ParamValContext)paramCtx).newID().ID()));
+					}
+				}
+			else
+				for(ParametersContext paramCtx : ((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).parameters()){
+					if(paramCtx instanceof ParamValContext){
+						emit(OpCode.pop, reg(((ParamValContext)paramCtx).newID().ID()));
+						emit(OpCode.storeAI, reg(((ParamValContext)paramCtx).newID().ID()), arp, offset(((ParamValContext)paramCtx).newID().ID()));
+					}
+				}
+		}
+		//TODO ?
+		emit(OpCode.push, reg(ctx));
 		
 		return null; }
 	
