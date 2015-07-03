@@ -37,11 +37,11 @@ public class EloquenceTest {
 //		check(parse("basicExprRuntimeError"));					//TODO should fail on runtime
 		
 		int[] input = {0, 1, 0, 99, 2, 1, 2, 0, 0, 99};
-		int[] output = {2};
+		int[] output = {1, 0, -1, 0, 1, -1, 0, 99, 97, -1, 2, 1, 2, 0, -1, 0, 1, 0, -1, 97, -1, 2, -1, 98};
 		checkRuntime("basicExprCorrect", input, output);
 	}
 	
-	@Test
+//	@Test
 	public void conditionalTest() throws ParseException, IOException{
 		check(parse("conditionalCorrect"));
 		checkFail("conditionalSpellingContextFreeSyntaxError");
@@ -50,11 +50,12 @@ public class EloquenceTest {
 	}
 	
 	//TODO
-	private void checkRuntime(String filename, int[] input, int[] output) throws ParseException, IOException{
+	private void checkRuntime(String filename, int[] input, int[] output) throws ParseException, IOException{		
+		
 		String inputString = "";
 		for(int index = 0; index < input.length; index++)
-			inputString += input[index];
-		System.out.println(Arrays.toString(inputString.getBytes()));
+			inputString += input[index] + "\n";
+		
 		Program prog = compiler.compile(new File(BASE_DIR, filename + EXT));
 		Machine vm = new Machine();
 		Simulator sim = new Simulator(prog, vm);
@@ -65,8 +66,17 @@ public class EloquenceTest {
 		out = new PipedOutputStream(in);
 		sim.setOut(out);
 		sim.run();
-		System.out.println(in.read());
 		
+		String outputString = "";
+		for(int index = 0; index < output.length; index++)
+			outputString += "Output: " + output[index] + "\n\n";
+		
+		assertEquals(outputString.length(), in.available());
+		
+		for(int index = 0; index < in.available(); index++){
+			char tmp = (char)in.read();
+			System.out.println(outputString.charAt(index) + " = " + tmp);
+		}
 	}
 	
 	private void checkFail(String filename) throws IOException {

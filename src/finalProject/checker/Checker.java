@@ -530,7 +530,6 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	/**
-	 * Check whether the functionID is of type void.
 	 * Set the type to void.
 	 * 
 	 * CFG creation:
@@ -538,7 +537,6 @@ public class Checker extends EloquenceBaseListener {
 	 * Link the exit node of functionID to the exit node of statVoid.
 	 */
 	@Override public void exitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
-		checkNull(ctx.functionID());
 		setType(ctx, null);
 
 		/** CFG creation. */
@@ -775,6 +773,7 @@ public class Checker extends EloquenceBaseListener {
 	 * Link the exit of functionID to its own exit node.
 	 */
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
+		System.out.println("Type functionID = " + getType(ctx.functionID()));
 		if(checkNotNull(ctx.functionID())){
 			checkScope(ctx.functionID().target());
 			setType(ctx, getType(ctx.functionID()));
@@ -1012,7 +1011,19 @@ public class Checker extends EloquenceBaseListener {
 			for(ParametersContext param : params){
 				arguments.add(getType(param));
 			}
-			this.scope.put(tmp.getChild(1).getChild(0).getText(), null, false, arguments, functionDeclarations.peek());
+			Type type = null;
+				
+			if(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).type().getText().toLowerCase().equals("numericaldigit"))
+				type = Type.INT;
+			else if(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).type().getText().toLowerCase().equals("george"))
+				type = Type.BOOL;
+			else if(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).type().getText().toLowerCase().equals("lexographicidentifyingunit"))
+				type = Type.CHAR;
+					
+			setType(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).newID(), type);
+			setType(tmp, type);
+			
+			this.scope.put(tmp.getChild(1).getChild(0).getText(), type, false, arguments, functionDeclarations.peek());
 		}
 	}
 	
