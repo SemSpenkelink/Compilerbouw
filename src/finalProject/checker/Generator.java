@@ -564,11 +564,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		visitChildren(ctx);
 		
+		/*
 		if(checkResult.getType(ctx).equals(Type.CHAR)){
 			emit(OpCode.c2c, reg(ctx.functionID()), reg(ctx));
 		}else if(checkResult.getType(ctx) != null){
 			emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
 		}
+		*/
 		
 		
 		return null; }
@@ -602,13 +604,19 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
+		
 		if(ctx.expression() != null){
+			if(ctx.expression() instanceof ExprFuncContext)
+				emit(OpCode.pop, reg(ctx.expression()));
+			
 			System.out.println("\nReturnStat");
 			emit(OpCode.pop, reg3);						//Pop return label
 			emit(OpCode.pop,reg1);						//Pop return value of 0
 			emit(OpCode.push, reg(ctx.expression()));	//Push actual return value
 			emit(OpCode.jump, reg3);					//Jump to return label
 			System.out.println("");
+			
+			
 		} else{
 			
 			emit(OpCode.pop, reg3);
@@ -848,6 +856,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.c2c, reg(ctx.functionID()), reg(ctx));
 		else
 			emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
+		
 		return null; }
 	
 	@Override public Op visitExprOr(EloquenceParser.ExprOrContext ctx) {

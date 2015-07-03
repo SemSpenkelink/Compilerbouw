@@ -17,6 +17,7 @@ import finalProject.grammar.EloquenceParser;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
 import finalProject.grammar.EloquenceParser.ParametersContext;
+import finalProject.grammar.EloquenceParser.ReturnFuncContext;
 import finalProject.grammar.EloquenceParser.StatContext;
 import finalProject.grammar.EloquenceParser.TargetContext;
 /** Class to type check and calculate flow entries and variable offsets. */
@@ -1019,15 +1020,16 @@ public class Checker extends EloquenceBaseListener {
 				arguments.add(getType(param));
 			}
 			Type type = null;
-				
-			if(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).type().getText().toLowerCase().equals("numericaldigit"))
-				type = Type.INT;
-			else if(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).type().getText().toLowerCase().equals("george"))
-				type = Type.BOOL;
-			else if(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).type().getText().toLowerCase().equals("lexographicidentifyingunit"))
-				type = Type.CHAR;
+			if(tmp instanceof ReturnFuncContext){	
+				if(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).type().getText().toLowerCase().equals("numericaldigit"))
+					type = Type.INT;
+				else if(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).type().getText().toLowerCase().equals("george"))
+					type = Type.BOOL;
+				else if(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).type().getText().toLowerCase().equals("lexographicidentifyingunit"))
+					type = Type.CHAR;
 					
 			setType(((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).newID(), type);
+			}
 			setType(tmp, type);
 			
 			this.scope.put(tmp.getChild(1).getChild(0).getText(), type, false, arguments, functionDeclarations.peek());
