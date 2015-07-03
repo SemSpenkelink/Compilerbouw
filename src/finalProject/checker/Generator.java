@@ -1112,6 +1112,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 
 	@Override public Op visitParamRef(EloquenceParser.ParamRefContext ctx) { 
 		visitChildren(ctx);
-		emit(OpCode.pop, reg(ctx.target()));
+		emit(OpCode.pop, reg(ctx.newID()));
 		return null; }
 }

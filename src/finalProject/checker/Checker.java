@@ -1186,8 +1186,9 @@ public class Checker extends EloquenceBaseListener {
 	 * @param ctx
 	 */
 	@Override public void exitParamRef(finalProject.grammar.EloquenceParser.ParamRefContext ctx) {
-		setType(ctx, this.scope.type(ctx.target().getText()));
-		
+		setType(ctx, getType(ctx.type()));
+		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), true, null, null);
+		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
 	}
 	
 	
