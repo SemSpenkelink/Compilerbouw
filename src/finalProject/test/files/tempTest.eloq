@@ -1,7 +1,22 @@
 program tempTest{
 
 //Testing recursion
+
+numericaldigit function1(){
 	
+	numericaldigit function2(numericalDigit param1){
+	
+		relinquish param1;
+	}
+	
+	exude(function2(3));
+	
+relinquish function2(3);
+}
+exude(function1());
+
+
+/*	
 	highpowered numericalDigit x = 0;
 	
 	numericalDigit rec(numericalDigit i){
@@ -15,7 +30,7 @@ program tempTest{
 	}
 
 	rec(x);
-
+*/
 
 }
 
