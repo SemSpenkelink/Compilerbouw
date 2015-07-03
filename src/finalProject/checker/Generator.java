@@ -772,7 +772,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.xorI, reg(ctx.expression()), new Num(1),reg(ctx));
 		}
 		
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitExprNum(EloquenceParser.ExprNumContext ctx) { 
 		visitChildren(ctx);
