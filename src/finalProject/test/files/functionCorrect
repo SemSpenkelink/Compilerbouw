@@ -1,0 +1,22 @@
+program functionCorrectTest{
+
+	/*Checking void functions. The same tests that can be applied to compound expressions can also be
+	applied to void functions. */
+	
+	/*Check the scope and visibility of variables in void functions. */
+	
+	/*Check the scope and visibility of variables in return functions. */
+	
+	/*Check the scope and visibility of function names. */
+
+	/*Check the scope and visibility of function parameters. */
+	
+	/*Correct use of value parameter. An expression is passed as an argument. */
+	
+	/*Correct use of call by reference parameter. A variable must be passed as argument. */
+	
+	/*Checking recursive function. */
+	
+	/*Checking that return functions can be used as operands. */	
+
+}
