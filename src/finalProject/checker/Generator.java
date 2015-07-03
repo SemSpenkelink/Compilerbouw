@@ -759,7 +759,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.sub, reg(ctx.expression(0)),reg1,reg(ctx));
 		}
 		
-		return visitChildren(ctx); }
+		return null; }
 	
 	@Override public Op visitExprUnary(EloquenceParser.ExprUnaryContext ctx) { 
 		
@@ -914,7 +914,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.loadI, new Num(0),reg1);
 		emit(OpCode.push, reg1);
 		
-		Label funcContinue = createLabel(ctx, "funcContinue");
+		Label funcContinue = createLabel(ctx, "funcContinue" + ctx.getText());
 	//	emit(OpCode.jumpI, label(ctx.target()));
 	
 		emit(OpCode.loadI, new Num(funcContinue), reg1);
