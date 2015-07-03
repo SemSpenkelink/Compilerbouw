@@ -537,7 +537,8 @@ public class Checker extends EloquenceBaseListener {
 	 * Link the exit node of functionID to the exit node of statVoid.
 	 */
 	@Override public void exitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
-		setType(ctx, this.scope.type(ctx.functionID().getText()));
+		setType(ctx, this.scope.type(ctx.functionID().target().getText()));
+		setType(ctx.functionID(), this.scope.type(ctx.functionID().target().getText()));
 
 		/** CFG creation. */
 		constructNodes(ctx);
