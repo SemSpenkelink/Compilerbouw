@@ -1,0 +1,97 @@
+program functionCorrectTest{
+
+	/*Checking void functions. The same tests that can be applied to compound expressions can also be
+	applied to void functions. */
+	
+	/*Check the scope and visibility of variables in void functions. */
+	
+	godforsaken function1(){
+		highpowered numericaldigit ivar1 = 5;
+		
+		godforsaken function1Nest(){
+			ivar1 = 10;
+		}
+		
+		function1Nest();
+	}
+	
+	/*Check the scope and visibility of variables in return functions. Also checking whether return
+	values can be expressions. */
+	
+	numericalDigit function2(){
+		highpowered numericalDigit ivar1 = 5; //This is possible, since ivar1 in the previous function is in a different scope
+		
+		numericaldigit function2Nest(){
+			relinquish ivar1 + 5;
+		}
+		
+		relinquish function2Nest();
+		
+	}
+	
+	/*Check the scope and visibility of function names. */
+	
+	numericalDigit function3(){
+		relinquish 3;
+	}
+	
+	godforsaken function4(){
+		highpowered numericaldigit ivar2 = function3();
+		exude(ivar2);
+	}
+
+	/*Check the scope and visibility of function parameters. */
+	
+	george function5(george param1){
+	
+		numericaldigit function5Nest(george param2){
+			param2 = not param1;	//Invert the value of the boolean
+			relinquish param1;
+		}
+		
+		relinquish function5Nest(param1);
+		
+	}
+	
+	exude(function5(bogus));
+	
+	/*Correct use of value parameter. An expression is passed as an argument. */
+	
+	numericalDigit function6(numericaldigit param1, numericaldigit param2){
+		relinquish param1*param2;
+	}
+	
+	highpowered numericaldigit ivar3 = 4;
+	exude(function6((ivar3*4+3),(ivar3/2+15)*2-3));
+	
+	/*Correct use of call by reference parameter. A variable must be passed as argument. */
+	
+/*	numericalDigit function7(ref param1){
+		relinquish param1*2;
+	}
+	
+	exude(function7(ivar3));	//multiplies ivar3 by 2. 2*4. ivar3 should then be 8.
+	exude(ivar3);				//8
+*/	
+	/*Checking recursive function. It keeps calling rec and adds 1 to ivar4 until 10 is reached. 
+	More sophistaced recursion functions are available in other test files. */
+	
+	highpowered numericalDigit ivar4 = 0;
+	
+	numericalDigit rec(numericalDigit i){
+		relinquish assuming(i equalTo 10){
+			i;
+		}contrariwise{
+			i = i + 1;
+			rec(i);
+		};
+	}
+
+	exude(rec(ivar4));
+	
+	/*Checking that return functions can be used as operands. */
+	
+	exude(rec(ivar4) + rec(ivar4 +5));
+		
+
+}
