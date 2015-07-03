@@ -774,7 +774,6 @@ public class Checker extends EloquenceBaseListener {
 	 * Link the exit of functionID to its own exit node.
 	 */
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
-		System.out.println("Type functionID = " + getType(ctx.functionID()));
 		if(checkNotNull(ctx.functionID())){
 			checkScope(ctx.functionID().target());
 			setType(ctx, getType(ctx.functionID()));
