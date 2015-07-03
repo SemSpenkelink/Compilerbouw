@@ -284,8 +284,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null;  }
 	
 	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { 
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
+		System.out.println("\n\nStatIF");
 		
 		Label body = createLabel(ctx, "ifBody");
 		Label ifContinue = createLabel(ctx, "continue");
@@ -545,7 +544,16 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
-		return visitChildren(ctx); }
+		
+		visitChildren(ctx);
+		
+		if(checkResult.getType(ctx).equals(Type.CHAR)){
+			emit(OpCode.c2c, reg(ctx.functionID()), reg(ctx));
+		}else if(checkResult.getType(ctx) != null){
+			emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
+		}
+		
+		return null; }
 	
 	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { 
 		if(labels.get(ctx) != null){
