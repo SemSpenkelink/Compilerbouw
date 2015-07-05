@@ -18,6 +18,7 @@ import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
 import finalProject.grammar.EloquenceParser.ParamValContext;
 import finalProject.grammar.EloquenceParser.ParametersContext;
+import finalProject.grammar.EloquenceParser.ReturnFuncContext;
 import finalProject.grammar.EloquenceParser.TargetContext;
 import finalProject.grammar.EloquenceParser.VoidFuncContext;
 import finalProjectCFG.BottomUpCFGBuilder;
@@ -989,24 +990,18 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	
 	@Override public Op visitFunctionID(EloquenceParser.FunctionIDContext ctx) {	
 		
-		ParseTree tmp = ctx;
-		while(!(tmp instanceof finalProject.grammar.EloquenceParser.VoidFuncContext)
-				&& !(tmp instanceof finalProject.grammar.EloquenceParser.ReturnFuncContext)){
-			if(tmp == null)
+		ParseTree enclParent = ctx;
+		while(!(enclParent instanceof VoidFuncContext) && !(enclParent instanceof ReturnFuncContext)){
+			if(enclParent == null)
 				break;
-			tmp = tmp.getParent();
+			enclParent = enclParent.getParent();
 		}
-		if(tmp != null){
-			if(tmp instanceof finalProject.grammar.EloquenceParser.VoidFuncContext)
-				for(ParametersContext paramCtx : ((finalProject.grammar.EloquenceParser.VoidFuncContext)tmp).parameters()){
-					if(paramCtx instanceof ParamValContext)
-						emit(OpCode.push, reg(((ParamValContext)paramCtx).newID().ID()));
-				}
-			else
-				for(ParametersContext paramCtx : ((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).parameters()){
-					if(paramCtx instanceof ParamValContext)
-						emit(OpCode.push, reg(((ParamValContext)paramCtx).newID().ID()));
-				}
+		
+		if(enclParent != null){
+			List<ParametersContext> parameters = (enclParent instanceof VoidFuncContext) ? ((VoidFuncContext)enclParent).parameters() : ((ReturnFuncContext)enclParent).parameters();
+			for(ParametersContext paramCtx : parameters)
+				if(paramCtx instanceof ParamValContext)
+					emit(OpCode.push, reg(((ParamValContext)paramCtx).newID().ID()));
 		}
 		
 		visitChildren(ctx);
@@ -1041,23 +1036,15 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.storeAI, reg(vars.get(i)), arp, offset(vars.get(i)));
 		}
 		
-
-		if(tmp != null){
-			if(tmp instanceof finalProject.grammar.EloquenceParser.VoidFuncContext)
-				for(ParametersContext paramCtx : ((finalProject.grammar.EloquenceParser.VoidFuncContext)tmp).parameters()){
-					if(paramCtx instanceof ParamValContext){
-						emit(OpCode.pop, reg(((ParamValContext)paramCtx).newID().ID()));
-						emit(OpCode.storeAI, reg(((ParamValContext)paramCtx).newID().ID()), arp, offset(((ParamValContext)paramCtx).newID().ID()));
-					}
-				}
-			else
-				for(ParametersContext paramCtx : ((finalProject.grammar.EloquenceParser.ReturnFuncContext)tmp).parameters()){
-					if(paramCtx instanceof ParamValContext){
-						emit(OpCode.pop, reg(((ParamValContext)paramCtx).newID().ID()));
-						emit(OpCode.storeAI, reg(((ParamValContext)paramCtx).newID().ID()), arp, offset(((ParamValContext)paramCtx).newID().ID()));
-					}
+		if(enclParent != null){
+			List<ParametersContext> parameters = (enclParent instanceof VoidFuncContext) ? ((VoidFuncContext)enclParent).parameters() : ((ReturnFuncContext)enclParent).parameters();
+			for(ParametersContext paramCtx : parameters)
+				if(paramCtx instanceof ParamValContext){
+					emit(OpCode.pop, reg(((ParamValContext)paramCtx).newID().ID()));
+					emit(OpCode.storeAI, reg(((ParamValContext)paramCtx).newID().ID()), arp, offset(((ParamValContext)paramCtx).newID().ID()));
 				}
 		}
+		
 		//TODO ?
 		emit(OpCode.push, reg(ctx));
 		
