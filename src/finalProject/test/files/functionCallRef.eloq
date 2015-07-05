@@ -3,14 +3,14 @@ program functionCallByRef{
 
 
 	godforsaken function(){
-		exude(1);
+		//exude(1);
 		highpowered numericalDigit x = 0;
 		godforsaken function2(ref numericalDigit y){ //It should be function2(ref y). Then the passed variable is call ref
 			y = y + 1;
 		}
 		
 		function2(x);
-		exude(x);
+		//exude(x);
 		
 	}	
 	
