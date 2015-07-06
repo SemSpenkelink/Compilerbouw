@@ -2,128 +2,18 @@
 //Authors: Thijs van Ede & Anirudh Ekambaranathan
 //This program tests the correct conditional expressions.
 
-//Sample input:		5 4 10 6 c=99
-//Expected output:	1 unfeigned 5 5 c=99 5 unfeigned c=99
-
 Program conditionalCorrect{
 
 	//Variable declarations.
-	highPowered numericalDigit ivar1, ivar2;
+	highPowered numericalDigit ivar1;
 	highPowered George bvar = unfeigned;
-	highPowered lexographicIdentifyingUnit cvar1, cvar2;
 	
-	//Constant declarations.
-	sacrosanct numericalDigit iconst1, iconst2 = 1;
-	sacrosanct George bconst = unfeigned;
-	sacrosanct lexographicIdentifyingUnit cconst = 'c';
-	
-	//Testing basic expressions in combination with conditional statement
-	assuming(iconst1 equalTo iconst2)
-		exude(iconst1);
-	contrariwise assuming(iconst1 superiorTo iconst2)
-		exude(iconst1);
-	contrariwise assuming(iconst1 inferiorTo iconst2)
-		exude(iconst2);;;;
-	
-	//Testing no else
-	assuming(unfeigned){
-		exude(unfeigned);
-	};
-	
-	//Testing conditional statement in combination with read and write expressions.
-	assuming(expropriate(ivar1) superiorOrEqualTo expropriate(ivar2)){
-		exude(ivar1);
-	}contrariwise assuming(ivar1 inferiorOrEqualTo exude(ivar2))
-		exude(ivar2);;;
-
-	
-	//Testing scope of declarations
-	assuming(
-	{
-		highPowered numericalDigit ivar3 = 5;
-		ivar3 superiorTo 3;
-	}){
-		highPowered numericalDigit ivar4 = 4;
-		ivar2 = ivar3;
-		ivar1 = ivar4;
-	}contrariwise{
-		ivar2 = ivar3;
-	};
-
-	//Testing assignment of if statement as expression for integers.
-	ivar1 =
-	{
-		expropriate(ivar1);
-		assuming(ivar1 superiorTo 10){
-			ivar2 =
-			{
-				assuming(iconst1 equalTo iconst2)
-					iconst1;
-				contrariwise
-					iconst1+iconst2;;
-			};
-		}contrariwise{
-			ivar2 =
-			{
-				assuming(iconst1 equalTo iconst2)
-					iconst1+iconst2;
-				contrariwise
-					iconst1;;
-			};
-		};
-		//Testing comparisson using if statement as expression.
-		assuming(assuming(
-			{
-				highPowered numericalDigit ivar3;
-				ivar3 = ivar3+1;
-				bvar and ivar1 inferiorTo expropriate(ivar2);
-			}
-			){
-				ivar3 = ivar3+1;
-			}contrariwise
-				ivar3 = ivar3-1; superiorTo 5)
-			4;
+	expropriate(bvar);
+	//Generate runtime error on the basis of a read statement.
+	ivar1 = {
+		assuming(bvar)
+			10/0;
 		contrariwise
-			0;;
-	} + 5;
-	exude(ivar1);
-	
-	//Testing assignment of if statement as expression for Booleans.
-	bvar =
-	{
-		//Using two conditional statements as expressions including
-		//definitions within if condition statement.
-		assuming(
-			assuming(bogus) unfeigned;
-			contrariwise assuming(bvar equalTo bogus) unfeigned;
-			contrariwise 2 inferiorTo 4;;
-			
-			and
-			
-			assuming(
-			{
-				highPowered George bvar2 = bogus;
-				assuming(not bvar2)
-					bvar2 = unfeigned;
-				contrariwise
-					bvar2 = unfeigned;;
-			} and ivar2 inferiorOrEqualTo 100
-			)
-				bogus or bvar2;
-			contrariwise
-				unfeigned;
-		)
-			bvar = bvar and ivar2 superiorTo 4;
-		contrariwise
-			bvar or ivar2 inferiorOrEqualTo 4;;
-	} or bogus;
-	
-	cvar1 =
-	{
-		assuming(cconst notEqualTo 'd' and 'e' notEqualTo expropriate(cvar2))
-			exude(cvar2);
-		contrariwise
-			'e';;
+			5;;
 	};
-	exude(ivar1, bvar, cvar1);
 }

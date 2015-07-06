@@ -1,0 +1,23 @@
+program whileContextError{
+
+	highpowered george a = unfeigned;
+	highpowered george b = unfeigned;
+	
+	highpowered numericalDigit c = 1;
+	highpowered numericalDigit d = 1;
+	highpowered numericalDigit e = 1;
+	highpowered numericalDigit f = 1;
+	highpowered numericalDigit g = 1;
+	highpowered numericalDigit h = 1;
+	
+	
+	throughout(1)
+		c = c+1;;
+	
+	throughout('a')
+		d = d+1;;
+		
+	throughout(assuming(unfeigned) unfeigned;)
+		e = e+1;;
+
+}

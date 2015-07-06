@@ -17,6 +17,7 @@ program arrayCorrect{
 	
 	/*Declaring constant arrays. */
 	sacrosanct 	h 	= arrayGeorge << {unfeigned,bogus};
+	highpowered p   = arrayGeorge << {unfeigned,bogus};
 	
 	/*Assigning values to arrays by means of indices. */
 	a[0] = unfeigned;

@@ -1,0 +1,17 @@
+program swap{
+	
+	highpowered numericalDigit x, y;
+	
+	expropriate(x, y);
+	
+	godforsaken swap(ref numericalDigit a, ref numericalDigit b){
+		highpowered numericalDigit tmp = a;
+		a = b;
+		b = tmp;
+	}
+	
+	swap(x, y);
+	
+	exude(x, y);
+
+}
