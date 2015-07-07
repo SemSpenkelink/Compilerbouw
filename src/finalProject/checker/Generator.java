@@ -1,6 +1,5 @@
 package finalProject.checker;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
@@ -21,11 +19,8 @@ import finalProject.grammar.EloquenceParser.ParametersContext;
 import finalProject.grammar.EloquenceParser.ReturnFuncContext;
 import finalProject.grammar.EloquenceParser.TargetContext;
 import finalProject.grammar.EloquenceParser.VoidFuncContext;
-import finalProjectCFG.BottomUpCFGBuilder;
 import pp.iloc.*;
-import pp.iloc.eval.*;
 import pp.iloc.model.*;
-import pp.iloc.parse.*;
 
 public class Generator extends EloquenceBaseVisitor<Op>{
 	/** The representation of the boolean value <code>false</code>. */
@@ -165,9 +160,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * is stored in the register of the ctx of visitBody.
 	 * 
 	 */
-	@Override public Op visitBody(EloquenceParser.BodyContext ctx) { 
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
+	@Override public Op visitBody(EloquenceParser.BodyContext ctx) {
 		
 		visitChildren(ctx);	//TODO wrong type checking. 
 		if(ctx.stat().size()>0){		//If the body has statements
@@ -346,7 +339,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @ensure reg(ctx) = reg(ctx.stat(0)) || reg(ctx) = reg(ctx.stat(1))
 	 */
 	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { 
-		System.out.println("\n\nStatIF");
 		
 		Label body = createLabel(ctx, "ifBody");			//Label for the body
 		Label ifContinue = createLabel(ctx, "continue");	//Label for end of the if
@@ -360,7 +352,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
 			if(checkResult.getType(ctx.stat(0)) != null){	//Place the value of the statement in reg(ctx)
-				System.out.println("Only IF stat(0) != null reg ctx: " + reg(ctx));
 				if(checkResult.getType(ctx.stat(0)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
 				}else if(checkResult.getType(ctx.stat(0)) != null){
@@ -374,7 +365,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
 			if(checkResult.getType(ctx.stat(0)) != null){
-				System.out.println("stat(0) != null reg ctx: " + reg(ctx));
 				if(checkResult.getType(ctx.stat(0)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
 				}else if(checkResult.getType(ctx.stat(0)) != null){
@@ -385,7 +375,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(elseBody, OpCode.nop);
 			visit(ctx.stat(1));
 			if(checkResult.getType(ctx.stat(1)) != null){//Place the value of the statement in reg(ctx)
-				System.out.println("stat(1) != null reg ctx: " + reg(ctx));
 				if(checkResult.getType(ctx.stat(1)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(1)), reg(ctx));
 				}else if(checkResult.getType(ctx.stat(1)) != null){
@@ -441,9 +430,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @ensure ctx.target == ctx.expression
 	 */
 	@Override public Op visitStatAssign(EloquenceParser.StatAssignContext ctx) { 
-		if(labels.get(ctx) != null){
-			emit(labels.get(ctx), OpCode.nop);
-		}
 		visitChildren(ctx);
 		if(checkResult.getType(ctx.expression()) != null){
 			if(checkResult.getType(ctx.expression()).equals(Type.CHAR)){
@@ -521,9 +507,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @ensure ctx.target == ctx.expression || ctx.target[index] == ctx.expression
 	 */
 	@Override public Op visitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
+		System.out.println("Stat assign array");
+		emit(OpCode.i2i, reg(ctx.expression(ctx.expression().size()-1)),reg(ctx));	//TODO added a i2i
 	for(TargetContext target : ctx.target()){
 			//Start by computing the begin value of the array. We'll store that in reg1
 			emit(OpCode.loadAI, arp, offset(target), reg1);
@@ -538,7 +524,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.addI, reg1, new Num(8),reg1); //This is the address where the value needs to be stored.
 			emit(OpCode.addI, reg1, offset(target),reg1);
 			//The the target value
-			 emit(OpCode.storeAO, reg(ctx.expression(1)), arp,reg1);
+			emit(OpCode.storeAO, reg(ctx.expression(1)), arp,reg1);
 	}
 		return null; }
 	/**
@@ -549,8 +535,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @ensure ctx.target == ctx.expressions
 	 */
 	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		for(TargetContext target : ctx.target()){
 			//Start by computing the begin value of the array. We'll store that in reg1
@@ -573,9 +557,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @ensure reg(ctx) == reg(ctx.statBlockBody)
 	 */
 	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {
-		
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		
 		if(checkResult.getType(ctx) != null){
@@ -593,15 +574,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @ensure ret(ctx) == reg(ctx.expression)
 	 */
 	@Override public Op visitStatExpr(EloquenceParser.StatExprContext ctx) {
-		
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 
 		if(ctx.expression() instanceof ExprFuncContext)
 			emit(OpCode.pop, reg(ctx.expression()));
 		
-		System.out.println("Type of " + ctx.getText() + " = " + checkResult.getType(ctx));
 		if(checkResult.getType(ctx) != null){
 			if(checkResult.getType(ctx).equals(Type.CHAR)){
 				emit(OpCode.c2c, reg(ctx.expression()), reg(ctx));
@@ -618,10 +595,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @require ctx != null && ctx.children != null
 	 */
 	@Override public Op visitStatReturn(EloquenceParser.StatReturnContext ctx) { 
-		
-		
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		return null; }
 	/**
@@ -630,9 +603,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @require ctx != null && ctx.children != null
 	 * @ensure regt(ctx) == reg(target)
 	 */
-	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { 		
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
+	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { 
 		visitChildren(ctx);
 		for(TargetContext target : ctx.target()){
 			emit(OpCode.in,new Str(target.getText() + "?") ,reg(target));
@@ -646,8 +617,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @require ctx != null && ctx.children != null
 	 */
 	@Override public Op visitStatOut(EloquenceParser.StatOutContext ctx) { 
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
 		
 		visitChildren(ctx);
 		
@@ -664,8 +633,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @require ctx != null && ctx.children != null
 	 */
 	@Override public Op visitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
 		
 		visitChildren(ctx);
 				
@@ -676,9 +643,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @ensure reg(ctx) == reg(ctx.body)
 	 */
 	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { 
-		if(labels.get(ctx) != null){
-			emit(labels.get(ctx), OpCode.nop);
-		}
 		
 		visitChildren(ctx);
 		if(checkResult.getType(ctx) != null){
@@ -718,20 +682,16 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @ensure Return value is pushed on stack.
 	 */
 	@Override public Op visitReturnStat(EloquenceParser.ReturnStatContext ctx) { 
-		if(labels.get(ctx) != null)
-			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		
 		if(ctx.expression() != null){
 			if(ctx.expression() instanceof ExprFuncContext)
 				emit(OpCode.pop, reg(ctx.expression()));
 			
-			System.out.println("\nReturnStat");
 			emit(OpCode.pop, reg3);						//Pop return label
 			emit(OpCode.pop,reg1);						//Pop return value of 0
 			emit(OpCode.push, reg(ctx.expression()));	//Push actual return value
 			emit(OpCode.jump, reg3);					//Jump to return label
-			System.out.println("");
 			
 			
 		} else{
@@ -958,7 +918,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitExprUnary(EloquenceParser.ExprUnaryContext ctx) { 
 		
 		visitChildren(ctx);
-		
 
 		if(ctx.expression() instanceof ExprFuncContext)
 			emit(OpCode.pop, reg(ctx.expression()));
@@ -1150,8 +1109,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.loadAO,arp,reg1,reg(ctx));
 		return null; }
 	/**
-	 * @require
-	 * @ensure
+	 * The following functions do not have to emit any ILOC instructions. The following requirement
+	 * holds for all of them.
+	 * @require ctx != null && ctx.children != null 
 	 */
 	@Override public Op visitUnary(EloquenceParser.UnaryContext ctx) { return visitChildren(ctx); }
 	
@@ -1211,8 +1171,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.push, reg1);
 		
 		Label funcContinue = createLabel(ctx, "funcContinue" + ctx.getText());
-	//	emit(OpCode.jumpI, label(ctx.target()));
-		System.out.println("\nFunction");
 		emit(OpCode.loadI, new Num(funcContinue), reg1);
 		emit(OpCode.push, reg1);
 		
@@ -1223,8 +1181,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.jumpI, funcAddr.get(ctx.target().getText())); 
 		emit(funcContinue, OpCode.nop);
 		emit(OpCode.pop, reg(ctx));
-		
-		
 		
 		for(int i = vars.size()-1; i >= 0;i--){
 			emit(OpCode.pop, reg(vars.get(i)));
@@ -1239,8 +1195,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 					emit(OpCode.storeAI, reg(((ParamValContext)paramCtx).newID().ID()), arp, offset(((ParamValContext)paramCtx).newID().ID()));
 				}
 		}
-		
-		//TODO ?
 		emit(OpCode.push, reg(ctx));
 		
 		return null; }
