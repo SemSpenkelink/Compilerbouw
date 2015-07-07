@@ -41,8 +41,6 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	private int regCount;
 	/** Association of expression and target nodes to registers. */
 	private ParseTreeProperty<Reg> regs;
-	/** Several registers. */
-	private Graph cfg;
 	
 	private final Reg reg1 = new Reg("r1");
 	private final Reg reg2 = new Reg("r2");
@@ -163,7 +161,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 */
 	@Override public Op visitBody(EloquenceParser.BodyContext ctx) {
 		
-		visitChildren(ctx);	//TODO wrong type checking. 
+		visitChildren(ctx);
 		if(ctx.stat().size()>0){		//If the body has statements
 			if(checkResult.getType(ctx) != null){		//If the type of the stat is not null.
 				if(checkResult.getType(ctx).equals(Type.CHAR)){
@@ -450,7 +448,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				
 				for(TargetContext target : ctx.target()){
 					emit(OpCode.c2c, reg(ctx.expression()),reg(target));
-					emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
+					emit(OpCode.storeAI, reg(target), arp, offset(target));
 				}
 			}
 			else if(checkResult.getType(ctx.expression()).equals(Type.INT) || checkResult.getType(ctx.expression()).equals(Type.BOOL)){
@@ -460,7 +458,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				
 				for(TargetContext target : ctx.target()){
 					emit(OpCode.i2i, reg(ctx.expression()),reg(target));
-					emit(OpCode.storeAI, reg(target), arp, offset(target)); //TODO offset of ID
+					emit(OpCode.storeAI, reg(target), arp, offset(target));
 				}
 				
 			} else if(!checkResult.getType(ctx.target(0)).equals(Type.INT) &&
@@ -521,7 +519,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
 		visitChildren(ctx);
 		System.out.println("Stat assign array");
-		emit(OpCode.i2i, reg(ctx.expression(ctx.expression().size()-1)),reg(ctx));	//TODO added a i2i
+		emit(OpCode.i2i, reg(ctx.expression(ctx.expression().size()-1)),reg(ctx));
 	for(TargetContext target : ctx.target()){
 			//Start by computing the begin value of the array. We'll store that in reg1
 			emit(OpCode.loadAI, arp, offset(target), reg1);

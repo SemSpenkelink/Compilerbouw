@@ -834,7 +834,13 @@ public class Checker extends EloquenceBaseListener {
 		setEntry(ctx, entry(ctx.returnFunc()));
 	}
 
-	//TODO explain
+	/**
+	 * If a function is invoked from within a function declaration, put the enclosing function in the scope.
+	 * Since this is normally done on exitFunctionDeclarations and needed for the functionID it would normally
+	 * be put in the scope too late causing errors. This ensures, all required variables for the function call
+	 * are available when needed.
+	 * @ensure	this.scope.contains(enclosingFunction);
+	 */
 	@Override public void enterFunctionID(finalProject.grammar.EloquenceParser.FunctionIDContext ctx) {
 		/** Only push parameters of enclosing function if there is an enclosing function. */
 		if(!functionDeclarations.isEmpty()){
@@ -863,6 +869,11 @@ public class Checker extends EloquenceBaseListener {
 	 * Check if the type of parameters match the type of parameters required.
 	 * Set type to that of target.
 	 * Set entry to itself.
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			forall ctx.expression() i :
+	 * 			getType(ctx.expression(i)) == getType(invokedFunction.argument(i));
+	 * 		&&	getType(ctx) == getType(invokedFunction);
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
 		checkScope(ctx.target());
@@ -880,7 +891,9 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	/**
-	 * Open a new scope for the variables declared within the comparison expression of the void function.
+	 * Open a new scope for the variables declared within the comparison expression of the void function. 
+	 * @ensure symbolTable.size().new == symbolTable.size().old + 1;
+	 * 		&&	functionDeclarations.size().new == functionDeclarations.size().old + 1;
 	 */
 	@Override public void enterVoidFunc(finalProject.grammar.EloquenceParser.VoidFuncContext ctx) {
 		symbolTable.openScope();
@@ -896,6 +909,12 @@ public class Checker extends EloquenceBaseListener {
 	 * Set offset accordingly.
 	 * Check if the body contains a return statement, which is not allowed.
 	 * Set return type to null, i.e. void.
+	 * @ensure	symbolTable.size().new == symbolTable.size().old - 1;
+	 * 		&&	symbolTable.contains(ctx.newID());
+	 * 		&&	this.scope.contains(ctx.newID().ID());
+	 * 		&&	offset(ctx) != null;
+	 * 		&&	getType(ctx) == null;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
 		symbolTable.closeScope();
@@ -916,6 +935,8 @@ public class Checker extends EloquenceBaseListener {
 
 	/**
 	 * Open a new scope for the variables declared within the comparison expression of the return function.
+	 * @ensure symbolTable.size().new == symbolTable.size().old + 1;
+	 * 		&&	functionDeclarations.size().new == functionDeclarations.size().old + 1;
 	 */
 	@Override public void enterReturnFunc(finalProject.grammar.EloquenceParser.ReturnFuncContext ctx) {
 		symbolTable.openScope();
@@ -931,6 +952,13 @@ public class Checker extends EloquenceBaseListener {
 	 * Put function in scope, which is of type type, immutable and with the given argumentlist.
 	 * Set offset accordingly.
 	 * Set entry to entry of return statement.
+	 * @require	entry(ctx.returnStat()) != null;
+	 * @ensure	symbolTable.size().new == symbolTable.size().old - 1;
+	 * 		&&	symbolTable.contains(ctx.newID());
+	 * 		&&	this.scope.contains(ctx.newID().ID());
+	 * 		&&	offset(ctx) != null;
+	 * 		&&	getType(ctx) == getType(ctx.type());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
 		symbolTable.closeScope();
@@ -948,6 +976,10 @@ public class Checker extends EloquenceBaseListener {
 	
 	/**
 	 * Put the parameters in the scope and set the offset accordingly.
+	 * @ensure	getType(ctx) == getType(ctx.type());
+	 * 		&&	this.scope.contains(ctx.newID().ID());
+	 * 		&&	offset(ctx.newID().ID()) != null
+	 * 		&&	entry(ctx) != null;
 	 * @param ctx
 	 */
 	@Override public void exitParamVal(finalProject.grammar.EloquenceParser.ParamValContext ctx) {
@@ -959,6 +991,10 @@ public class Checker extends EloquenceBaseListener {
 	
 	/**
 	 * Put the parameters in the scope and set the offset accordingly.
+	 * @ensure	getType(ctx) == getType(ctx.type());
+	 * 		&&	this.scope.contains(ctx.newID().ID());
+	 * 		&&	offset(ctx.newID().ID()) != null
+	 * 		&&	entry(ctx) != null;
 	 * @param ctx
 	 */
 	@Override public void exitParamRef(finalProject.grammar.EloquenceParser.ParamRefContext ctx) {
