@@ -1,42 +1,42 @@
-program whileCorrect{
-
-highpowered george a = unfeigned;
-highpowered george b = unfeigned;
-
-highpowered numericalDigit c = 1;
-highpowered numericalDigit d = 1;
-highpowered numericalDigit e = 1;
-highpowered numericalDigit f = 1;
-highpowered numericalDigit g = 1;
-highpowered numericalDigit h = 1;
-
-
-/*
-Testing a nested while statement using a character comparison. The  body contains an if statement.
-The value of a and b should be bogus.
-*/
-throughout(a equalTo unfeigned){
-	throughout(b equalTo unfeigned){
-		
-		assuming(b)	{	
-			exude(b);
-			b = bogus;
-			
-		}contrariwise{
-			b=bogus;
-			exude(b);
-		};
-	};
+	program whileCorrect{
 	
-	a = bogus;
-};
-exude(a,b);
+	highpowered george a = unfeigned;
+	highpowered george b = unfeigned;
+	
+	highpowered numericalDigit c = 1;
+	highpowered numericalDigit d = 1;
+	highpowered numericalDigit e = 1;
+	highpowered numericalDigit f = 1;
+	highpowered numericalDigit g = 1;
+	highpowered numericalDigit h = 1;
 
 
-/*
-	6 Nested while loops. The values of c,d,e,f,g,h, get incremented after every iteration of the
-	corresponding loop. The values should equal to 10, 10,9,8,7,6 respectively. 
-*/
+	/*
+	 * Testing a nested while statement using a character comparison. The  body contains an if statement.
+	 * The value of a and b should be bogus.
+	 */
+	throughout(a equalTo unfeigned){
+		throughout(b equalTo unfeigned){
+			
+			assuming(b)	{	
+				exude(b);
+				b = bogus;
+				
+			}contrariwise{
+				b=bogus;
+				exude(b);
+			};
+		};
+		
+		a = bogus;
+	};
+	exude(a,b);
+
+
+	/*
+	 * 6 Nested while loops. The values of c,d,e,f,g,h, get incremented after every iteration of the
+	 * corresponding loop. The values should equal to 10, 10,9,8,7,6 respectively. 
+	 */
 	throughout(c inferiorTo 10){
 		highpowered numericalDigit scopeTest = 0;
 		throughout(d inferiorOrEqualTo c){

@@ -19,6 +19,8 @@ program arrayCorrect{
 	sacrosanct 	h 	= arrayGeorge << {unfeigned,bogus};
 	highpowered p   = arrayGeorge << {unfeigned,bogus};
 	
+	exude(h notEqualTo p);
+	
 	/*Assigning values to arrays by means of indices. */
 	a[0] = unfeigned;
 	a[1] = bogus;

@@ -20,7 +20,6 @@ import pp.iloc.eval.Machine;
 import pp.iloc.model.Program;
 import finalProject.checker.Checker;
 import finalProject.checker.ParseException;
-import finalProject.checker.Result;
 
 @SuppressWarnings("javadoc")
 public class EloquenceTest {
@@ -29,7 +28,18 @@ public class EloquenceTest {
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
 
-//	@Test
+	@Test
+	/**
+	 * Testing the basic expressions.
+	 * Testing:
+	 * - A correct sample program.
+	 * - A sample program containing spelling and context free errors.
+	 * - A sample program containing context errors.
+	 * - A sample program containing runtime errors.
+	 * 
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public void basicExprTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {0, 1, 0, 99, 2, 1, 2, 0, 0, 99};
@@ -42,31 +52,42 @@ public class EloquenceTest {
 		/** Check whether a program contains the given errors. */
 		Set<String> errors = new HashSet<String>();
 		errors.add("Line 10:1 - Variable 'z' is immutable.");
-		errors.add("Line 16:3 - Expected type 'Integer' but found 'Boolean'");
-		errors.add("Line 18:5 - Expected type 'Boolean' but found 'Char'");
-		errors.add("Line 20:10 - Expected type 'Integer' but found 'Char'");
-		errors.add("Line 20:1 - Expected type 'Integer' but found 'Boolean'");
-		errors.add("Line 21:1 - Expected type 'Integer' but found 'Char'");
-		errors.add("Line 21:16 - Expected type 'Integer' but found 'Char'");
-		errors.add("Line 22:7 - Expected type 'Boolean' but found 'Integer'");
-		errors.add("Line 22:13 - Expected type 'Boolean' but found 'Char'");
-		errors.add("Line 26:1 - Expected type 'Integer' but found 'Boolean'");		
-		errors.add("Line 27:1 - Expected type 'Char' but found 'Integer'");
-		errors.add("Line 30:5 - Expected type 'Char' but found 'Integer'");
-		errors.add("Line 31:5 - Expected type 'Boolean' but found 'Integer'");
-		errors.add("Line 34:1 - 'p' not defined in scope");
-		errors.add("Line 34:1 - Variable 'p' not declared");
-		errors.add("Line 34:4 - 'q' not defined in scope");
-		errors.add("Line 34:4 - Variable 'q' not declared");
-		errors.add("Line 42:1 - Expected type 'null' but found 'Char'");
-		errors.add("Line 43:58 - Expected type not null but found 'null'");
+		errors.add("Line 13:3 - Expected type 'Integer' but found 'Boolean'");
+		errors.add("Line 15:5 - Expected type 'Boolean' but found 'Char'");
+		errors.add("Line 17:10 - Expected type 'Integer' but found 'Char'");
+		errors.add("Line 17:1 - Expected type 'Integer' but found 'Boolean'");
+		errors.add("Line 18:1 - Expected type 'Integer' but found 'Char'");
+		errors.add("Line 18:16 - Expected type 'Integer' but found 'Char'");
+		errors.add("Line 19:7 - Expected type 'Boolean' but found 'Integer'");
+		errors.add("Line 19:13 - Expected type 'Boolean' but found 'Char'");
+		errors.add("Line 22:1 - Expected type 'Integer' but found 'Boolean'");		
+		errors.add("Line 23:1 - Expected type 'Char' but found 'Integer'");
+		errors.add("Line 26:5 - Expected type 'Char' but found 'Integer'");
+		errors.add("Line 27:5 - Expected type 'Boolean' but found 'Integer'");
+		errors.add("Line 30:1 - 'p' not defined in scope");
+		errors.add("Line 30:1 - Variable 'p' not declared");
+		errors.add("Line 30:4 - 'q' not defined in scope");
+		errors.add("Line 30:4 - Variable 'q' not declared");
+		errors.add("Line 37:1 - Expected type 'null' but found 'Char'");
+		errors.add("Line 38:58 - Expected type not null but found 'null'");
 		checkContextFail("basicExprContextError", errors);
 		
 		/** Check whether a program gives a runtime error. */
 		checkRuntimeFail("basicExprRuntimeError");
 	}
 	
-//	@Test
+	@Test
+	/**
+	 * Testing the conditional statements.
+	 * Testing:
+	 * - A correct sample program.
+	 * - A sample program containing spelling and context free errors.
+	 * - A sample program containing context errors.
+	 * - A sample program containing runtime errors.
+	 * 
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public void conditionalTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {5, 4, 10, 6, 99};
@@ -93,7 +114,18 @@ public class EloquenceTest {
 		checkRuntimeFail("conditionalRuntimeError", 1);
 	}
 	
-//	@Test
+	@Test
+	/**
+	 * Testing the while statements.
+	 * Testing:
+	 * - A correct sample program.
+	 * - A sample program containing spelling and context free errors.
+	 * - A sample program containing context errors.
+	 * - A sample program containing runtime errors.
+	 * 
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public void whileTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {};
@@ -115,7 +147,18 @@ public class EloquenceTest {
 		checkRuntimeFail("whileRuntimeError", -1);
 	}
 	
-//	@Test
+	@Test
+	/**
+	 * Testing the functions and procedures.
+	 * Testing:
+	 * - A correct sample program.
+	 * - A sample program containing spelling and context free errors.
+	 * - A sample program containing context errors.
+	 * - A sample program containing runtime errors.
+	 * 
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public void functionTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {13};
@@ -143,11 +186,54 @@ public class EloquenceTest {
 	}
 	
 	@Test
+	/**
+	 * Testing the arrays.
+	 * Testing:
+	 * - A correct sample program.
+	 * - A sample program containing spelling and context free errors.
+	 * - A sample program containing context errors.
+	 * - A sample program containing runtime errors.
+	 * 
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public void arrayTest() throws ParseException, IOException{
-		check(parse("arrayCorrect"));
+		/** Check expected output against expected input for correct program.*/
+		int[] input = {};
+		int[] output = {0, -1, -1, -1, -1};
+		checkRuntime("arrayCorrect", input, output);
+		
+		/** Check whether a program contains syntax errors. */
+		checkFail("arraySpellingContextFreeSyntaxError");
+		
+		/** Check whether a program contains the given errors. */
+		Set<String> errors = new HashSet<String>();
+		errors.add("Line 8:16 - Expected type 'Array [0..4] of Integer' but found 'Integer'");
+		errors.add("Line 11:26 - Expected type 'Integer' but found 'Boolean'");
+		errors.add("Line 14:36 - Expected type 'Integer' but found 'Array [0..4] of Integer'");
+		errors.add("Line 16:10 - Expected type 'Integer' but found 'Array [0..4] of Integer'");
+		errors.add("Line 16:34 - Expected type 'Integer' but found 'Array [0..4] of Integer'");
+		errors.add("Line 21:7 - Expected type 'Integer' but found 'Array [0..4] of Integer'");
+		errors.add("Line 21:38 - Expected type 'Integer' but found 'Array [0..4] of Integer'");
+		errors.add("Line 22:7 - Expected type 'Integer' but found 'Array [0..4] of Integer'");	
+		errors.add("Line 22:38 - Expected type 'Integer' but found 'Array [0..4] of Integer'");		
+		errors.add("Line 23:7 - Expected type 'Integer' but found 'Array [0..4] of Integer'");
+		errors.add("Line 23:31 - Expected type 'Integer' but found 'Array [0..4] of Integer'");
+		errors.add("Line 25:19 - Expected type 'Integer' but found 'Char'");
+		errors.add("Line 26:19 - Expected type 'Integer' but found 'Boolean'");
+		checkContextFail("arrayContextError", errors);
+		
+		/** Check whether a program gives a runtime error. */
+		checkRuntimeFail("arrayRuntimeError");
 	}
 	
-//	@Test
+	@Test
+	/**
+	 * Testing a sample of a fibonacci program, using recursion.
+	 * Evaluate the first 20 fibonacci numers, after that the program becomes slow.
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public void fibonacciTest() throws ParseException, IOException{
 		int[] input = new int[1];
 		int[] output = new int[1];
@@ -162,7 +248,13 @@ public class EloquenceTest {
 		}
 	}
 	
-//	@Test
+	@Test
+	/**
+	 * Testing a sample of a prefixsum program, using recursion.
+	 * Evaluate the first 100 prefixsum numbers.
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public void prefixSumTest() throws ParseException, IOException{
 		int[] input = {0};
 		int[] output = {0};
@@ -173,7 +265,14 @@ public class EloquenceTest {
 		}
 	}
 	
-	//TODO
+	/**
+	 * Automatically executes a given file with the input and compares the actual output to the given expected output.
+	 * @param filename: Name of executed file;
+	 * @param input:	Input for program;
+	 * @param output:	Expected output of program;
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	private void checkRuntime(String filename, int[] input, int[] output) throws ParseException, IOException{		
 		
 		String inputString = createInput(input);
@@ -194,13 +293,19 @@ public class EloquenceTest {
 			outputString += "Output: " + output[index] + "\r\n";
 
 		assertEquals(outputString.length(), in.available());
-		for(int index = 0; index < in.available(); index++)
+		int max = in.available();
+		for(int index = 0; index < max; index++)
 			assertEquals(outputString.charAt(index), (char)in.read());
 		
 		out.close();
 		in.close();
 	}
 	
+	/**
+	 * Create input string in correct format from given input.
+	 * @param input
+	 * @return
+	 */
 	private String createInput(int[] input){
 		String inputString = "";
 		for(int index = 0; index < input.length; index++)
@@ -208,18 +313,25 @@ public class EloquenceTest {
 		return inputString;
 	}
 	
+	/**
+	 * Executes program and succeeds when there is a runtime fail.
+	 * @param filename
+	 * @param input
+	 */
 	private void checkRuntimeFail(String filename, int... input){
 		String inputString = createInput(input);
 		
 		Program prog;
 		Simulator sim = null;
+		Machine vm = null;
+		PipedInputStream in = null;
 		try {
 			prog = compiler.compile(new File(BASE_DIR, filename + EXT));
-			Machine vm = new Machine();
+			vm = new Machine();
 			sim = new Simulator(prog, vm);
 			vm.clear();
 			sim.setIn(new ByteArrayInputStream(inputString.getBytes()));
-			PipedInputStream in = new PipedInputStream();
+			in = new PipedInputStream();
 			OutputStream out;
 			out = new PipedOutputStream(in);
 			sim.setOut(out);
@@ -228,12 +340,24 @@ public class EloquenceTest {
 		
 		try{
 			sim.run();
-			fail(filename + " shouldn't check but did");			
+			String output = "";
+			int max = in.available();
+			for(int index = 0; index < max; index++)
+				output += (char)in.read();
+			/** Check whether there was an error outputted. */
+			if(!output.toLowerCase().contains("error: "))
+				fail(filename + " shouldn't check but did");
 		} catch (Exception e) {
 			// this is the expected behaviour
 		}
 	}
 	
+	/**
+	 * Succeeds when a all expectedErrors are detected.
+	 * @param filename
+	 * @param expectedErrors
+	 * @throws IOException
+	 */
 	private void checkContextFail(String filename, Set<String> expectedErrors) throws IOException{
 		Checker checker = new Checker();
 		try {
@@ -251,6 +375,11 @@ public class EloquenceTest {
 		}
 	}
 	
+	/**
+	 * Succeeds when the program cannot be parsed.
+	 * @param filename
+	 * @throws IOException
+	 */
 	private void checkFail(String filename) throws IOException {
 		Checker checker = new Checker();
 		try {
@@ -264,9 +393,5 @@ public class EloquenceTest {
 
 	private ParseTree parse(String filename) throws IOException, ParseException {
 		return this.compiler.parse(new File(BASE_DIR, filename + EXT));
-	}
-
-	private Result check(ParseTree tree) throws ParseException {
-		return this.compiler.check(tree);
 	}
 }

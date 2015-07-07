@@ -1,40 +1,37 @@
 program whileCorrect{
 
-
-highpowered george a = unfeigned;
-highpowered george b = unfeigned;
-
-highpowered numericalDigit c = 1;
-highpowered numericalDigit d = 1;
-highpowered numericalDigit e = 1;
-highpowered numericalDigit f = 1;
-highpowered numericalDigit g = 1;
-highpowered numericalDigit h = 1;
-
-
-
-while(a equalTo unfeigned){					//Using while instead of throughout
-	througout(b equalTo unfeigned){			//Spelling throughout wrong
-		
-		assuming(b)	{	
-			exude(b);
-			b = bogus;
-			
-		}contrariwise{
-			b=bogus;
-			exude(b);
-		};
-	};
+	highpowered george a = unfeigned;
+	highpowered george b = unfeigned;
 	
-	a = bogus;
-}											//Forgetting a ;
-exude(a,b);
+	highpowered numericalDigit c = 1;
+	highpowered numericalDigit d = 1;
+	highpowered numericalDigit e = 1;
+	highpowered numericalDigit f = 1;
+	highpowered numericalDigit g = 1;
+	highpowered numericalDigit h = 1;
+	
+	while(a equalTo unfeigned){					//Using while instead of throughout
+		througout(b equalTo unfeigned){			//Spelling throughout wrong
+			
+			assuming(b)	{	
+				exude(b);
+				b = bogus;
+				
+			}contrariwise{
+				b=bogus;
+				exude(b);
+			};
+		};
+		
+		a = bogus;
+	}											//Forgetting a ;
+	exude(a,b);
 
 
-/*
-	6 Nested while loops. The values of c,d,e,f,g,h, get incremented after every iteration of the
-	corresponding loop. The values should equal to 10, 10,9,8,7,6 respectively. 
-*/
+
+	/* 6 Nested while loops. The values of c,d,e,f,g,h, get incremented after every iteration of the
+	 * corresponding loop. The values should equal to 10, 10,9,8,7,6 respectively. 
+	 */
 	throughout(c inferiorTo 10){
 		highpowered numericalDigit scopeTest = 0;
 		throughout(d inferiorOrEqualTo c){

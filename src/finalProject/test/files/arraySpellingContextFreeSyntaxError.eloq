@@ -1,0 +1,14 @@
+program arrayCorrect{
+
+	highPowered numericalDigit array = {1, 2, 3};		//Wrong array declaration
+	hodgepodge arrayType = {1, 2, 3};					//Wrong array type declaration
+	numericalDigit array[] = arrayType					//Wrong assignment
+	
+	//Correct declaration
+	hodgepodge arrayType2 = numericalDigit[0..4];
+	highPowered correctArray = arrayType2;
+	
+	correctArray[5] = {1, 2, 3, 4, 5};					//Assigning array to single value
+	correctArray = 5;									//Assigning value to array
+	
+}

@@ -2,6 +2,6 @@ program indexOutOfBounds{
 
 	hodgepodge arr1 = numericalDigit [0..3];
 	highpowered x = arr1;
-	exude(x[4]);
+	exude(x[4]);								//Try to get an array entry that is out of bounds.
 
 }

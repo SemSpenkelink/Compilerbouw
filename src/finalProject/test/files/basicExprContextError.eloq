@@ -8,11 +8,8 @@ Program basicExprContextError{
 	highPowered numericalDigit x, y;
 	sacrosanct numericalDigit z = 1;
 	z = 10;
-//	12 = 10;
-//	x + y = 10;
 	
 	//Type errors
-//	- 'a';
 	+ unfeigned;
 	highPowered lexographicIdentifyingUnit c;
 	not c;
@@ -22,7 +19,6 @@ Program basicExprContextError{
 	b and 10 or c;
 	
 	//binary operators
-//	'a' = b;
 	b notEqualTo 10;
 	x + y equalTo c;
 	
@@ -38,7 +34,6 @@ Program basicExprContextError{
 	{2 + 4 * 3; highPowered numericalDigit w;}
 	
 	//Operations on operands of type void
-//	expropriate(x, y) + 10;
 	'c' notEqualTo exude(x, y);
 	10 + {highPowered numericalDigit u, v; expropriate(u,v); exude(u,v);};
 }

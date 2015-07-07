@@ -1076,13 +1076,6 @@ public class Checker extends EloquenceBaseListener {
 		}
 		return true;
 	}
-	
-	/** Check if a variable is null. */
-	private void checkNull(ParserRuleContext node){
-		Type actual = getType(node);
-		if(actual != null)
-			addError(node, "Expected type to be void, but found '%s'", actual);
-	}
 
 	/** Records an error at a given parse tree node.
 	 * @param ctx the parse tree node at which the error occurred

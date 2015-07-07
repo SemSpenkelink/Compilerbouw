@@ -1,0 +1,28 @@
+program arrayContextError{
+	
+	//Correct declaration
+	hodgepodge arrayType = numericalDigit[0..4];
+	highPowered correctArray = arrayType;
+	highPowered correctArray2 = arrayType;
+	
+	correctArray = 5;									//Assigning value to array
+	
+	numericalDigit get(george index){
+		relinquish correctArray[index];					//Trying to access an array through a boolean
+	}
+	
+	sacrosanct numericalDigit iconst = correctArray;	//Trying to assign an integer array to an integer
+	
+	assuming(correctArray inferiorTo correctArray2)		//Trying to do a < comparison on arrays
+		exude(correctArray);
+	contrariwise
+		exude(correctArray2);;
+		
+	exude(correctArray inferiorOrEqualTo correctArray2);	//Trying to do a <= comparison on arrays
+	exude(correctArray superiorOrEqualTo correctArray2);	//Trying to do a >= comparison on arrays
+	exude(correctArray superiorTo correctArray2);			//Trying to do a > comparison on arrays
+	
+	correctArray[0] = 'c';									//Trying to assign a character to an integer array
+	correctArray[1] = bogus;								//Trying to assign a boolean to an integer array
+
+}

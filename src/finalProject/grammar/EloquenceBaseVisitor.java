@@ -1,6 +1,5 @@
 // Generated from Eloquence.g4 by ANTLR 4.5
 package finalProject.grammar;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**

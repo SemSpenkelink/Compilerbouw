@@ -18,7 +18,6 @@ import finalProject.checker.ParseException;
 import finalProject.checker.Result;
 import finalProject.grammar.EloquenceLexer;
 import finalProject.grammar.EloquenceParser;
-import pp.iloc.Simulator;
 import pp.iloc.model.Program;
 
 public class EloquenceCompiler {
