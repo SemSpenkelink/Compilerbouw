@@ -1,6 +1,8 @@
 program fib{
 	
-	highpowered numericalDigit x = 13;
+	highpowered numericalDigit x;
+	
+	expropriate(x);
 	
 	numericalDigit fib(numericalDigit n){
 		relinquish assuming(n equalTo 0){

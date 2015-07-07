@@ -1,5 +1,6 @@
 program whileCorrect{
 
+
 highpowered george a = unfeigned;
 highpowered george b = unfeigned;
 
@@ -11,12 +12,9 @@ highpowered numericalDigit g = 1;
 highpowered numericalDigit h = 1;
 
 
-/*
-Testing a nested while statement using a character comparison. The  body contains an if statement.
-The value of a and b should be bogus.
-*/
-throughout(a equalTo unfeigned){
-	throughout(b equalTo unfeigned){
+
+while(a equalTo unfeigned){					//Using while instead of throughout
+	througout(b equalTo unfeigned){			//Spelling throughout wrong
 		
 		assuming(b)	{	
 			exude(b);
@@ -29,7 +27,7 @@ throughout(a equalTo unfeigned){
 	};
 	
 	a = bogus;
-};
+}											//Forgetting a ;
 exude(a,b);
 
 
@@ -46,25 +44,20 @@ exude(a,b);
 						throughout(h inferiorTo g){
 							scopeTest = scopeTest + 1;
 							h = h + 1;
-						};
+						}									//Forgetting a ;
 						g = g + 1;
-					};
+					}										//Forgetting a ;
 					f = f + 1;
-				};
+				}											//Forgetting a ;
 				e = e + 1;
-			};
+			}												//Forgetting a ;
 			d = d + 1;
-		};
+		}													//Forgetting a ;
 		c = c + 1;
 		
 		assuming(c equalTo 9){
 		 	exude(c);
-		};		
-	};
+		};
+	}														//Forgetting a ;
 	exude(c,d,e,f,g,h);
-	
-	/*Declaration within while loop and nested while loop using an if statment as expression.*/
-	throughout({highpowered numericalDigit i = 0; i inferiorTo 10;}){
-		i = i + 1;
-	};
 }

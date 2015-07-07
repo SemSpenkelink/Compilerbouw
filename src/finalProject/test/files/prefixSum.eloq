@@ -1,0 +1,16 @@
+program prefixSum{
+	
+	highpowered numericalDigit x;
+	
+	expropriate(x);
+	
+	numericalDigit prefixSum(numericalDigit n){
+		relinquish assuming(n equalTo 1)
+			relinquish n;
+		contrariwise
+			prefixSum(n-1) + n;;
+	}
+	
+	exude(prefixSum(x));
+
+}

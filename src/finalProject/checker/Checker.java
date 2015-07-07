@@ -7,7 +7,6 @@ import java.util.Stack;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import finalProject.grammar.EloquenceBaseListener;
@@ -54,6 +53,7 @@ public class Checker extends EloquenceBaseListener {
 	
 	/**
 	 * Set type of body to type of last child, used for compound expressions.
+	 * @ensures type of body of a scope is that of its last child;
 	 */
 	@Override public void exitBody(finalProject.grammar.EloquenceParser.BodyContext ctx) {
 		setType(ctx, getType(ctx.getChild(ctx.getChildCount()-1)));
@@ -64,13 +64,15 @@ public class Checker extends EloquenceBaseListener {
 	 * has the same type as the variable it is assigned to. The type is set to the
 	 * type of variable.
 	 * The entry is set to the entry of the variable.
+	 * @require getType(ctx.variable()) != null;
+	 * @ensure  getType(ctx) == getType(ctx.variable());
 	 */
 	@Override public void exitDeclVar(EloquenceParser.DeclVarContext ctx) {
 		if(ctx.expression() != null){
 			checkType(ctx.expression(), getType(ctx.variable()));
 		}
 		setType(ctx, getType(ctx.variable()));
-		//setEntry(ctx, entry(ctx.variable()));
+		setEntry(ctx, entry(ctx.variable()));
 	}
 	
 	/**
@@ -79,6 +81,13 @@ public class Checker extends EloquenceBaseListener {
 	 * is constant or not. The offset is set to that of the scope.
 	 * The own type of variable is set to that of the declared type,
 	 * the entry is its own node.
+	 * @require getType(ctx.type()) != null;
+	 * @ensure
+	 * 	forall ctx.newID:  getType(ctx.newID) == getType(ctx.type())
+	 * 					&& this.scope.contains(ctx.newID)
+	 * 					&& this.scope.offset(ctx.newID) != null	
+	 * 					&& if declared in function, functionDeclarations.peek().contains(ctx.newID().ID());
+	 * 					getType(ctx) == getType(ctx.type());
 	 */
 	@Override public void exitVariable(EloquenceParser.VariableContext ctx){
 		for(NewIDContext id : ctx.newID()){
@@ -92,19 +101,22 @@ public class Checker extends EloquenceBaseListener {
 			}
 		}
 		setType(ctx, getType(ctx.type()));
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Set the type of the array to an array ranging from [NUM(0)..NUM(1)] with the type of ctx.type().
 	 * Add this ID into the scope and set the offset accordingly.
 	 * Set the entry to itself.
+	 * @require ctx.arrayElem().NUM(0) == integer && ctx.arrayElem().NUM(1) == integer;
+	 * @ensure  getType(ctx) == Array[NUM(0)..NUM(1)] of getType(ctx.type())
+	 * 		&& 	this.scope.contains(ctx.newID);
 	 */
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem().NUM(0).getText()), Integer.parseInt(ctx.arrayElem().NUM(1).getText()), getType(ctx.type())));
 		this.scope.put(ctx.newID().ID().getText(), getType(ctx), false, null, null);
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().getText()));
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 
 	/**
@@ -112,8 +124,27 @@ public class Checker extends EloquenceBaseListener {
 	 * Add each id to the scope and set the offset accordingly.
 	 * Set the type of varArrayDecl to that of its target.
 	 * Set the entry to itself.
+	 * @require getType(ctx.target()) != null;
+	 * @ensure	if(!ctx.expressions().isEmpty) 
+	 * 
+	 * 			forall ctx.newID():
+	 * 			getType(ctx.newID()) != null
+	 * 		&&	this.scope.contains(ctx.newID())
+	 * 		&&	this.scope.offset(ctx.newID()) != null
+	 * 		&&	if declared in function, functionDeclarations.peek().contains(ctx.newID().ID());
+	 * 			getType(ctx) == getType(ctx.target());
 	 */
 	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
+		if(!ctx.expression().isEmpty()){
+			Type type = getType(ctx.expression(0));
+			for(ExpressionContext expr : ctx.expression()){
+				if(expr.equals(ctx.expression(0)))
+					continue;
+				checkType(expr, type);
+			}		
+			checkType(ctx.expression(0), ((Type.Array)getType(ctx.target())).getElemType());
+		}
+		
 		for(NewIDContext id : ctx.newID()){
 			setType(id, this.scope.type(ctx.target().getText()));
 			setType(id.ID(), this.scope.type(ctx.target().getText()));
@@ -126,7 +157,7 @@ public class Checker extends EloquenceBaseListener {
 			}
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
-		//setEntry(ctx, ctx)
+		setEntry(ctx, ctx);
 	}
 
 	/**
@@ -136,6 +167,10 @@ public class Checker extends EloquenceBaseListener {
 	 * Add the ID to the scope and set the offset accordingly.
 	 * Set the type of this declaration to that of the target.
 	 * Set the entry to itself.
+	 * @require	forall ctx.expression() : getType(ctx.expression()) != null
+	 * 		&&	this.scope.contains(ctx.target());
+	 * @ensure	forall ctx.newID() :
+	 * 			
 	 */
 	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
 		Type type = getType(ctx.expression(0));
@@ -158,7 +193,7 @@ public class Checker extends EloquenceBaseListener {
 			}
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
@@ -221,7 +256,8 @@ public class Checker extends EloquenceBaseListener {
 	 * variables cannot be used again.
 	 */
 	@Override public void exitStatWhile(EloquenceParser.StatWhileContext ctx) {
-		checkType(ctx.expression(), Type.BOOL);
+		if(checkNotNull(ctx.expression()))
+			checkType(ctx.expression(), Type.BOOL);
 		setType(ctx, null);
 		//setEntry(ctx, ctx);
 		symbolTable.closeScope();
@@ -657,7 +693,7 @@ public class Checker extends EloquenceBaseListener {
 	@Override public void exitFunctionID(EloquenceParser.FunctionIDContext ctx) {
 		checkScope(ctx.target());
 		List<Type> argumentTypes = scope.arguments(ctx.target().getText());
-		if(argumentTypes != null && ctx.expression().size() != 0){
+		if(argumentTypes != null && !ctx.expression().isEmpty()){
 			if(argumentTypes.size() != ctx.expression().size())
 				addError(ctx, "Number of arguments do not match, expected '%d' arguments but got '%d' arguments.",
 						argumentTypes.size(), ctx.expression().size());

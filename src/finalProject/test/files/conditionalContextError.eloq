@@ -115,6 +115,7 @@ Program conditionalCorrect{
 				highPowered George bvar2 = bogus;
 				assuming(not bvar2)
 					bvar2 = unfeigned;;
+				unfeigned;
 			} and ivar2 inferiorOrEqualTo 100
 			)
 				bogus or bvar2;
@@ -132,7 +133,9 @@ Program conditionalCorrect{
 		assuming(cconst notEqualTo 'd' and 'e' notEqualTo expropriate(cvar2))
 			exude(cvar2);
 		contrariwise assuming(cconst equalTo cconst)
-			'e';;;
+			'e';
+		contrariwise
+			'f';;;
 	};
 	exude(ivar1, bvar, cvar1);
 }
