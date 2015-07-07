@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import finalProject.grammar.EloquenceBaseVisitor;
 import finalProject.grammar.EloquenceParser;
+import finalProject.grammar.EloquenceParser.ExprCompoundContext;
 import finalProject.grammar.EloquenceParser.ExprFuncContext;
 import finalProject.grammar.EloquenceParser.ExpressionContext;
 import finalProject.grammar.EloquenceParser.NewIDContext;
@@ -396,6 +397,9 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * @ensure reg(ctx)  == null
 	 */
 	@Override public Op visitStatWhile(EloquenceParser.StatWhileContext ctx) { 
+		if(ctx.expression() instanceof ExprCompoundContext)
+			visit(((ExprCompoundContext)ctx.expression()).body());
+		
 		if(labels.get(ctx) != null){
 			emit(labels.get(ctx),OpCode.nop);
 		}	else{
@@ -407,10 +411,18 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		Label whileBody = createLabel(ctx.stat(), "whileBody");	//Label for the body of the while
 		Label whileContinue = createLabel(ctx, "whileContinue");	//Label for the end of the while
 		
-		visit(ctx.expression());
+		if(ctx.expression() instanceof ExprCompoundContext)
+			visit(((ExprCompoundContext)ctx.expression()).expression());
+		else
+			visit(ctx.expression());
 
 		if(ctx.expression() instanceof ExprFuncContext)
 			emit(OpCode.pop, reg(ctx.expression()));
+		
+		if(ctx.expression() instanceof ExprCompoundContext)
+			emit(OpCode.cbr, reg(((ExprCompoundContext)ctx.expression()).expression()), whileBody, whileContinue);
+		else
+			emit(OpCode.cbr, reg(ctx.expression()), whileBody, whileContinue);
 		
 		emit(OpCode.cbr, reg(ctx.expression()), whileBody, whileContinue);	//Branch to end or to the body
 		emit(whileBody, OpCode.nop);

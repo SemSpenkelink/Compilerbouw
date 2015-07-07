@@ -17,8 +17,6 @@ public class Result {
 	private final ParseTreeProperty<Type> types = new ParseTreeProperty<>();
 	/** Mapping from variables to coordinates. */
 	private final ParseTreeProperty<Integer> offsets = new ParseTreeProperty<>();
-	/** Control flow graph. */
-	private Graph cfg;
 	/** Map from function id to list of argument types.*/
 	private Map<String, List<Type>> functionArguments = new LinkedHashMap<>();
 	/** Map from function id to list of argument types.*/
@@ -57,16 +55,6 @@ public class Result {
 	/** Returns the type associated with a given parse tree node. */
 	public Type getType(ParseTree node) {
 		return this.types.get(node);
-	}
-	
-	/** Sets the control flow graph. */
-	public void setCFG(Graph graph){
-		this.cfg = graph;
-	}
-	
-	/** Returns the control flow graph. */
-	public Graph getCFG(){
-		return this.cfg;
 	}
 	
 	/** Sets the functionArguments map. */

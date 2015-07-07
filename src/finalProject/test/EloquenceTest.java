@@ -29,7 +29,7 @@ public class EloquenceTest {
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
 
-//	@Test
+	@Test
 	public void basicExprTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {0, 1, 0, 99, 2, 1, 2, 0, 0, 99};
@@ -66,7 +66,7 @@ public class EloquenceTest {
 		checkRuntimeFail("basicExprRuntimeError");
 	}
 	
-//	@Test
+	@Test
 	public void conditionalTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {5, 4, 10, 6, 99};
@@ -92,7 +92,7 @@ public class EloquenceTest {
 		checkRuntimeFail("conditionalRuntimeError", 1);
 	}
 	
-//	@Test
+	@Test
 	public void whileTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {};
@@ -105,17 +105,18 @@ public class EloquenceTest {
 		errors.add("Line 14:12 - Expected type 'Boolean' but found 'Integer'");
 		errors.add("Line 17:12 - Expected type 'Boolean' but found 'Char'");
 		errors.add("Line 20:12 - Expected type not null but found 'null'");
+		errors.add("Line 20:12 - Expected type not null but found 'null'");
 		checkContextFail("whileContextError", errors);
 		
 		checkRuntimeFail("conditionalRuntimeError", 1);
 	}
 	
-//	@Test
+	@Test
 	public void arrayTest() throws ParseException, IOException{
 		check(parse("arrayCorrect"));
 	}
 	
-//	@Test
+	@Test
 	public void fibonacciTest() throws ParseException, IOException{
 		int[] input = new int[1];
 		int[] output = new int[1];
@@ -141,7 +142,7 @@ public class EloquenceTest {
 		}
 	}
 	
-	@Test
+//	@Test
 	public void swapTest() throws ParseException, IOException{
 		int[] input = {5, 10};
 		int[] output = {10, 5};

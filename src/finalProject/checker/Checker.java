@@ -27,8 +27,7 @@ public class Checker extends EloquenceBaseListener {
 	/** SymbolTable for detecting if a variable is reachable {@link #check}.*/
 	private SymbolTable symbolTable;
 	/** List of errors collected in the latest call of {@link #check}. */
-	private List<String> errors;
-	
+	private List<String> errors;	
 	/** Int indicating whether the treewalker is in a function or not, 0 is not in a function */
 	private Stack<List<ParseTree>> functionDeclarations;
 
@@ -54,9 +53,13 @@ public class Checker extends EloquenceBaseListener {
 	/**
 	 * Set type of body to type of last child, used for compound expressions.
 	 * @ensures type of body of a scope is that of its last child;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitBody(finalProject.grammar.EloquenceParser.BodyContext ctx) {
+		/** Set type */
 		setType(ctx, getType(ctx.getChild(ctx.getChildCount()-1)));
+		/** Set entry */
+		setEntry(ctx, ctx);
 	}
 	
 	/**
@@ -65,7 +68,9 @@ public class Checker extends EloquenceBaseListener {
 	 * type of variable.
 	 * The entry is set to the entry of the variable.
 	 * @require getType(ctx.variable()) != null;
+	 * 			entry(ctx.variable()) != null;
 	 * @ensure  getType(ctx) == getType(ctx.variable());
+	 * 			entry(ctx) == entry(ctx.variable())
 	 */
 	@Override public void exitDeclVar(EloquenceParser.DeclVarContext ctx) {
 		if(ctx.expression() != null){
@@ -82,12 +87,13 @@ public class Checker extends EloquenceBaseListener {
 	 * The own type of variable is set to that of the declared type,
 	 * the entry is its own node.
 	 * @require getType(ctx.type()) != null;
-	 * @ensure
-	 * 	forall ctx.newID:  getType(ctx.newID) == getType(ctx.type())
-	 * 					&& this.scope.contains(ctx.newID)
-	 * 					&& this.scope.offset(ctx.newID) != null	
-	 * 					&& if declared in function, functionDeclarations.peek().contains(ctx.newID().ID());
-	 * 					getType(ctx) == getType(ctx.type());
+	 * @ensure forall ctx.newID:  getType(ctx.newID) == getType(ctx.type())
+	 * 		&& this.scope.contains(ctx.newID)
+	 * 		&& this.scope.offset(ctx.newID) != null	
+	 * 		&& if declared in function, functionDeclarations.peek().contains(ctx.newID().ID());
+	 * 
+	 * 		&& getType(ctx) == getType(ctx.type());
+	 * 		&& entry(ctx) != null;
 	 */
 	@Override public void exitVariable(EloquenceParser.VariableContext ctx){
 		for(NewIDContext id : ctx.newID()){
@@ -111,6 +117,7 @@ public class Checker extends EloquenceBaseListener {
 	 * @require ctx.arrayElem().NUM(0) == integer && ctx.arrayElem().NUM(1) == integer;
 	 * @ensure  getType(ctx) == Array[NUM(0)..NUM(1)] of getType(ctx.type())
 	 * 		&& 	this.scope.contains(ctx.newID);
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitArrayTypeDecl(finalProject.grammar.EloquenceParser.ArrayTypeDeclContext ctx) {
 		setType(ctx, new Type.Array(Integer.parseInt(ctx.arrayElem().NUM(0).getText()), Integer.parseInt(ctx.arrayElem().NUM(1).getText()), getType(ctx.type())));
@@ -126,13 +133,15 @@ public class Checker extends EloquenceBaseListener {
 	 * Set the entry to itself.
 	 * @require getType(ctx.target()) != null;
 	 * @ensure	if(!ctx.expressions().isEmpty) 
-	 * 
+	 * 				errors.size().new > errors.size().old || forall ctx.expression i, j : getType(i) == getType(j) == getType(ctx.type());
 	 * 			forall ctx.newID():
 	 * 			getType(ctx.newID()) != null
 	 * 		&&	this.scope.contains(ctx.newID())
 	 * 		&&	this.scope.offset(ctx.newID()) != null
 	 * 		&&	if declared in function, functionDeclarations.peek().contains(ctx.newID().ID());
-	 * 			getType(ctx) == getType(ctx.target());
+	 * 
+	 * 		&&	getType(ctx) == getType(ctx.target());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitVarArrayDecl(finalProject.grammar.EloquenceParser.VarArrayDeclContext ctx) {
 		if(!ctx.expression().isEmpty()){
@@ -170,7 +179,8 @@ public class Checker extends EloquenceBaseListener {
 	 * @require	forall ctx.expression() : getType(ctx.expression()) != null
 	 * 		&&	this.scope.contains(ctx.target());
 	 * @ensure	forall ctx.newID() :
-	 * 			
+	 * 			errors.size().new > errors.size().old || forall ctx.expression i, j : getType(i) == getType(j) == getType(ctx.type());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitConstArrayDecl(finalProject.grammar.EloquenceParser.ConstArrayDeclContext ctx) {
 		Type type = getType(ctx.expression(0));
@@ -197,31 +207,44 @@ public class Checker extends EloquenceBaseListener {
 	}
 	
 	/**
-	 * Set the entry of the declaration to the entry of its variable.
+	 * Set the type and entry of the declaration to the entry of its variable.
+	 * @require getType(ctx.variable()) != null;
+	 * 		&&	entry(ctx.variable()) != null;
+	 * @ensure	getType(ctx) == getType(ctx.variable());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
-		//setEntry(ctx, entry(ctx.variable()));
+		setType(ctx, getType(ctx.variable()));
+		setEntry(ctx, entry(ctx.variable()));
 	}
 	
 	/**
-	 * Set the type of the array declaration to that of its array declaration.
+	 * Set the type and entry of the array declaration to that of its array declaration.
+	 * @require getType(ctx.arrayDecl()) != null;
+	 * 		&&	entry(ctx.arrayDecl()) != null;
+	 * @ensure	getType(ctx) == getType(ctx.arrayDecl());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitDeclArray(EloquenceParser.DeclArrayContext ctx) {
 		setType(ctx, getType(ctx.arrayDecl()));
+		setEntry(ctx, entry(ctx.arrayDecl()));
 	}
 	
 	/**
 	 * Set the type of return stat to that of its returnStat.
 	 * If its returnStat is not a void, set the entry to the value of its returnStat.
+	 * @require getType(ctx.returnStat()) != null;
+	 * @ensure	getType(ctx) == getType(ctx.returnStat());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitStatReturn(EloquenceParser.StatReturnContext ctx) {
 		setType(ctx, getType(ctx.returnStat()));
-		//if(getType(ctx.returnStat()) != null)
-			//setEntry(ctx, ctx.returnStat());
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Open a new scope for the variables declared within the comparison expression of the if statement.
+	 * @ensure symbolTable.size().new == symbolTable.size().old + 1;
 	 */
 	@Override public void enterStatIf(finalProject.grammar.EloquenceParser.StatIfContext ctx) {
 		symbolTable.openScope();
@@ -232,6 +255,13 @@ public class Checker extends EloquenceBaseListener {
 	 * If there is an no else part, or if the if and else have the same type set the type to the type of if.
 	 * If there is an else part but it does not return the same type as the if part, set the type to null.
 	 * Close the scope that was opened at the enterStatIf to ensure inner variables cannot be used again.
+	 * @require getType(ctx.expression()) != null;
+	 * 		&&	entry(ctx.expression()) != null;
+	 * 		&&	symbolTable.size().old >= 1;
+	 * @ensure	errors.size().new > errors.size().old || getType(ctx.expression) == Type.BOOL;
+	 * 		&&	getType(ctx) == null || (getType(ctx) == getType(ctx.stat(0)) && ctx.ELSE() != null && getType(ctx.stat(0) == getType(ctx.stat(1));
+	 * 		&&	entry(ctx) != null;
+	 * 		&&	symbolTable.size().new == symbolTable.size().old - 1;
 	 */
 	@Override public void exitStatIf(EloquenceParser.StatIfContext ctx) {
 		checkType(ctx.expression(), Type.BOOL);
@@ -239,12 +269,13 @@ public class Checker extends EloquenceBaseListener {
 			setType(ctx, getType(ctx.stat(0)));
 		else
 			setType(ctx, null);
-		//setEntry(ctx, ctx);
+		setEntry(ctx, entry(ctx.expression()));
 		symbolTable.closeScope();
 	}
 	
 	/**
 	 * Open a new scope for the variables declared within the comparison expression of the while statement.
+	 * @ensure	symbolTable.size().new == symbolTable.size().old + 1;
 	 */
 	@Override public void enterStatWhile(finalProject.grammar.EloquenceParser.StatWhileContext ctx) {
 		symbolTable.openScope();
@@ -254,12 +285,20 @@ public class Checker extends EloquenceBaseListener {
 	 * Check whether the expression type is a boolean, set the type of the while statement
 	 * to void. Finally, close the scope that was opened at the enterStatIf to ensure inner
 	 * variables cannot be used again.
+	 * @require	symbolTable.size().old >= 1;
+	 * @ensure	errors.size().new > errors.size().old || (getType(ctx.expression()) != null && getType(ctx.expression()) == Type.BOOL);
+	 * 		&&	getType(ctx) == null;
+	 * 		&& 	entry(ctx) != null;
+	 * 		&&  symbolTable.size().new == symbolTable.size().old - 1;
 	 */
 	@Override public void exitStatWhile(EloquenceParser.StatWhileContext ctx) {
-		if(checkNotNull(ctx.expression()))
+		if(checkNotNull(ctx.expression())){
 			checkType(ctx.expression(), Type.BOOL);
+			setEntry(ctx, entry(ctx.expression()));
+		}else
+			setEntry(ctx, ctx);
 		setType(ctx, null);
-		//setEntry(ctx, ctx);
+		
 		symbolTable.closeScope();
 	}
 	
@@ -267,6 +306,14 @@ public class Checker extends EloquenceBaseListener {
 	 * Check if the target is in the scope. If this is the case, check if the type of expression
 	 * is equal to that of the target. Also check whether the target is mutable, i.e. not constant.
 	 * Set the type of the assignment to that of its target, set the offset to that of its target.
+	 * @require	entry(ctx.target(0) != null;
+	 * @ensure	forall ctx.target() target : errors.size().old > errors.size().new ||
+	 * 			this.symbolTable.contains(target) && getType(ctx.expression()) != null
+	 * 		&&	getType(target) == getType(ctx.expression())
+	 * 		&&	scope.isMutable(target)
+	 * 		&&	getType(ctx) == getType(ctx.target(0))
+	 * 		&&	getOffset(ctx) != null;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitStatAssign(EloquenceParser.StatAssignContext ctx) {
 		for(TargetContext target : ctx.target()){
@@ -277,6 +324,7 @@ public class Checker extends EloquenceBaseListener {
 				setOffset(ctx, scope.offset(ctx.target(0).getText()));
 			}
 		}
+		setEntry(ctx, ctx.target(0));
 	}
 
 	/**
@@ -284,6 +332,16 @@ public class Checker extends EloquenceBaseListener {
 	 * expression is an integer and the second expression is equal to the type of the array elements.
 	 * Check if the target is mutable. Then set the type to that of the target en the entry to that
 	 * of its target.
+	 * @require	getType(ctx.target(0)) != null;
+	 * 		&&	entry(ctx.target(0)) != null;
+	 * @ensure	forall ctx.target() target:	errors.size().old > errors.size().new ||
+	 * 			symbolTable.contains(target)
+	 * 		&&	getType(ctx.expression(0)) == Type.INT
+	 * 		&&	getType(ctx.lastExpression()) == Target.getElemType();
+	 * 		&&	scope.isMutable(target);
+	 * 
+	 * 		&&	getType(ctx) == getType(ctx.target(0));
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
 		for(TargetContext target : ctx.target())
@@ -292,15 +350,8 @@ public class Checker extends EloquenceBaseListener {
 				checkType(ctx.expression(ctx.expression().size()-1), ((Type.Array)getType(target)).getElemType());
 				checkMutable(target);
 			}
-		for(int index = 0; index < ctx.target().size(); index++){
-			if(checkScope(ctx.target(index))){
-				checkType(ctx.expression(index), Type.INT);
-				checkType(ctx.expression(ctx.expression().size()-1), ((Type.Array)getType(ctx.target(index))).getElemType());
-				checkMutable(ctx.target(index));
-			}
-		}
 		setType(ctx, getType(ctx.target(0)));
-		//setEntry(ctx, entry(ctx.target(0)));
+		setEntry(ctx, entry(ctx.target(0)));
 	}
 
 	/**
@@ -308,6 +359,16 @@ public class Checker extends EloquenceBaseListener {
 	 * for each expression if they are of the same type and if they are of the type of  the target array elements.
 	 * is equal to that of the type of the array elements. Check if the target is mutable.
 	 * Set the type to that of the target and the entry also to the type of the target.
+	 * @require	getType(ctx.target(0)) != null;
+	 * 		&&	entry(ctx.target(0)) != null;
+	 * @ensure	forall ctx.target() target : errors.size().new > errors.size().old ||
+	 * 			ctx.expression().size() <= target.size()
+	 * 		&&	forall ctx.expression() expression : 
+	 * 				getType(expression) == getElemType(target);
+	 * 		&&	scope.isMutable(target);
+	 * 
+	 * 		&&	getType(ctx) == getType(ctx.target(0));
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitStatAssignArrayMult(finalProject.grammar.EloquenceParser.StatAssignArrayMultContext ctx) {
 		for(TargetContext target : ctx.target())
@@ -326,68 +387,88 @@ public class Checker extends EloquenceBaseListener {
 				checkMutable(target);
 			}
 		setType(ctx, getType(ctx.target(0)));
-		//setEntry(ctx, entry(ctx.target(0)));
+		setEntry(ctx, entry(ctx.target(0)));
 	}
 	
 	/**
 	 * Set the type of the block to that of its body.
+	 * @require entry(ctx.statBlockBody()) != null;
+	 * @ensure	getType(ctx) == getType(ctx.statBlockBody());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		setType(ctx, getType(ctx.statBlockBody()));
-		////setEntry(ctx, entry(ctx.body().stat(0)));
+		setEntry(ctx, entry(ctx.statBlockBody()));
 	}
 	
 	/**
 	 * For each target from statIn check whether it is contained in the scope and whether it is mutable.
 	 * If there is only one target, the type of in is set to the type of the target. The entry is also
 	 * set to the target. If there are multiple targets, the type is set to null, i.e. void.
+	 * @require	entry(ctx.target(0)) != null;
+	 * @ensure	forall ctx.target() target : errors.size().new > errors.size().old ||
+	 * 			checkScope(target)
+	 * 		&&	checkMutable(target);
+	 * 		&&	(getType(ctx) =! && ctx.target().size() == 1) || getType(ctx) == null;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitStatIn(EloquenceParser.StatInContext ctx){
 		for(TargetContext target : ctx.target())
 			if(checkScope(target))
 				checkMutable(target);
-		if(ctx.target().size() == 1){
+		if(ctx.target().size() == 1)
 			setType(ctx, this.scope.type(ctx.target(0).getText()));
-			//setEntry(ctx, entry(ctx.target(0)));
-		}else{
+		else
 			setType(ctx, null);
-		}
+		setEntry(ctx, entry(ctx.target(0)));
 	}
 	
 	/**
 	 * For each expression from statOut check whether the expression is not null. If there is one
 	 * expression, set the type to that of its expression and set the entry to that of its expression.
 	 * If there are multiple expressions, set the type to null, i.e. void.
+	 * @require	entry(ctx.expression(0)) != null;
+	 * @ensure	forall ctx.expression() expression : errors.size().new > errors.size().old ||
+	 * 			getType(expression) != null;
+	 * 		&&	(getType(ctx) != null && ctx.expressions.size() == 1) || getType(ctx) == null;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitStatOut(EloquenceParser.StatOutContext ctx){
 		for(ExpressionContext expr : ctx.expression())
 			checkNotNull(expr);
-		if(ctx.expression().size() == 1){
+		if(ctx.expression().size() == 1)
 			setType(ctx, getType(ctx.expression(0)));
-//			//setEntry(ctx, entry(ctx.expression(0)));	
-		}else
+		else
 			setType(ctx, null);
+		setEntry(ctx, entry(ctx.expression(0)));	
 	}
 	
 	/**
 	 * Set the type to void.
+	 * @require this.scope.contains(ctx.functionID().target().getText());
+	 * 		&&	entry(ctx.functionID()) != null;
+	 * @ensure	getType(ctx) == getType(declared function);
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
 		setType(ctx, this.scope.type(ctx.functionID().target().getText()));
-		setType(ctx.functionID(), this.scope.type(ctx.functionID().target().getText()));
+		setEntry(ctx, entry(ctx.functionID()));
 	}
 	
 	/**
 	 * Set type of statExpr to that of its child expression.
 	 * Set entry to itself.
+	 * @ensure	getType(ctx) == getType(ctx.expression());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitStatExpr(finalProject.grammar.EloquenceParser.StatExprContext ctx) {
 		setType(ctx, getType(ctx.expression()));
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Open a new scope for the variables declared within the comparison expression of the block statement.
+	 * @ensure	symbolTable.size().new == symbolTable.size().old + 1;
 	 */
 	@Override public void enterStatBlockBody(finalProject.grammar.EloquenceParser.StatBlockBodyContext ctx) {
 		symbolTable.openScope();
@@ -396,9 +477,14 @@ public class Checker extends EloquenceBaseListener {
 	/**
 	 * Set the type of statBlockBody to that of its body.
 	 * Close the scope that was opened at the enterStatBlockBody to ensure inner variables cannot be used again.
+	 * @require entry(ctx.body()) != null;
+	 * @ensure	getType(ctx) == getType(ctx.body());
+	 * 		&&	entry(ctx) != null;
+	 * 		&&	symbolTable.size().new == symbolTable.size().old - 1;
 	 */
 	@Override public void exitStatBlockBody(finalProject.grammar.EloquenceParser.StatBlockBodyContext ctx) {
 		setType(ctx, getType(ctx.body()));
+		setEntry(ctx, entry(ctx.body()));
 		symbolTable.closeScope();
 	}
 	
@@ -406,13 +492,15 @@ public class Checker extends EloquenceBaseListener {
 	 * Check whether the return statement has an expression.
 	 * If it does, set the type to the type of the expression and the entry to the entry of expression.
 	 * If it does not have an expression, i.e. is of type void, set the type to null, i.e. void.
+	 * @ensure	getType(ctx) == null || (getType(ctx) == getType(ctx.expression) && ctx.expression() != null);
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitReturnStat(EloquenceParser.ReturnStatContext ctx) {
-		if(ctx.expression() != null){
+		if(ctx.expression() != null)
 			setType(ctx, getType(ctx.expression()));
-			//setEntry(ctx, ctx.expression());
-		}else
+		else
 			setType(ctx, null);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
@@ -421,19 +509,24 @@ public class Checker extends EloquenceBaseListener {
 	 * Set the offset of the child to the offset in the scope.
 	 * Set the entry to itself, and the entry of the child to this.
 	 * Set the type to the type as declared in the scope.
+	 * @ensure	errors.size().new > errors.size().old || checkScope(ctx)
+	 * 		&&	offset(ctx) != null
+	 * 		&&	offset(cts.getChild(0)) != null
+	 * 		&&	entry(ctx) != null
+	 * 		&& 	getType(ctx) != null;
 	 */
 	@Override public void exitTargetId(finalProject.grammar.EloquenceParser.TargetIdContext ctx) {
 		if(checkScope(ctx)){
 			setOffset(ctx, this.scope.offset(ctx.getText()));
 			setOffset(ctx.getChild(0), this.scope.offset(ctx.getText()));
-			//setEntry(ctx, ctx);
-			//setEntry(ctx.getChild(0), ctx);
+			setEntry(ctx, ctx);
 			setType(ctx, this.scope.type(ctx.ID().getText()));
 		}
 	}
 	
 	/**
 	 * Add the symbol of ctx in the symbolTable.
+	 * @ensure	symbolTable.contains(ctx);
 	 */
 	@Override public void exitNewID(NewIDContext ctx) {
 		addSymbol(ctx);
@@ -443,6 +536,14 @@ public class Checker extends EloquenceBaseListener {
 	 * Check the type of expression, if they are <, <=, >=, or > check if both expressions are integers.
 	 * Otherwise check if the types are equal.
 	 * Set the resulting type to a boolean and set the entry to the entry of the first expression.
+	 * @require	entry(ctx.expression(0)) != null;
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			if ctx.compare().contains(LT || LE || GE || GT) 
+	 * 				getType(ctx.expression(0)) == getType(ctx.expression(1)) == Type.INT;
+	 * 			else
+	 * 				getType(ctx.expression(0)) == getType(ctx.expression(1));
+	 * 		&&	getType(ctx) == Type.BOOL;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprComp(EloquenceParser.ExprCompContext ctx) {
 		if(ctx.compare().LT() != null || ctx.compare().LE() != null || ctx.compare().GE() != null || ctx.compare().GT() != null){
@@ -452,19 +553,24 @@ public class Checker extends EloquenceBaseListener {
 			checkType(ctx.expression(0), getType(ctx.expression(1)));
 		}		
 		setType(ctx, Type.BOOL);
-		//setEntry(ctx, entry(ctx.expression(0)));
+		setEntry(ctx, entry(ctx.expression(0)));
 	}
 	
 	/**
 	 * Check whether the types of both expressions are integers.
 	 * Set the resulting type to integer.
 	 * Set the entry to that of the first expression.
+	 * @require	entry(ctx.expression(0)) != null;
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			getType(ctx.expression(0)) == getType(ctx.expression(1)) == Type.INT;
+	 * 		&&	getType(ctx) == Type.INT;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprMult(EloquenceParser.ExprMultContext ctx) {
 		checkType(ctx.expression(0), Type.INT);
 		checkType(ctx.expression(1), Type.INT);
 		setType(ctx, Type.INT);
-		//setEntry(ctx, entry(ctx.expression(0)));
+		setEntry(ctx, entry(ctx.expression(0)));
 	}
 	
 	/**
@@ -472,6 +578,11 @@ public class Checker extends EloquenceBaseListener {
 	 * If the unary sign is a not, check whether the type is boolean.
 	 * Set the type to that of the expression.
 	 * Set the entry to that of the expression.
+	 * @require	entry(ctx.expression()) != null;
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			getType(ctx) == Type.INT && ctx.unary().contains(MINUS || PLUS);
+	 * 		||	getType(ctx) == Type.BOOL && ctx.unary().NOT() != null;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprUnary(EloquenceParser.ExprUnaryContext ctx) {
 		Type type;
@@ -483,39 +594,50 @@ public class Checker extends EloquenceBaseListener {
 		}
 		checkType(ctx.expression(), type);
 		setType(ctx, type);
-		//setEntry(ctx, entry(ctx.expression()));
+		setEntry(ctx, entry(ctx.expression()));
 	}
 	
 	/**
 	 * Set the type of this expression to integer.
 	 * Set the entry of this expression to itself.
+	 * @ensure	getType(ctx) == Type.INT;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprNum(EloquenceParser.ExprNumContext ctx) {
 		setType(ctx, Type.INT);
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Set the type of this expression to boolean.
 	 * Set the entry of this expression to itself.
+	 * @ensure	getType(ctx) == Type.BOOL;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprTrue(EloquenceParser.ExprTrueContext ctx) {
 		setType(ctx, Type.BOOL);
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Set the type of this expression to character.
 	 * Set the entry of this expression to itself.
+	 * @ensure	getType(ctx) == Type.CHAR;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprChar(EloquenceParser.ExprCharContext ctx) {
 		setType(ctx, Type.CHAR);
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Check if the function is not a void function.
 	 * Set the type to the type of functionID
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			getType(ctx.functionID()) != null
+	 * 		&&	symbolTable.contains(ctx.functionID().target())
+	 * 		&&	getType(ctx) == getType(ctx.functionID());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprFunc(EloquenceParser.ExprFuncContext ctx) {
 		if(checkNotNull(ctx.functionID())){
@@ -524,19 +646,25 @@ public class Checker extends EloquenceBaseListener {
 		}else{
 			setType(ctx, Type.INT);
 		}
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Set the type to that of the expression.
 	 * Set the entry to that of its expression.
+	 * @require	entry(ctx.expression()) != null;
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			getType(ctx.expression()) != null
+	 * 		&&	getType(ctx) == getType(ctx.expression());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprCompound(finalProject.grammar.EloquenceParser.ExprCompoundContext ctx) {
 		if(checkNotNull(ctx.expression())){
 			setType(ctx, getType(ctx.expression()));
-			//setEntry(ctx, entry(ctx.expression()));
+			setEntry(ctx, entry(ctx.expression()));
 		}else{
 			setType(ctx, Type.INT); //Default type.
-			//setEntry(ctx, ctx);
+			setEntry(ctx, ctx);
 		}
 	}
 	
@@ -544,53 +672,79 @@ public class Checker extends EloquenceBaseListener {
 	 * Check if both expression are of type boolean.
 	 * Set the resulting type to boolean.
 	 * Set the entry to the entry of the first expression.
+	 * @require	entry(ctx.expression(0)) != null;
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			getType(ctx.expression(0)) == getType(ctx.expression(1)) == Type.BOOL;
+	 * 		&&	getType(ctx) == Type.BOOL;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprOr(EloquenceParser.ExprOrContext ctx) {
 		checkType(ctx.expression(0), Type.BOOL);
 		checkType(ctx.expression(1), Type.BOOL);
 		setType(ctx, Type.BOOL);
-		//setEntry(ctx, entry(ctx.expression(0)));
+		setEntry(ctx, entry(ctx.expression(0)));
 	}
 
 	/**
 	 * Check if the type of expression is an integer.
 	 * Set the type to that of the element type of the array.
 	 * Set the entry to itself.
+	 *  @ensure	errors.size().new > errors.size().old ||
+	 * 			getType(ctx.expression(0)) == getType(ctx.expression(1)) == Type.BOOL;
+	 * 		&&	getType(ctx) == Type.BOOL;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprArray(finalProject.grammar.EloquenceParser.ExprArrayContext ctx) {
 		checkType(ctx.expression(), Type.INT);
 		setType(ctx, ((Type.Array)getType(ctx.target())).getElemType());
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Check if both expressions are of type integer.
 	 * Set the resulting type to integer.
 	 * Set the entry to the entry of the first expression.
+	 * @require entry(ctx.expression(0)) != null;
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			getType(ctx.expression(0)) == getType(ctx.expression(1)) == Type.INT;
+	 * 		&&	getType(ctx) == Type.INT;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprAdd(EloquenceParser.ExprAddContext ctx) {
 		checkType(ctx.expression(0), Type.INT);
 		checkType(ctx.expression(1), Type.INT);
 		setType(ctx, Type.INT);
-		//setEntry(ctx, entry(ctx.expression(0)));
+		setEntry(ctx, entry(ctx.expression(0)));
 	}
 	
 	/**
 	 * Check if both expressions are of type boolean.
 	 * Set the resulting type to boolean.
 	 * Set the entry to the entry of first expression.
+	 * @require entry(ctx.expression(0)) != null;
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			getType(ctx.expression(0)) == getType(ctx.expression(1)) == Type.BOOL;
+	 * 		&&	getType(ctx) == Type.BOOL;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprAnd(EloquenceParser.ExprAndContext ctx) {
 		checkType(ctx.expression(0), Type.BOOL);
 		checkType(ctx.expression(1), Type.BOOL);
 		setType(ctx, Type.BOOL);
-		//setEntry(ctx, entry(ctx.expression(0)));
+		setEntry(ctx, entry(ctx.expression(0)));
 	}
 	
 	/**
 	 * Check if the target is declared. If this is the case, set the type
 	 * to the type of target. Set the offsets of this and target according
 	 * to the scope and set the entry to itself.
+	 * @require	this.scope != null;
+	 * @ensure	errors.size().new > errors.size().old ||
+	 * 			scope.contains(ctx.target().getText());
+	 * 		&&	getType(ctx) == scope.getType(ctx.target().getText());
+	 * 		&& 	offset(ctx) != null;
+	 * 		&&	offset(ctx.target()) != null;
+	 * 		&& 	entry(ctx) != null;
 	 */
 	@Override public void exitExprId(EloquenceParser.ExprIdContext ctx) {
 		String id = ctx.target().getText();
@@ -601,63 +755,83 @@ public class Checker extends EloquenceBaseListener {
 			setType(ctx, type);
 			setOffset(ctx, this.scope.offset(id));
 			setOffset(ctx.target(), this.scope.offset(id));
-			//setEntry(ctx, ctx);
+			setEntry(ctx, ctx);
 		}
 	}
 	
 	/**
 	 * Set type of expression to boolean.
 	 * Set entry to itself. 
+	 * @ensure	getType(ctx) == Type.BOOL;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprFalse(EloquenceParser.ExprFalseContext ctx) {
 		setType(ctx, Type.BOOL);
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Set type of exprPar to type of expression.
 	 * Set entry to entry of expression. 
+	 * @require	entry(ctx.expression()) != null;
+	 * @ensure	getType(ctx) == getType(ctx.expression());
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitExprPar(finalProject.grammar.EloquenceParser.ExprParContext ctx) {
 		setType(ctx, getType(ctx.expression()));
-		//setEntry(ctx, entry(ctx.expression()));
+		setEntry(ctx, entry(ctx.expression()));
 	}
 	
 	/**
 	 * Set the type to integer.
+	 * @ensure	getType(ctx) == Type.INT;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitTypeInt(EloquenceParser.TypeIntContext ctx) {
 		setType(ctx, Type.INT);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Set the type to boolean.
+	 * @ensure	getType(ctx) == Type.BOOL;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitTypeBool(EloquenceParser.TypeBoolContext ctx) {
-		setType(ctx, Type.BOOL);		
+		setType(ctx, Type.BOOL);	
+		setEntry(ctx, ctx);	
 	}
 	
 	/**
 	 * Set the type to character.
+	 * @ensure	getType(ctx) == Type.CHAR;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitTypeChar(EloquenceParser.TypeCharContext ctx) {
 		setType(ctx, Type.CHAR);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
 	 * Set the type to null, i.e. void.
+	 * @ensure	getType(ctx) == null;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitFuncVoid(EloquenceParser.FuncVoidContext ctx) {
 		setType(ctx, null);
+		setEntry(ctx, ctx);
 	}
 
 	/**
 	 * Set type to the type of return function.
 	 * Set the entry to the entry of return function.
+	 * @require	entry(ctx.returnFunc()) != null;
+	 * @ensure	getType(ctx) == Type.BOOL;
+	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitFuncReturn(EloquenceParser.FuncReturnContext ctx) {
 		setType(ctx, getType(ctx.returnFunc()));
-		//setEntry(ctx, entry(ctx.returnFunc()));
+		setEntry(ctx, entry(ctx.returnFunc()));
 	}
 
 	//TODO explain
@@ -702,7 +876,7 @@ public class Checker extends EloquenceBaseListener {
 			}
 		}
 		setType(ctx, this.scope.type(ctx.target().getText()));
-		//setEntry(ctx, ctx);
+		setEntry(ctx, ctx);
 	}
 	
 	/**
@@ -737,6 +911,7 @@ public class Checker extends EloquenceBaseListener {
 			if(stat.getText().toLowerCase().contains("relinquish"))
 				addError(ctx, "No return statements are allowed.");
 		setType(ctx, null);
+		setEntry(ctx, ctx);
 	}
 
 	/**
@@ -768,7 +943,7 @@ public class Checker extends EloquenceBaseListener {
 		addSymbol(ctx.newID());
 		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), false, arguments, functionDeclarations.pop());
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
-		//setEntry(ctx, entry(ctx.returnStat()));
+		setEntry(ctx, entry(ctx.returnStat()));
 	}
 	
 	/**
@@ -779,7 +954,7 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, getType(ctx.type()));
 		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), true, null, null);
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
-		
+		setEntry(ctx, ctx);
 	}
 	
 	/**
@@ -790,6 +965,7 @@ public class Checker extends EloquenceBaseListener {
 		setType(ctx, getType(ctx.type()));
 		this.scope.put(ctx.newID().ID().getText(), getType(ctx.type()), true, null, null);
 		setOffset(ctx.newID().ID(), scope.offset(ctx.newID().ID().getText()));
+		setEntry(ctx, ctx);
 	}
 	
 	
