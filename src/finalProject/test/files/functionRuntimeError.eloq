@@ -1,0 +1,9 @@
+program functionRuntimeError{
+	
+	//Causing a runtime error by calling an infinite recursion
+	numericalDigit function(numericalDigit start){
+		relinquish function(start+1);
+	}
+
+	exude(function(0));
+}

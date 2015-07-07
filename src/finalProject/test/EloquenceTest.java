@@ -29,7 +29,7 @@ public class EloquenceTest {
 	private final EloquenceCompiler compiler = EloquenceCompiler
 			.instance();
 
-	@Test
+//	@Test
 	public void basicExprTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {0, 1, 0, 99, 2, 1, 2, 0, 0, 99};
@@ -66,7 +66,7 @@ public class EloquenceTest {
 		checkRuntimeFail("basicExprRuntimeError");
 	}
 	
-	@Test
+//	@Test
 	public void conditionalTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {5, 4, 10, 6, 99};
@@ -89,18 +89,21 @@ public class EloquenceTest {
 		errors.add("Line 132:1 - Expected type 'Integer' but found 'Char'");
 		checkContextFail("conditionalContextError", errors);
 		
+		/** Check whether a program gives a runtime error. */
 		checkRuntimeFail("conditionalRuntimeError", 1);
 	}
 	
-	@Test
+//	@Test
 	public void whileTest() throws ParseException, IOException{
 		/** Check expected output against expected input for correct program.*/
 		int[] input = {};
 		int[] output = {-1, 0, 0, 9, 10, 10, 9, 8, 7, 6};
 		checkRuntime("whileCorrect", input, output);
 
+		/** Check whether a program contains syntax errors. */
 		checkFail("whileSpellingContextFreeSyntaxError");
 		
+		/** Check whether a program contains the given errors. */
 		Set<String> errors = new HashSet<String>();
 		errors.add("Line 14:12 - Expected type 'Boolean' but found 'Integer'");
 		errors.add("Line 17:12 - Expected type 'Boolean' but found 'Char'");
@@ -108,7 +111,35 @@ public class EloquenceTest {
 		errors.add("Line 20:12 - Expected type not null but found 'null'");
 		checkContextFail("whileContextError", errors);
 		
-		checkRuntimeFail("conditionalRuntimeError", 1);
+		/** Check whether a program gives a runtime error. */
+		checkRuntimeFail("whileRuntimeError", -1);
+	}
+	
+//	@Test
+	public void functionTest() throws ParseException, IOException{
+		/** Check expected output against expected input for correct program.*/
+		int[] input = {13};
+		int[] output = {10, 0, 589, 233};
+		checkRuntime("functionCorrect", input, output);
+		
+		/** Check whether a program contains syntax errors. */
+		checkFail("functionSpellingContextFreeSyntaxError");
+		
+		/** Check whether a program contains the given errors. */
+		Set<String> errors = new HashSet<String>();
+		errors.add("Line 6:1 - No return statements are allowed.");
+		errors.add("Line 28:31 - 'ivar2' not defined in scope");
+		errors.add("Line 38:27 - Expected type 'Boolean' but found 'Integer'");
+		errors.add("Line 39:47 - Expected type 'Char' but found 'Integer'");
+		errors.add("Line 46:35 - Expected type not null but found 'null'");
+		errors.add("Line 48:28 - 'ivar3' already defined within the scope");
+		errors.add("Line 48:36 - 'function5' not defined in scope");
+		errors.add("");	//Because "Line 48:36 - 'function5' not defined in scope" is noticed twice
+		errors.add("Line 48:36 - Expected type not null but found 'null'");
+		checkContextFail("functionContextError", errors);
+		
+		/** Check whether a program gives a runtime error. */
+		checkRuntimeFail("functionRuntimeError");
 	}
 	
 	@Test
@@ -116,13 +147,13 @@ public class EloquenceTest {
 		check(parse("arrayCorrect"));
 	}
 	
-	@Test
+//	@Test
 	public void fibonacciTest() throws ParseException, IOException{
 		int[] input = new int[1];
 		int[] output = new int[1];
 		int a = 0;
 		int b = 1;
-		for(int i = 1; i <= 30; i++){
+		for(int i = 1; i <= 20; i++){
 			a = a+b;
 			b = a-b;
 			input[0] = i;
@@ -140,13 +171,6 @@ public class EloquenceTest {
 			output[0] = i + output[0];
 			checkRuntime("prefixSum", input, output);
 		}
-	}
-	
-//	@Test
-	public void swapTest() throws ParseException, IOException{
-		int[] input = {5, 10};
-		int[] output = {10, 5};
-		checkRuntime("swap", input, output);
 	}
 	
 	//TODO

@@ -1,0 +1,7 @@
+program whileRuntimeError{
+
+	highpowered george a;
+	expropriate(a);
+	throughout(a)
+		a = 10/0 superiorTo 5;;
+}

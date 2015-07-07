@@ -1,0 +1,56 @@
+program functionCorrectTest{
+
+	/*Checking void functions. The same tests that can be applied to compound expressions can also be
+	applied to void functions. */	
+	/*Check the scope and visibility of variables in void functions. */	
+	void function1(){											//Using void instead of godforsaken
+		highpowered numericaldigit ivar1 = 5;
+		
+		godforsaken function1Nest(x){							//Using parameter without type
+			sacrosanct numericalDigit iconst2 = 10;
+			ivar1 = iconst2;
+		}
+		
+		function1Nest();
+	}
+	
+	/*Check the scope and visibility of variables in return functions. Also checking whether return
+	values can be expressions. */	
+	exude(numericalDigit function2(){							//Try to exude a function declaration.
+		highpowered numericalDigit ivar1 = 5;
+		
+		numericaldigit function2Nest(){
+			highpowered numericalDigit ivar2 = 5;
+			relinquish ivar1 + ivar2;
+		}
+		
+		relinquish function2Nest();
+		
+	})
+	
+	/*Check the scope and visibility of function names. */	
+	assuming(numericalDigit function3(){						//Try to use a function declaration as an if condition.
+		relinquish 3;
+	})
+		exude(unfeigned);;
+	
+	throughout(godforsaken function4(){							//Try to use a function declaration as a while condition.
+		highpowered numericaldigit ivar2 = function3();
+		exude(ivar2);
+	})
+		exude(unfeigned);;
+
+	/*Check the scope and visibility of function parameters. */	
+	assuming(unfeigned){										
+		george function5(george param1){
+		
+			numericaldigit function5Nest(george param2){
+				param2 = not param1;	//Invert the value of the boolean
+				relinquish param1;
+			}
+			
+			relinquish function5Nest(param1);
+			
+		}
+	}
+}

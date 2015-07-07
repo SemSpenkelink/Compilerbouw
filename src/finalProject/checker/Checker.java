@@ -210,10 +210,12 @@ public class Checker extends EloquenceBaseListener {
 	 * Set the type and entry of the declaration to the entry of its variable.
 	 * @require getType(ctx.variable()) != null;
 	 * 		&&	entry(ctx.variable()) != null;
-	 * @ensure	getType(ctx) == getType(ctx.variable());
+	 * @ensure	errors.size().new > errors.size().old || getType(ctx.expression()) == getType(ctx.variable());
+	 * 		&&	getType(ctx) == getType(ctx.variable());
 	 * 		&&	entry(ctx) != null;
 	 */
 	@Override public void exitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
+		checkType(ctx.expression(), getType(ctx.variable()));
 		setType(ctx, getType(ctx.variable()));
 		setEntry(ctx, entry(ctx.variable()));
 	}

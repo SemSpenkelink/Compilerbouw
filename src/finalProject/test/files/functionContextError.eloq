@@ -1,0 +1,53 @@
+program functionContextError{
+
+	/*Checking void functions. The same tests that can be applied to compound expressions can also be
+	applied to void functions. */	
+	/*Check the scope and visibility of variables in void functions. */	
+	godforsaken function1(){
+		highpowered numericaldigit ivar1 = 5;
+		
+		numericalDigit function1Nest(){
+			sacrosanct numericalDigit iconst2 = 10;
+			ivar1 = iconst2;
+			relinquish ivar1;
+		}
+		
+		relinquish function1Nest();						//Try to relinquish within a void function
+	}
+	
+	/*Check the scope and visibility of variables in return functions. Also checking whether return
+	values can be expressions. */	
+	numericalDigit function2(){
+		highpowered numericalDigit ivar1 = 5; 
+		
+		numericaldigit function2Nest(){
+			highpowered numericalDigit ivar2 = 5;
+			relinquish ivar1 + ivar2;
+		}
+		
+		relinquish function2Nest() + ivar2;				//Try to call a value within a different scope
+		
+	}
+	exude(function2());
+	
+	/*Check the scope and visibility of function names. */	
+	numericalDigit function3(){
+		relinquish 3;
+	}
+	
+	highpowered george bvar = function3();						//Try to assign an int to a boolean
+	sacrosanct  lexographicIdentifyingUnit cvar = function3();	//Try to assign an int to a char
+	
+	godforsaken function4(){
+		highpowered numericaldigit ivar2 = function3();
+		exude(ivar2);
+	}
+	
+	sacrosanct numericalDigit ivar3 = function4();				//Try to assign a void function to an integer.
+
+	highpowered numericalDigit ivar3 = function5();				//Try to call function before it is declared.
+	
+	numericalDigit function5(){
+		relinquish 5;
+	}
+}
