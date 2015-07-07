@@ -139,23 +139,24 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 * handled here as well. A label is created for every type of runtime error, and a value is assigned
 	 * to reg_error. In case of a runtime error, the program jumps to this label. In this case has a label
 	 * indexOutOfBounds, which corresponds to a user indexing an array out of bounds. After jumping to
-	 * the runtime error node, the progrom outputs the error and jumps to the end. The rest of the ILOC code
+	 * the runtime error node, the program outputs the error and jumps to the end. The rest of the ILOC code
 	 * is then not created. 
 	 * 
 	 * */
 	@Override public Op visitProgram(EloquenceParser.ProgramContext ctx) { 
-		Label indexOutOfBounds = createLabel(ctx, "indexOutOfBounds");
+		//Label to be jumped to in case of Index out of bounds
+		Label indexOutOfBounds = createLabel(ctx, "indexOutOfBounds");	
 		runtimeErrors.put("indexOutOfBounds", indexOutOfBounds);
 		visitChildren(ctx);
-		Label programEnd = createLabel(ctx, "programEnd");
-		emit(OpCode.jumpI, programEnd);
+		Label programEnd = createLabel(ctx, "programEnd");	//Label for end of the program
+		emit(OpCode.jumpI, programEnd);						//Jump to program end in case of no error.
 		
 	
-		emit(indexOutOfBounds, OpCode.nop);
-		emit(OpCode.out, new Str("Error: Array index out of bounds "), reg_error);
-		emit(OpCode.jumpI, programEnd);
+		emit(indexOutOfBounds, OpCode.nop);			//Start of section index out of bounds
+		emit(OpCode.out, new Str("Error: Array index out of bounds "), reg_error);	//Output the error
+		emit(OpCode.jumpI, programEnd);				//Jump to program end
 		
-		emit(programEnd,OpCode.nop);
+		emit(programEnd,OpCode.nop);				//Program end
 		return null; }
 	
 	/** After entering the program, the body is visited. Initially all the children of the body are visited
@@ -168,13 +169,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		
-		visitChildren(ctx);
-		if(ctx.stat().size()>0){
-			if(checkResult.getType(ctx) != null){
+		visitChildren(ctx);	//TODO wrong type checking. 
+		if(ctx.stat().size()>0){		//If the body has statements
+			if(checkResult.getType(ctx) != null){		//If the type of the stat is not null.
 				if(checkResult.getType(ctx).equals(Type.CHAR)){
-					emit(OpCode.c2c, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx));
+					emit(OpCode.c2c, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx));	//c2c in case of char
 				}else if(checkResult.getType(ctx) != null){
-					emit(OpCode.i2i, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx));
+					emit(OpCode.i2i, reg(ctx.stat(ctx.stat().size()-1)), reg(ctx)); //i2i in case of bool or int
 				}
 			}
 		}
@@ -188,11 +189,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	 */
 	@Override public Op visitDeclVar(EloquenceParser.DeclVarContext ctx) { 
 		visitChildren(ctx);
-		for(NewIDContext newId : ctx.variable().newID()){
+		for(NewIDContext newId : ctx.variable().newID()){	//For every new ID do the following.
 				if(ctx.expression() != null){
-					emit(OpCode.i2i, reg(ctx.expression()), reg(newId.ID()));
+					emit(OpCode.i2i, reg(ctx.expression()), reg(newId.ID())); //Copy the expression to the reg(ID)
 				} else{
-					emit(OpCode.loadI, new Num(0), reg(newId.ID()));
+					emit(OpCode.loadI, new Num(0), reg(newId.ID()));	// In case there is no assignment, load 0
 				}
 				emit(OpCode.storeAI,reg(newId.ID()),arp, offset(newId.ID()));
 		}
@@ -200,64 +201,105 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; 
 	
 	}
-	
+	/**
+	 * Declaration of constants. Initially this functions visits the underlying expressions and (new) IDs.
+	 * For every ID the value of the register of the Expression is stored at the memory offset of the ID.
+	 * If there is no assignment of a value, then the value 0 is stored at the memory location.
+	 * 
+	 * @require ctx.newID().ID() != null
+	 * @ensure value of ID != null
+	 */
 	@Override public Op visitDeclConstVar(EloquenceParser.DeclConstVarContext ctx) {
 		visitChildren(ctx);
-		for(NewIDContext newId : ctx.variable().newID()){
+		for(NewIDContext newId : ctx.variable().newID()){	//For every new ID do the following.
 				if(ctx.expression() != null){
-					emit(OpCode.i2i, reg(ctx.expression()), reg1);
+					emit(OpCode.i2i, reg(ctx.expression()), reg1); //Copy the expression to the reg(ID)
 				} else{
-					emit(OpCode.loadI, new Num(0), reg1);
+					emit(OpCode.loadI, new Num(0), reg1); // In case there is no assignment, load 0
 				}
 				emit(OpCode.storeAI,reg1,arp, offset(newId.ID()));
 		}
 		
 		return null;   }
-	
+	/**
+	 * Visit the children. The children of this context allow for either a variable declaration of an array
+	 * or a constant declaration.
+	 * @require ctx != null
+	 * @ensure new array is declared
+	 */
 	@Override public Op visitDeclArray(EloquenceParser.DeclArrayContext ctx) { return visitChildren(ctx); }
 	
+	/**
+	 * Creates a new upon visiting its children.
+	 * @require ctx != null && ctx.children() != null
+	 * @ensure create new ID
+	 */
 	@Override public Op visitVariable(EloquenceParser.VariableContext ctx) {
 		
 		return visitChildren(ctx); }
-	
+
+	/**
+	 * Creates a given array type. This type has an ID, type and upper and lower bound. This function
+	 * must initially visit its children so that the ID, upper and lower bounds can be determined.
+	 * Afterwards, the lower bound is stored in the offset of the ID. The upper bound is stored at 
+	 * the offset + 4. 
+	 * 
+	 * @require ctx != null && ctx.children() != null && offset(ctx.newID().ID()) != null
+	 * @ensure offset(ctx.newID().ID()) == lower bound && offset(ctx.newID().ID()) + 4 == upper bound
+	 */
 	@Override public Op visitArrayTypeDecl(EloquenceParser.ArrayTypeDeclContext ctx) {
 		visitChildren(ctx);
 		
 		
-		//reg1 the left bound, reg2 contains the right bound
-		emit(OpCode.storeAI,reg1,arp, offset(ctx.newID().ID()));
+		//reg1 contains the left bound, reg2 contains the right bound
+		emit(OpCode.storeAI,reg1,arp, offset(ctx.newID().ID()));	//Store the left bound of the array 
 		emit(OpCode.loadI, offset(ctx.newID().ID()), reg3);
-		emit(OpCode.addI, reg3, new Num(4), reg3);
-		emit(OpCode.storeAO,reg2,arp, reg3);
+		emit(OpCode.addI, reg3, new Num(4), reg3);					//Add four to the offset to get higher bound
+		emit(OpCode.storeAO,reg2,arp, reg3);						//Store the upper bound
 		
 		
 		return null; }
 	
+	/**
+	 * Sets the lower and upper bound of an arrayTypeDeclaration. The two values are stored in local
+	 * register. The parent then uses these registers to set their upper and lower bound.
+	 * 
+	 * @require ctx != null && ctx.children() != null
+	 * @ensure reg1 == lower bound && reg2 == upper bound
+	 */
 	@Override public Op visitArrayElem(EloquenceParser.ArrayElemContext ctx) {
 		visitChildren(ctx);
-		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUM(0).getText())), reg1);
-		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUM(1).getText())), reg2);
+		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUM(0).getText())), reg1);	//Load lower bound in reg1
+		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUM(1).getText())), reg2);	//Load upper bound in reg2
 		return null; }
 	
+	/**
+	 * Creates an array based on an array type. The lower and upper bounds are copied from the array type
+	 * and stored at positions offset(ID) and offset(ID) + 4 respectively. 
+	 * Every expression is then stored at offset + 4 for every ID declared. 
+	 * 
+	 * @require ctx != null && ctx.children() != null && offset(ctx.target)  != null && offset(ID) != null
+	 * @ensure offset(ID) == lower bound offset(ID) + 4 == upper bound
+	 */
 	@Override public Op visitVarArrayDecl(EloquenceParser.VarArrayDeclContext ctx) { 
 		visitChildren(ctx);
 		
 		
-		for(NewIDContext newId : ctx.newID()){
+		for(NewIDContext newId : ctx.newID()){	//For every new  ID do the following
 			emit(OpCode.storeAI, reg(ctx.target()), arp, offset(newId.ID()));
 			
 			emit(OpCode.loadI, offset(ctx.target()),reg1);	//load offset in reg1
 			emit(OpCode.addI, reg1, new Num(4), reg1);		//add 4 to the offset
-			emit(OpCode.loadAO, arp, reg1, reg1); //Load the ending value in reg1
+			emit(OpCode.loadAO, arp, reg1, reg1); 			//Load the ending value in reg1
 			
-			emit(OpCode.loadI, offset(newId.ID()), reg2);
+			emit(OpCode.loadI, offset(newId.ID()), reg2);	
 			emit(OpCode.addI, reg2, new Num(4), reg2);
-			emit(OpCode.storeAO, reg1, arp,reg2);
+			emit(OpCode.storeAO, reg1, arp,reg2);			
 			
 			if(ctx.SETARRAY() != null){
-				for(ExpressionContext c : ctx.expression()){
-					emit(OpCode.addI, reg2, new Num(4), reg2);
-					emit(OpCode.storeAO, reg(c), arp,reg2);
+				for(ExpressionContext c : ctx.expression()){		//For every expression
+					emit(OpCode.addI, reg2, new Num(4), reg2);		//Set the correct offset
+					emit(OpCode.storeAO, reg(c), arp,reg2);	//Store the value of the expression at the correct place
 				}
 				
 			}
@@ -265,6 +307,14 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		return null; }
 	
+	/**
+	 * Creates an array based on an array type. The lower and upper bounds are copied from the array type
+	 * and stored at positions offset(ID) and offset(ID) + 4 respectively. 
+	 * Every expression is then stored at offset + 4 for every ID declared. 
+	 * 
+	 * @require ctx != null && ctx.children() != null && offset(ctx.target)  != null && offset(ID) != null
+	 * @ensure offset(ID) == lower bound offset(ID) + 4 == upper bound
+	 */
 	@Override public Op visitConstArrayDecl(EloquenceParser.ConstArrayDeclContext ctx) {
 		visitChildren(ctx);
 		
@@ -287,24 +337,29 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		return null;  }
 	
+	/**
+	 * The if statement. After visiting the expression (or condition) a label is placed in front of the body.
+	 * A label is also placed at the end of the If. In case the condition is false, the program jumps
+	 * to the end of the IF. 
+	 * 
+	 * @require ctx != null && ctx.children() != null && ctx.stat() != null
+	 * @ensure reg(ctx) = reg(ctx.stat(0)) || reg(ctx) = reg(ctx.stat(1))
+	 */
 	@Override public Op visitStatIf(EloquenceParser.StatIfContext ctx) { 
 		System.out.println("\n\nStatIF");
 		
-		Label body = createLabel(ctx, "ifBody");
-		Label ifContinue = createLabel(ctx, "continue");
-	//	labels.put(ctx.stat(0), body);
-		//visitChildren(ctx);
+		Label body = createLabel(ctx, "ifBody");			//Label for the body
+		Label ifContinue = createLabel(ctx, "continue");	//Label for end of the if
 		visit(ctx.expression());
 
 		if(ctx.expression() instanceof ExprFuncContext)
 			emit(OpCode.pop, reg(ctx.expression()));
-		
-		System.out.println("\n\n"); 
+		 
 		if(ctx.ELSE() == null){ //There is no else
 			emit(OpCode.cbr, reg(ctx.expression()), body, ifContinue);
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
-			if(checkResult.getType(ctx.stat(0)) != null){
+			if(checkResult.getType(ctx.stat(0)) != null){	//Place the value of the statement in reg(ctx)
 				System.out.println("Only IF stat(0) != null reg ctx: " + reg(ctx));
 				if(checkResult.getType(ctx.stat(0)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(0)), reg(ctx));
@@ -313,9 +368,8 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 				}
 			}
 			emit(OpCode.jumpI, ifContinue);
-		} else {			
+		} else {				//There is an else part
 			Label elseBody = createLabel(ctx, "elseBody");
-		//	labels.put(ctx.stat(1), elseBody);
 			emit(OpCode.cbr, reg(ctx.expression()), body, elseBody);
 			emit(body, OpCode.nop);
 			visit(ctx.stat(0));
@@ -330,7 +384,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.jumpI, ifContinue);
 			emit(elseBody, OpCode.nop);
 			visit(ctx.stat(1));
-			if(checkResult.getType(ctx.stat(1)) != null){
+			if(checkResult.getType(ctx.stat(1)) != null){//Place the value of the statement in reg(ctx)
 				System.out.println("stat(1) != null reg ctx: " + reg(ctx));
 				if(checkResult.getType(ctx.stat(1)).equals(Type.CHAR)){
 					emit(OpCode.c2c, reg(ctx.stat(1)), reg(ctx));
@@ -343,6 +397,15 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(ifContinue, OpCode.nop);
 		return null; }
 	
+	/**
+	 * After visiting the condition, ctx.expression, a label is placed in front of the body of the while.
+	 * A label is also placed at the end of the while. Depending on the condition, the program will 
+	 * either jump to the end or the while body again. After it reaches the end of the body, the program
+	 * jumps back to the condition. At the end of the body the program jumps back the condition. 
+	 * 
+	 * @require ctx != null && ctx.children != null. 
+	 * @ensure reg(ctx)  == null
+	 */
 	@Override public Op visitStatWhile(EloquenceParser.StatWhileContext ctx) { 
 		if(labels.get(ctx) != null){
 			emit(labels.get(ctx),OpCode.nop);
@@ -352,16 +415,15 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(whileLoop, OpCode.nop);
 		}
 		
-		Label whileBody = createLabel(ctx.stat(), "whileBody");
-	//	labels.put(ctx.stat(), whileBody);
-		Label whileContinue = createLabel(ctx, "whileContinue");
+		Label whileBody = createLabel(ctx.stat(), "whileBody");	//Label for the body of the while
+		Label whileContinue = createLabel(ctx, "whileContinue");	//Label for the end of the while
 		
 		visit(ctx.expression());
 
 		if(ctx.expression() instanceof ExprFuncContext)
 			emit(OpCode.pop, reg(ctx.expression()));
 		
-		emit(OpCode.cbr, reg(ctx.expression()), whileBody, whileContinue);
+		emit(OpCode.cbr, reg(ctx.expression()), whileBody, whileContinue);	//Branch to end or to the body
 		emit(whileBody, OpCode.nop);
 		visit(ctx.stat());
 		emit(OpCode.jumpI, labels.get(ctx));
@@ -369,6 +431,15 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		return null; }
 	
+	/**
+	 * For every ID the expression is copied to the register of the ctx.target. In case the type of
+	 * the expression is not int, char or bool, then it is type array. In that case, two arrays are 
+	 * being assigned to each other. For every value of one array, the value needs to be assigned to
+	 * the other. So all the offsets are computed and the values are then assigned. 
+	 * 
+	 * @require ctx != null && ctx.children != null
+	 * @ensure ctx.target == ctx.expression
+	 */
 	@Override public Op visitStatAssign(EloquenceParser.StatAssignContext ctx) { 
 		if(labels.get(ctx) != null){
 			emit(labels.get(ctx), OpCode.nop);
@@ -397,7 +468,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			} else if(!checkResult.getType(ctx.target(0)).equals(Type.INT) &&
 					!checkResult.getType(ctx.target(0)).equals(Type.BOOL) &&
 					!checkResult.getType(ctx.target(0)).equals(Type.CHAR)
-					){
+					){										//Target is an array
 				
 				for(TargetContext target : ctx.target()){
 					emit(OpCode.loadAI, arp, offset(target), reg1);	//Reg1 now contains lower bound
@@ -443,6 +514,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		return null; }
 	
+	/**
+	 * Assign one indexed array or multiple arrays bearing the same index to a given expression.
+	 * 
+	 * @require ctx != null && ctx.children != null
+	 * @ensure ctx.target == ctx.expression || ctx.target[index] == ctx.expression
+	 */
 	@Override public Op visitStatAssignArray(EloquenceParser.StatAssignArrayContext ctx) {
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
@@ -451,7 +528,7 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			//Start by computing the begin value of the array. We'll store that in reg1
 			emit(OpCode.loadAI, arp, offset(target), reg1);
 			//Now we need the index value. This is stored in expression(0). We'll store it in reg2
-	//		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(0).getText())),reg2);
+			emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(0).getText())),reg2);
 			emit(OpCode.i2i, reg(ctx.expression(0)), reg2);
 			//Subtract the index by the begin value.
 			emit(OpCode.sub, reg2, reg1, reg1);
@@ -461,13 +538,16 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.addI, reg1, new Num(8),reg1); //This is the address where the value needs to be stored.
 			emit(OpCode.addI, reg1, offset(target),reg1);
 			//The the target value
-		//	emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression(2).getText())), reg2);
 			 emit(OpCode.storeAO, reg(ctx.expression(1)), arp,reg1);
-			//Debug
-			//	emit(OpCode.out, new Str("test"), reg1);
 	}
 		return null; }
-	
+	/**
+	 * Assign multiple values to an array. The function iterates over all the offset values and assigns
+	 * the corresponding expression to it.
+	 * 
+	 * @require ctx != null && ctx.children != null
+	 * @ensure ctx.target == ctx.expressions
+	 */
 	@Override public Op visitStatAssignArrayMult(EloquenceParser.StatAssignArrayMultContext ctx) {
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
@@ -486,6 +566,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		return null; }
 	
+	/**
+	 * Create a blocked statement. The value of the blocked statement, in case of a compound
+	 * expression is stored in reg(ctx)
+	 * @require ctx != null && ctx.children != null
+	 * @ensure reg(ctx) == reg(ctx.statBlockBody)
+	 */
 	@Override public Op visitStatBlock(EloquenceParser.StatBlockContext ctx) {
 		
 		if(labels.get(ctx) != null)
@@ -501,7 +587,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		return null; }
-	
+	/**
+	 * Copies the value of the underlying expression to the current reg(ctx)
+	 * @require ctx != null && ctx.children != null
+	 * @ensure ret(ctx) == reg(ctx.expression)
+	 */
 	@Override public Op visitStatExpr(EloquenceParser.StatExprContext ctx) {
 		
 		if(labels.get(ctx) != null)
@@ -522,7 +612,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		return null;
 	}
-	
+	/**
+	 * Visits the children which make it possible to return from a function. 
+	 * 
+	 * @require ctx != null && ctx.children != null
+	 */
 	@Override public Op visitStatReturn(EloquenceParser.StatReturnContext ctx) { 
 		
 		
@@ -530,9 +624,13 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
 		return null; }
-	
-	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { 
-		
+	/**
+	 * Stores every input from the input stream in a target ID.
+	 * 
+	 * @require ctx != null && ctx.children != null
+	 * @ensure regt(ctx) == reg(target)
+	 */
+	@Override public Op visitStatIn(EloquenceParser.StatInContext ctx) { 		
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		visitChildren(ctx);
@@ -543,39 +641,40 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		return null; }
-	
+	/**
+	 * Outputs for all the target its IDs. 
+	 * @require ctx != null && ctx.children != null
+	 */
 	@Override public Op visitStatOut(EloquenceParser.StatOutContext ctx) { 
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		
 		visitChildren(ctx);
 		
-		for(ExpressionContext out : ctx.expression()){
-			emit(OpCode.out, new Str("Output: ") , reg(out));
+		for(ExpressionContext out : ctx.expression()){	//For every expression
+			emit(OpCode.out, new Str("Output: ") , reg(out));	//Output the result
 			emit(OpCode.i2i, reg(out), reg(ctx));
 			if(out instanceof ExprFuncContext)
 				emit(OpCode.pop, reg(out));
 		}
 		
 		return null; }
-	
+	/**
+	 * Calls a void funtcion. Since it is void, the reg of this ctx holds no value.
+	 * @require ctx != null && ctx.children != null
+	 */
 	@Override public Op visitStatVoid(finalProject.grammar.EloquenceParser.StatVoidContext ctx) {
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
 		
 		visitChildren(ctx);
-		
-		/*
-		if(checkResult.getType(ctx).equals(Type.CHAR)){
-			emit(OpCode.c2c, reg(ctx.functionID()), reg(ctx));
-		}else if(checkResult.getType(ctx) != null){
-			emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
-		}
-		*/
-		
-		
+				
 		return null; }
-	
+	/**
+	 * The body of a blocked statement. The value of the body is stored in the reg(ctx)
+	 * @require ctx != null && ctx.children != null
+	 * @ensure reg(ctx) == reg(ctx.body)
+	 */
 	@Override public Op visitStatBlockBody(EloquenceParser.StatBlockBodyContext ctx) { 
 		if(labels.get(ctx) != null){
 			emit(labels.get(ctx), OpCode.nop);
@@ -590,17 +689,34 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			}
 		}
 		return null; }
-	
+	/**
+	 * Load the value of an ID to its target register. 
+	 * 
+	 * @require ctx != null && ctx.children != null
+	 * @ensure reg(ctx) == value of ID. 
+	 */
 	@Override public Op visitTargetId(EloquenceParser.TargetIdContext ctx) {
 		visitChildren(ctx);
 		emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx));
 			return null;  }
-	
+	/**
+	 * Creates a new ID.
+	 * @require ctx != null && ctx.ID != null
+	 * @ensure new ID is created
+	 */
 	@Override public Op visitNewID(EloquenceParser.NewIDContext ctx) {
 		visitChildren(ctx);
 		emit(OpCode.loadAI, arp, offset(ctx.ID()), reg(ctx.ID()));
 		return null; }
 	
+	/**
+	 * Returns from a function. Initially the return label is popped from the stack. 
+	 * Then a dummy return value of 0 is popped. The real return value is pushed back on the stack.
+	 * And then a jump is made to the return label.
+	 * 
+	 * @require ctx != null && ctx.children != null
+	 * @ensure Return value is pushed on stack.
+	 */
 	@Override public Op visitReturnStat(EloquenceParser.ReturnStatContext ctx) { 
 		if(labels.get(ctx) != null)
 			emit(labels.get(ctx), OpCode.nop);
@@ -626,6 +742,14 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		return null; }
 	
+	/**
+	 * For every type of expression the resulting value of the expression is stored in reg(ctx). 
+	 * The equals and not equals comparisons are different. For these two it is possible to compare
+	 * entire arrays. In that case for both arrays the every offset is computed and compared. 
+	 * 
+	 * @require ctx != null && ctx.children != null
+	 * @ensure reg(ctx) == comparison value
+	 */
 	@Override public Op visitExprComp(EloquenceParser.ExprCompContext ctx) { 
 		visitChildren(ctx);
 
@@ -782,7 +906,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		return null; }
-	
+	/**
+	 * Compound expression. Sets the reg(ctx) to the value of the compound expression
+	 * @require ctx != null && ctx.children != null
+	 * @ensure  reg(ctx) == reg(ctx.expression()
+	 */
 	@Override public Op visitExprCompound(EloquenceParser.ExprCompoundContext ctx) { 
 		visitChildren(ctx);
 
@@ -797,7 +925,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		return null; 
 		
 	}
-	
+	/**
+	 * Multiplies to registers and stores the result in reg(ctx). 
+	 * @require ctx != null && ctx.children != null
+	 * @ensure reg(ctx) == ctx.expression(0) * ctx.expression(1)
+	 */
 	@Override public Op visitExprMult(EloquenceParser.ExprMultContext ctx) { 
 		visitChildren(ctx);
 		
@@ -817,7 +949,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		return null; }
-	
+	/**
+	 * Unary expression. Inverts the value of the expression and stores it in reg(ctx)
+	 * 
+	 * @require ctx != null && ctx.children != null
+	 * @ensure reg(ctx) == inverse reg(ctx.expression)
+	 */
 	@Override public Op visitExprUnary(EloquenceParser.ExprUnaryContext ctx) { 
 		
 		visitChildren(ctx);
@@ -836,21 +973,38 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		return null; }
 	
+	/**
+	 * Loads a number into reg(ctx)
+	 * @require ctx != null && ctx.children != null
+	 * @ensure reg(ctx) contains number
+	 */
 	@Override public Op visitExprNum(EloquenceParser.ExprNumContext ctx) { 
 		visitChildren(ctx);
 		emit(OpCode.loadI, new Num(Integer.parseInt(ctx.getText())), reg(ctx));
 		return null; }
-	
+	/**
+	 * Loads the value true or false into reg(ctx)
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) contains true or false
+	 */
 	@Override public Op visitExprTrue(EloquenceParser.ExprTrueContext ctx) { 
 		emit(OpCode.loadI, new Num(-1), reg(ctx));
 		return visitChildren(ctx); }
 	
-	//TODO check whether this is correct
+	/**
+	 * Loads a character into reg(ctx)
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitExprChar(EloquenceParser.ExprCharContext ctx) { 
 		emit(OpCode.loadI, new Num((int)ctx.getText().charAt(1)), reg1);
 		emit(OpCode.i2c, reg1, reg(ctx));
 		return visitChildren(ctx); }
-	
+	/**
+	 * Loads the (return) value of a function ID into the current reg(ctx). 
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitExprFunc(EloquenceParser.ExprFuncContext ctx) { 
 		visitChildren(ctx);
 		if(checkResult.getType(ctx.functionID()).equals(Type.CHAR))
@@ -859,7 +1013,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.i2i, reg(ctx.functionID()), reg(ctx));
 		
 		return null; }
-	
+	/**
+	 * Performs a logical or on expression(0) and expression(1)
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitExprOr(EloquenceParser.ExprOrContext ctx) {
 		visitChildren(ctx);
 
@@ -871,6 +1029,12 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		emit(OpCode.or, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 	return null; }
 	
+	/** 
+	 * An epxression within parentheses. The expressions are visited and the result is stored 
+	 * in reg(ctx)
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitExprPar(EloquenceParser.ExprParContext ctx) { 
 		visitChildren(ctx);
 
@@ -883,7 +1047,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 			emit(OpCode.i2i, reg(ctx.expression()),reg(ctx));
 		
 		return null; }
-	
+	/**
+	 * Adds expression(0) and expression(1) and stores the result in reg(ctx)
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitExprAdd(EloquenceParser.ExprAddContext ctx) {
 		visitChildren(ctx);
 		
@@ -899,7 +1067,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		
 		return null; }
-	
+	/**
+	 * Performs a logical and on Expression(0) and expression(1)
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitExprAnd(EloquenceParser.ExprAndContext ctx) {
 		visitChildren(ctx);
 
@@ -910,7 +1082,11 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 			emit(OpCode.and, reg(ctx.expression(0)), reg(ctx.expression(1)), reg(ctx));
 		return null; }
-	
+	/**
+	 * Sets the value of the targetId on the reg(ctx)
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitExprId(EloquenceParser.ExprIdContext ctx) { 
 		visitChildren(ctx);
 		
@@ -919,18 +1095,26 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		else
 			emit(OpCode.i2i, reg(ctx.target()),reg(ctx));
 		return null; }
-	
+	/**
+	 * Loads the value of false in reg(ctx)
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitExprFalse(EloquenceParser.ExprFalseContext ctx) {
 		emit(OpCode.loadI, new Num(0), reg(ctx));
 		return null; }
-	
+	/**
+	 * Retrieves the value of an array at a certain index. In case the index is not within the bounds
+	 * of an array, the program ends and gives an array index out of bounds exception. 
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitExprArray(EloquenceParser.ExprArrayContext ctx) { 
 		visitChildren(ctx);
 
 		if(ctx.expression() instanceof ExprFuncContext)
 			emit(OpCode.pop, reg(ctx.expression()));
 		//Check for index out of bounds exception
-	//	emit(OpCode.loadI, new Num(Integer.parseInt(ctx.expression().getText())),reg1); //reg1: index
 		emit(OpCode.i2i, reg(ctx.expression()),reg1);
 		
 		emit(OpCode.i2i,reg1,reg_error);
@@ -965,7 +1149,10 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		emit(OpCode.loadAO,arp,reg1,reg(ctx));
 		return null; }
-	
+	/**
+	 * @require
+	 * @ensure
+	 */
 	@Override public Op visitUnary(EloquenceParser.UnaryContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitMultiply(EloquenceParser.MultiplyContext ctx) { return visitChildren(ctx); }
@@ -987,7 +1174,15 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 	@Override public Op visitFuncVoid(EloquenceParser.FuncVoidContext ctx) { return visitChildren(ctx); }
 	
 	@Override public Op visitFuncReturn(EloquenceParser.FuncReturnContext ctx) { return visitChildren(ctx); }
-	
+	/**
+	 * Calls a function. It starts by pushing its currect activation record on the stack.
+	 * A return label is placed at the end of the function. The return addres is pushed on the stack,
+	 * together with return value placeholder and parameters. After function is finished, the 
+	 * activation record is restored and the return value is stored in reg(ctx). 
+	 * 
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitFunctionID(EloquenceParser.FunctionIDContext ctx) {	
 		
 		ParseTree enclParent = ctx;
@@ -1050,14 +1245,20 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		return null; }
 	
+	/**
+	 * Visits a void function. A label is placed at the end of the function and also at the beginning
+	 * of the body. After the code for this function is placed, the program jumps to the end of the 
+	 * of the function. It is only when this function is called, a jump is made to the body.
+	 * 
+	 * @require ctx != null && ctx.children != null 
+	 */
 	@Override public Op visitVoidFunc(EloquenceParser.VoidFuncContext ctx) {
-	//	label(ctx.newID());
 		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));//Label for starting the function
 		
 		visit(ctx.newID());
 		
-		Label funcEnd = createLabel(ctx, "funcEnd");
-		emit(OpCode.jumpI, funcEnd);
+		Label funcEnd = createLabel(ctx, "funcEnd");	//Label for the end of the function
+		emit(OpCode.jumpI, funcEnd);					
 		emit(funcAddr.get(ctx.newID().ID().getText()),OpCode.nop);
 		
 		for(ParametersContext p : ctx.parameters()){
@@ -1065,11 +1266,17 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		}
 		visitChildren(ctx.statBlockBody());
 		
-		emit(OpCode.pop, reg3);
-		emit(OpCode.jump, reg3);
+		emit(OpCode.pop, reg3);				//Pop the return address
+		emit(OpCode.jump, reg3);			//And jump to the return address
 		emit(funcEnd, OpCode.nop);
 		return null; }
 	
+	/**
+	 * Visits a function which takes a return value. The return value is not popped here from the stack.
+	 * That happens in the returnStat. 
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitReturnFunc(EloquenceParser.ReturnFuncContext ctx) {
 		
 		funcAddr.put(ctx.newID().ID().getText(), createLabel(ctx,"function"));
@@ -1086,17 +1293,27 @@ public class Generator extends EloquenceBaseVisitor<Op>{
 		
 		
 		visit(ctx.body());
-		visit(ctx.returnStat());
+		visit(ctx.returnStat());		//The return stat will jump to the return address.
 		emit(funcEnd, OpCode.nop);
 		return null;
 		}
-	
+	/**
+	 * Visits a parameter in case of call by value. The parameter value is popped in the register
+	 * of new ID. This value is then stored at the place of the offset of the Id.
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitParamVal(EloquenceParser.ParamValContext ctx) { 
 		visitChildren(ctx);
 		emit(OpCode.pop, reg(ctx.newID().ID()));
 		emit(OpCode.storeAI, reg(ctx.newID().ID()),arp, offset(ctx.newID().ID()));
 		return null; }
-
+	/**
+	 * Visits a parameter in case of call by reference. The value of the parameter is popped in the 
+	 * reg(new ID)
+	 * @require ctx != null && ctx.children != null 
+	 * @ensure reg(ctx) != null
+	 */
 	@Override public Op visitParamRef(EloquenceParser.ParamRefContext ctx) { 
 		visitChildren(ctx);
 		emit(OpCode.pop, reg(ctx.newID()));
